@@ -49,7 +49,7 @@ bool Update::removeDir(const QString & dirName)
 
 void Update::removePath(QString path) {
 	QString correctedPath = QDir::toNativeSeparators(this->FolderName + separator + path).trimmed();
-	qDebug() << correctedPath;
+	//qDebug() << correctedPath;
 	QFileInfo fileInfo(correctedPath);
 	QDir dir(correctedPath);
 	if (fileInfo.isFile()){

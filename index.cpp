@@ -32,8 +32,8 @@ void Index::StartIndex()
     this->InitProgBar(0,1,0,1);
     QString IndexFile;
     IndexFile = settings.value("curServer").toString()+settings.value("IndexFile").toString();
-    //this->CopyRemoteFile(IndexFile, getIndexFilePath());
-	this->CopyRemoteFile(IndexFile, "sss");
+    this->CopyRemoteFile(IndexFile, getIndexFilePath());
+	//this->CopyRemoteFile(IndexFile, "sss");
 }
 
 void Index::EndIndex(int Next)
@@ -99,7 +99,7 @@ void Index::ParserIndexFile()
     while (!file.atEnd())
     {
         QString line = file.readLine();
-        //qDebug() << line;
+        qDebug() << line;
         QString type = line.left(1);
         if (ver_file_stat)
         {
@@ -223,9 +223,9 @@ int Index::CheckFile(QStringList List, int ID)
     FilesInfo.List = List;
     QString separator = (QString)QDir::separator();
     QString FilePath = this->FolderName+this->separator+List[1];
-    QFileInfo file(FilePath);
+    QFileInfo fileInfo(FilePath);
     // файл существует?
-    if (!file.isFile())
+    if (!fileInfo.isFile())
     {
         FilesInfo.State = _CLIENT_FILE_STATUS_LOST;
         this->FilesList.push_back(FilesInfo);
@@ -234,12 +234,32 @@ int Index::CheckFile(QStringList List, int ID)
     // размер файла совпадает?
     long int size;
     size =  List[2].toLong();
-    if (size != (long int)file.size())
+    if (size != (long int)fileInfo.size())
     {
         FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
         this->FilesList.push_back(FilesInfo);
         return _CLIENT_FILE_STATUS_CHANGE;
     }
+	// check hash
+	static QCryptographicHash hash(QCryptographicHash::Md5);
+	hash.reset();
+	static QFile file;
+	file.setFileName(FilePath);
+	if (file.open(QIODevice::ReadOnly)){
+		hash.addData(file.readAll(), QCryptographicHash::Md5);
+		if (List[3] != QString(hash.result())){
+			FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
+			this->FilesList.push_back(FilesInfo);
+			return _CLIENT_FILE_STATUS_CHANGE;
+		}
+		file.close();
+	}
+	else{
+		FilesInfo.State = _CLIENT_FILE_STATUS_LOST;
+		this->FilesList.push_back(FilesInfo);
+		return _CLIENT_FILE_STATUS_LOST;
+	}
+
     // Дата и время файла совпадает?
     /*QString date_end_time;
     date_end_time = file.lastModified().toString("dd.MM.yyyy hh:mm:ss");
