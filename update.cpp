@@ -100,10 +100,19 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 		}
 	}
 	this->InitProgBar(0, 1, 0, 1);
+	// added task for download mtl.dat
+	FilesTypes fileInfo;
+	fileInfo.ID = -999;
+	fileInfo.List.append("0");
+	fileInfo.List.append("mtl.dat");
+	fileInfo.State = -999;
+	this->FilesList.push_front(fileInfo);
 	if (!this->FilesList.empty())
 	{
 		this->countMain = 0;
-		this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], this->FolderName + tr("/") + this->FilesList[this->countMain].List[1]);
+		// first task - mtl.dat, so make correct path
+		QString corrFolderName = this->FolderName.left(this->FolderName.length() - 4);
+		this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], corrFolderName + separator + this->FilesList[this->countMain].List[1]);
 	}
 	else
 	{

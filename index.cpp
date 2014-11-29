@@ -99,7 +99,7 @@ void Index::ParserIndexFile()
     while (!file.atEnd())
     {
         QString line = file.readLine();
-        qDebug() << line;
+        //qDebug() << line;
         QString type = line.left(1);
         if (ver_file_stat)
         {
@@ -240,25 +240,27 @@ int Index::CheckFile(QStringList List, int ID)
         this->FilesList.push_back(FilesInfo);
         return _CLIENT_FILE_STATUS_CHANGE;
     }
-	// check hash
-	static QCryptographicHash hash(QCryptographicHash::Md5);
-	hash.reset();
-	static QFile file;
-	file.setFileName(FilePath);
-	if (file.open(QIODevice::ReadOnly)){
-		hash.addData(file.readAll(), QCryptographicHash::Md5);
-		if (List[3] != QString(hash.result())){
-			FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
-			this->FilesList.push_back(FilesInfo);
-			return _CLIENT_FILE_STATUS_CHANGE;
+	// check hash if it is available
+	if (List[3] != "Reserve"){
+		static QCryptographicHash hash(QCryptographicHash::Md5);
+		hash.reset();
+		static QFile file;
+		file.setFileName(FilePath);
+		if (file.open(QIODevice::ReadOnly)){
+			hash.addData(file.readAll(), QCryptographicHash::Md5);
+			if (List[3] != QString(hash.result())){
+				FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
+				this->FilesList.push_back(FilesInfo);
+				return _CLIENT_FILE_STATUS_CHANGE;
+			}
+			file.close();
 		}
-		file.close();
-	}
-	else{
-		FilesInfo.State = _CLIENT_FILE_STATUS_LOST;
-		this->FilesList.push_back(FilesInfo);
-		return _CLIENT_FILE_STATUS_LOST;
-	}
+		else{
+			FilesInfo.State = _CLIENT_FILE_STATUS_LOST;
+			this->FilesList.push_back(FilesInfo);
+			return _CLIENT_FILE_STATUS_LOST;
+		}
+	}	
 
     // Дата и время файла совпадает?
     /*QString date_end_time;
