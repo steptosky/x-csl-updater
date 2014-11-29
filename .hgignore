@@ -14,3 +14,8 @@ Makefile.*
 Generated/
 *.vcxproj
 *.filters
+*.idx
+*.opensdf
+*.sdf
+*.sln
+ipch/
