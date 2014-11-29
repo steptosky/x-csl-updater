@@ -1,0 +1,13 @@
+syntax: glob
+*.DS_Store
+TEST/
+release/
+debug/
+for_builds_0.1.1.4.beta.ize
+for_builds_0.1.1.4.beta.zip
+object_script.X-CSL-Updater.Debug
+object_script.X-CSL-Updater.Release
+*.user.*
+X-CSL-Updater.zip
+Makefile
+Makefile.*
