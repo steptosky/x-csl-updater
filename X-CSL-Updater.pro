@@ -27,5 +27,15 @@ FORMS += mainwindow.ui \
 RESOURCES += x-csl-updater.qrc
 TRANSLATIONS = english.ts
 
-# if win32
-RC_FILE += x-csl-updater-win32.rc
+win32 {
+    RC_FILE += x-csl-updater-win32.rc
+    DEFINES += WIN
+}
+
+unix:!macx {
+    DEFINES += LIN
+}
+
+macx {
+    DEFINES += MAC
+}

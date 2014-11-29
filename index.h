@@ -5,6 +5,10 @@
 #include "base_steps.h"
 #include "info.h"
 
+#ifndef MAX_PATH
+#define MAX_PATH 1024
+#endif
+
 class Index /*: public QThread*/: public BaseSteps
 {
     Q_OBJECT

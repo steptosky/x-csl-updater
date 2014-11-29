@@ -17,7 +17,34 @@ MainWindow::MainWindow(QWidget *parent)
     // цепляем настройки из сохраненых
     QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
     move(settings.value("pos", QPoint(200, 200)).toPoint());
-    QString default_path = tr("C:")+this->separator+tr("X-Plane")+this->separator+tr("Resources")+this->separator+tr("plugins")+this->separator+tr("X-IvAp Resources")+this->separator+tr("CSL");
+
+#ifdef WIN
+    QString default_path =
+            tr("C:")+this->separator+
+            tr("X-Plane")+this->separator+
+            tr("Resources")+this->separator+
+            tr("plugins")+this->separator+
+            tr("X-IvAp Resources")+this->separator+
+            tr("CSL");
+#elif LIN
+    //TODO : make a correct default path for unix system
+    QString default_path =
+            tr("C:")+this->separator+
+            tr("X-Plane")+this->separator+
+            tr("Resources")+this->separator+
+            tr("plugins")+this->separator+
+            tr("X-IvAp Resources")+this->separator+
+            tr("CSL");
+#else
+    QString default_path =
+            QDir::homePath()+this->separator+
+            tr("X-Plane")+this->separator+
+            tr("Resources")+this->separator+
+            tr("plugins")+this->separator+
+            tr("X-IvAp Resources")+this->separator+
+            tr("CSL");
+#endif
+
     this->FolderName = settings.value("FolderName", default_path).toString();
 
     // контекст меню ЛИСТА
@@ -30,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     // контекст меню Таблицы
     this->TableSelAllAct = new QAction (tr("Выделить Все"), this);
     this->TableSelAllAct->setShortcut(tr("Ctrl+A"));
-    connect(this->TableSelAllAct, SIGNAL(activated()), this, SLOT(TableSelAll()));    
+    connect(this->TableSelAllAct, SIGNAL(activated()), this, SLOT(TableSelAll()));
     this->TableInfoAct = new QAction (tr("Информация"), this);
     connect(this->TableInfoAct, SIGNAL(activated()), this, SLOT(TableInfo()));
 
@@ -44,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->ui->tableWidget->setColumnWidth(6, 20);//code
 
     // всяко разно пишем в окне и другое
-    this->ui->curPathLabel->setText(this->FolderName);
+    this->ui->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
     this->ui->progressBar->setValue(0);
     this->ui->listWidget->addItem(tr("X-CSL-Updater, Ver.:")+ VerProg);
 
@@ -117,36 +144,41 @@ void MainWindow::SettingSlot()
 }
 
 void MainWindow::ListContextMenu(const QPoint & pos)
- {
+{
     QMenu menu(this);
     menu.addAction(this->ListClearAct);
     menu.addAction(this->ListSelAllAct);
     menu.exec(this->ui->listWidget->mapToGlobal(pos));
- }
+}
 
 void MainWindow::TableContextMenu(const QPoint & pos)
- {
+{
     QMenu menu(this);
     if (this->ui->tableWidget->rowCount() < 1)
     {
-	this->TableInfoAct->setDisabled(true);
+        this->TableInfoAct->setDisabled(true);
     }
     else
     {
-	this->TableInfoAct->setEnabled(true);
+        this->TableInfoAct->setEnabled(true);
     }
     menu.addAction(this->TableInfoAct);
     menu.addAction(this->TableSelAllAct);
     menu.exec(this->ui->tableWidget->mapToGlobal(pos));
- }
+}
 
 void MainWindow::contextMenuEvent(QContextMenuEvent * event)
- {
-     /*QMenu menu(this);
+{
+    /*QMenu menu(this);
      menu.addAction(this->ui->actionAbout);
      menu.addAction(this->ui->actionAbout_Qt);
      menu.exec(event->globalPos());*/
- }
+}
+
+QString MainWindow::removeCslSpecifiedPath(const QString &inPath)
+{
+    return inPath.left(inPath.length()-38);
+}
 
 void MainWindow::TableInfo()
 {
@@ -159,34 +191,49 @@ void MainWindow::SetFolder()
     QString _FName;
     if (this->FolderName.endsWith("Resources/plugins/X-IvAp Resources/CSL"))
     {
-	int len = this->FolderName.length();
-	_FName = this->FolderName.left(len-38);
+        _FName = removeCslSpecifiedPath(this->FolderName);
     }
     else
     {
-	_FName = this->FolderName;
+        _FName = this->FolderName;
     }
     QString FName;
-    FName = QFileDialog::getOpenFileName(this,
-	    tr("Укажите путь к исполняемому файлу X-Plane"), _FName, tr("X-Plane-* (X-Plane-*)"));
+
+    #ifdef WIN
+        FName = QFileDialog::getOpenFileName(this,
+                                         tr("Укажите путь к исполняемому файлу X-Plane"),
+                                         _FName,
+                                         "X-Plane*.exe (X-Plane*.exe)");
+    #elif LIN
+        FName = QFileDialog::getOpenFileName(this,
+                                         tr("Укажите путь к исполняемому файлу X-Plane"),
+                                         _FName,
+                                         "X-Plane* (X-Plane*)");
+    #else
+        FName = QFileDialog::getOpenFileName(this,
+                                         tr("Укажите путь к исполняемому файлу X-Plane"),
+                                         _FName,
+                                         "X-Plane*.app (X-Plane*.app)");
+    #endif
+
     if (!FName.isEmpty())
     {
-	int pos = FName.lastIndexOf("/");
-	FName = FName.left(pos+1);
-	FName = FName+tr("Resources/plugins/X-IvAp Resources/CSL");
-	QDir dir(FName);
-	if (dir.exists())
-	{
-	    this->FolderName = FName;
-	    QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-	    settings.setValue("FolderName", this->FolderName);
-	    this->ui->curPathLabel->setText(this->FolderName);
-	}
-	else
-	{
-	    this->ui->listWidget->addItem(tr("Ошибка: В выбранной версии X-Plane не установлен плагин X-IvAp!"));
-	    this->ui->listWidget->scrollToBottom();
-	}
+        int pos = FName.lastIndexOf("/");
+        FName = FName.left(pos+1);
+        FName = FName+tr("Resources/plugins/X-IvAp Resources/CSL");
+        QDir dir(FName);
+        if (dir.exists())
+        {
+            this->FolderName = FName;
+            QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+            settings.setValue("FolderName", this->FolderName);
+            this->ui->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
+        }
+        else
+        {
+            this->ui->listWidget->addItem(tr("Ошибка: В выбранной версии X-Plane не установлен плагин X-IvAp!"));
+            this->ui->listWidget->scrollToBottom();
+        }
     }
     return;
 }
@@ -195,14 +242,14 @@ void MainWindow::SetCustomFolder()
 {
     QMessageBox::warning(this, "X-CSL-Updater", tr("Внимание! Данная функция предназначена для профессионального использования. Возможно программа станет неработоспособной!"), QMessageBox::Ok);
     this->FolderName = QFileDialog::getExistingDirectory(this,
-    tr("X-CSL-Updater :: Выберите папку X-Plane"), this->FolderName, QFileDialog::ShowDirsOnly);
+                                                         tr("X-CSL-Updater :: Выберите папку X-Plane"), this->FolderName, QFileDialog::ShowDirsOnly);
 
     if (!this->FolderName.isEmpty())
     {
-	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-	settings.setValue("FolderName", this->FolderName);
-	this->ui->curPathLabel->setText(this->FolderName);
-	//this->ui->cur_ver_client->setText(this->ChVer->GetCurVerClient(this->FolderName));
+        QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+        settings.setValue("FolderName", this->FolderName);
+        this->ui->curPathLabel->setText(this->FolderName);
+        //this->ui->cur_ver_client->setText(this->ChVer->GetCurVerClient(this->FolderName));
     }
     return;
 }

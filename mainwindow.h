@@ -69,6 +69,8 @@ private:
     // контекст меню Таблицы
     QAction *TableSelAllAct;
     QAction *TableInfoAct;
+
+    QString removeCslSpecifiedPath(const QString &inPath);
 };
 
 #endif // MAINWINDOW_H
