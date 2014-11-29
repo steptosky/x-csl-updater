@@ -28,6 +28,8 @@ private:
     int CheckFile(QStringList list, int ID);
     void EndIndex(int Next = true);
     void CopyRemoteFile(QString From, QString To);
+    QString getIndexFilePath();
+
     info *Inf;
     QHttp *http;
     QFile *file;

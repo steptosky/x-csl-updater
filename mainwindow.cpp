@@ -27,9 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
             tr("X-IvAp Resources")+this->separator+
             tr("CSL");
 #elif LIN
-    //TODO : make a correct default path for unix system
     QString default_path =
-            tr("C:")+this->separator+
+            QDir::homePath()+this->separator+
             tr("X-Plane")+this->separator+
             tr("Resources")+this->separator+
             tr("plugins")+this->separator+
