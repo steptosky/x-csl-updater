@@ -4,6 +4,27 @@
 QT += network
 TARGET = X-CSL-Updater
 TEMPLATE = app
+
+CONFIG(debug, debug|release) {
+
+DESTDIR = bin/debug
+OBJECTS_DIR = Generated/obj
+MOC_DIR = Generated/moc
+RCC_DIR = Generated/qrc
+UI_DIR = Generated/ui
+
+CONFIG   += console
+} else{
+
+DESTDIR = bin/release
+OBJECTS_DIR = Generated/obj
+MOC_DIR = Generated/moc
+RCC_DIR = Generated/qrc
+UI_DIR = Generated/ui
+
+}
+
+
 SOURCES += main.cpp \
     mainwindow.cpp \
     about.cpp \

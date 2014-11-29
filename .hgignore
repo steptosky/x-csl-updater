@@ -11,3 +11,6 @@ object_script.X-CSL-Updater.Release
 X-CSL-Updater.zip
 Makefile
 Makefile.*
+Generated/
+*.vcxproj
+*.filters
