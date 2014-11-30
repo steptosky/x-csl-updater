@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US" sourcelanguage="ru_RU">
+<TS version="2.1" language="en_US" sourcelanguage="ru_RU">
 <context>
     <name>About</name>
-    <message utf8="true">
+    <message>
         <location filename="about.ui" line="35"/>
         <source>X-CSL-Updater :: О программе</source>
         <translation>X-CSL-Updater :: About</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="about.ui" line="98"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -21,7 +21,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;more info at &lt;a href=&quot;http://www.x-air.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.x-air.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="about.ui" line="105"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -39,7 +39,7 @@ p, li { white-space: pre-wrap; }
         <source>X-CSL-Updater ver.: </source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="about.ui" line="158"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -58,7 +58,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Official site of project X-CSL-Package (&lt;/span&gt;&lt;a href=&quot;http://csl.x-air.ru&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;http://csl.x-air.ru&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;).&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="about.ui" line="62"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -71,7 +71,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;more info at&lt;a href=&quot;http://www.steptosky.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.steptosky.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="about.ui" line="69"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -330,11 +330,11 @@ p, li { white-space: pre-wrap; }
         <source>X-CSL-Updater</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Информация:</source>
         <translation type="obsolete">Info and Log:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="129"/>
         <source>Путь Установки:</source>
         <translation>Path for Install:</translation>
@@ -344,24 +344,24 @@ p, li { white-space: pre-wrap; }
         <source>TextLabel</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Лог работы программы...</source>
         <translation type="obsolete">Log...</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="192"/>
         <source>Вы можете очистить лог, выбрав в контекстном меню пункт &quot;Очистить&quot;</source>
         <translation>You can clear log. Check &quot;ContextMenu&quot;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Прогресс Бар - показывает ход работы</source>
         <translation type="obsolete">Progres Bar</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Список:</source>
         <translation type="obsolete">List:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Список X-CSL-Package, в нем вы можете выбрать интересующие модели и нажать &quot;Установка/Обновление&quot;</source>
         <translation type="obsolete">List of X-CSL-Packsge</translation>
     </message>
@@ -370,45 +370,45 @@ p, li { white-space: pre-wrap; }
         <source>#ID</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="316"/>
         <source>Название</source>
         <translation>Title</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="321"/>
         <source>Инфо</source>
         <translation>Info</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="326"/>
         <source>Версия</source>
         <translation>Version</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Размер</source>
         <translation type="obsolete">Size</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="331"/>
         <source>Размер (MB)</source>
         <translation>Size of MB</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="336"/>
         <source>Статус</source>
         <translation>Status</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="341"/>
         <source>Код</source>
         <translation>Code</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Выделить все в списке</source>
         <translation type="obsolete">Select all in List</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Выделить Все!</source>
         <translation type="obsolete">Select All!</translation>
     </message>
@@ -418,11 +418,11 @@ p, li { white-space: pre-wrap; }
         <source>Ctrl+A</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Нажмите для индексации ваших файлов</source>
         <translation type="obsolete">Press Index for Indexes your files</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Индексация</source>
         <translation type="obsolete">Index</translation>
     </message>
@@ -431,11 +431,11 @@ p, li { white-space: pre-wrap; }
         <source>Ctrl+I</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Нажмите для обновления</source>
         <translation type="obsolete">Press for Update</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Установка/Обновление</source>
         <translation type="obsolete">Install/Update</translation>
     </message>
@@ -449,7 +449,7 @@ p, li { white-space: pre-wrap; }
         <source>logo</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="158"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -462,12 +462,12 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Select path for install&lt;span style=&quot; font-weight:600;&quot;&gt;X-CSL Package&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="165"/>
         <source>Обзор</source>
         <translation>Browse</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="185"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -480,12 +480,12 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Log of working program&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="237"/>
         <source>Список пакетов X-CSL, доступных на сервере:</source>
         <translation>List of  X-CSL-Packages, available on server:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="258"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -498,7 +498,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Select necessary&lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;X-CSL-Packages&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;and press &quot;Update&quot;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="357"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -511,32 +511,32 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Select All &lt;/span&gt;&lt;span style=&quot; font-size:8pt; font-weight:600;&quot;&gt;X-CSL-Packages&lt;/span&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;in list (Ctrl+A)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="364"/>
         <source>Выделить Все</source>
         <translation>Select All</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="387"/>
         <source>Прервать текущее действие</source>
         <translation>Cancel current action</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="390"/>
         <source>Отменить</source>
         <translation>Cancel</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="403"/>
         <source>Индексация ваших файлов (Ctrl+I)</source>
         <translation>Indexing of your files (Ctrl+I)</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="406"/>
         <source>Индексировать</source>
         <translation>Index</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="422"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -549,28 +549,28 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Start Update &lt;span style=&quot; font-weight:600;&quot;&gt;X-CSL-Packages &lt;/span&gt; (Ctrl+U)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="429"/>
         <source>Обновить</source>
         <translation>Update</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="454"/>
         <source>Файл</source>
         <translation>File</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="467"/>
         <source>Помощь</source>
         <translation>Help</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="477"/>
         <location filename="mainwindow.ui" line="480"/>
         <source>Путь Установки</source>
         <translation>Set Install Path</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="483"/>
         <location filename="mainwindow.ui" line="486"/>
         <source>Выберите путь для установки X-CSL-Package</source>
@@ -581,12 +581,12 @@ p, li { white-space: pre-wrap; }
         <source>Ctrl+O</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="497"/>
         <source>Настройки</source>
         <translation>Settings</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="500"/>
         <location filename="mainwindow.ui" line="503"/>
         <source>Настройки программы</source>
@@ -602,12 +602,12 @@ p, li { white-space: pre-wrap; }
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="516"/>
         <source>О программе</source>
         <translation>About it</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="mainwindow.ui" line="519"/>
         <location filename="mainwindow.ui" line="522"/>
         <source>Информация об этой программе...</source>
@@ -659,18 +659,18 @@ p, li { white-space: pre-wrap; }
         <source>X-CSL-Updater :: Settings</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="47"/>
         <source>Сервер</source>
         <oldsource>Настройки</oldsource>
         <translation>Server</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="62"/>
         <source>Сервер 1:</source>
         <translation>Server1:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="79"/>
         <location filename="settings.ui" line="113"/>
         <location filename="settings.ui" line="147"/>
@@ -678,7 +678,7 @@ p, li { white-space: pre-wrap; }
         <source>Выделенный галочкой сервер, будет использоватся программой</source>
         <translation>Programm will use  selected server</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="82"/>
         <location filename="settings.ui" line="116"/>
         <location filename="settings.ui" line="150"/>
@@ -694,17 +694,17 @@ p, li { white-space: pre-wrap; }
         <source>CheckGroup</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="92"/>
         <source>Сервер 2:</source>
         <translation>Server2:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="99"/>
         <source>Адрес сервера #2</source>
         <translation>Addres of server</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="102"/>
         <location filename="settings.ui" line="136"/>
         <location filename="settings.ui" line="170"/>
@@ -719,53 +719,53 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Enter adress of server...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="222"/>
         <source>Русский</source>
-        <translation>Russian</translation>
+        <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Введите адрес сервера для Установки /Обновления X-CSL-Package...</source>
         <translation type="obsolete">Will Enter the address of the server...</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="126"/>
         <source>Сервер 3:</source>
         <translation>Server3:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="133"/>
         <source>Адрес сервера #3</source>
         <translation>Addres of server</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="160"/>
         <source>Сервер 4:</source>
         <translation>Server4:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="167"/>
         <source>Адрес сервера #4</source>
         <translation>Addres of server</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Имя индексного файла:</source>
         <translation type="obsolete">Name of index file:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Имя индексного файла</source>
         <translation type="obsolete">Name of index file</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Введите имя индексного файла...</source>
         <translation type="obsolete">Enter name of index file...</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="207"/>
         <source>Языки</source>
         <translation>Language</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Русский - (По Умолчанию)</source>
         <translation type="obsolete">Russian - (Default)</translation>
     </message>
@@ -775,16 +775,16 @@ p, li { white-space: pre-wrap; }
         <source>LangGroup</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="232"/>
         <source>Английский</source>
-        <translation>English</translation>
+        <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Примечание:</source>
         <translation type="obsolete">Note:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Если Английский язык заблокирован, это означает что в каталоге с программой
 отсутствует файл перевода english.qm</source>
         <oldsource>Для включения языка НЕ по умолчанию вы должны иметь соответсвующий
@@ -792,17 +792,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">If English CheckBox is disabled now,
 this means that in directory with program is absent file english.qm</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="260"/>
         <source>Нажмите для отмены введеных изменений</source>
         <translation>Press for Cancel</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="263"/>
         <source>Отмена</source>
         <translation>Cancel</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="settings.ui" line="270"/>
         <source>Нажмите для подтверждения введеных изменений</source>
         <translation>Press for Save Settings</translation>
@@ -886,25 +886,25 @@ this means that in directory with program is absent file english.qm</translation
         <source>X-CSL-Updater :: Info</source>
         <translation></translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Информация о выбранном X-CSL-Package:</source>
         <translation type="obsolete">Information on chosen by X-CSL-Package:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Здесь отображается информация о выбраном X-CSL-Package...</source>
         <translation type="obsolete">Here information is displayed about chosen by X-CSL-Package...</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="info.ui" line="37"/>
         <source>Информация о выбранном пакете &lt;strong&gt;X-CSL&lt;/strong&gt;:</source>
         <translation>Info about selected &lt;strong&gt;X-CSL-Package&lt;/strong&gt;:</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="info.ui" line="50"/>
         <source>Информация о выбранном пакете X-CSL</source>
         <translation>Info about selected X-CSL-Package</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="info.ui" line="53"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -918,7 +918,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;more info at &lt;span style=&quot; font-weight:600;&quot;&gt;X-CSL Package&lt;/span&gt; site (csl.x-air.ru).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="info.ui" line="87"/>
         <location filename="info.ui" line="90"/>
         <source>Нажмите для закрытия окна</source>
