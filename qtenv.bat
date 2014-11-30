@@ -1,4 +1,3 @@
-@echo off
 
 set QT_DIR=C:\Qt\4.8.5_msvs2010
 
