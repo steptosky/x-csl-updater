@@ -3,7 +3,7 @@
 
 #include <QtGui>
 
-#include "version.h"
+#include "../version.h"
 
 #define VERSION_MAJOR    0
 #define VERSION_MINOR    1

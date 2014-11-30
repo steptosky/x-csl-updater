@@ -20,3 +20,5 @@ Generated/
 *.sln
 ipch/
 version.h
+*.pdb
+*.suo
