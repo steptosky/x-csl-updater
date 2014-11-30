@@ -19,3 +19,4 @@ Generated/
 *.sdf
 *.sln
 ipch/
+version.h
