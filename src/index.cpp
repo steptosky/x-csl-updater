@@ -30,10 +30,12 @@ void Index::StartIndex()
 	this->sizeOfServer = 0;
 	this->FilesList.clear();
 	this->InitProgBar(0, 1, 0, 1);
-	QString IndexFile = settings.value("curServer").toString() + settings.value("IndexFile").toString();
-	QString IndexForDelFile = settings.value("curServer").toString() + settings.value("IndexForDelFile").toString();
+	IndexFile = settings.value("curServer").toString() + settings.value("IndexFile").toString();
+	IndexForDelFile = settings.value("curServer").toString() + settings.value("IndexForDelFile").toString();
+	qDebug() << IndexFile;
+	qDebug() << IndexForDelFile;
 	this->CopyRemoteFile(IndexFile, getIndexFilePath());
-	this->CopyRemoteFile(IndexForDelFile, getIndexForDelFilePath());
+	
 	//this->CopyRemoteFile(IndexFile, "sss");
 }
 
@@ -94,11 +96,12 @@ void Index::ParserIndexFile()
 		if (list.size() >= 2){
 			FilesTypes fileInfo;
 			fileInfo.ID = list[0].toInt();
-			fileInfo.pathesToDelete = list;
+			fileInfo.List = list;
 			fileInfo.State = -999;
 			this->mFileListForDel.push_back(fileInfo);
 		}
 	}
+	fileForDel.close();
 
 	QString FilePath = getIndexFilePath();
 	QFile file(FilePath);
@@ -148,7 +151,7 @@ void Index::ParserIndexFile()
 			this->MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Подождите...")));
 			QString msg = tr("%3 (%4)").arg(list[4], list[5]);
 			this->MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(msg));
-			this->sizeOfServer += list[2].toInt();
+			//this->sizeOfServer += list[2].toInt();
 			float sizeMB = list[2].toFloat() / 1048576;
 			char sizeMBstr[MAX_PATH];
 			sprintf(sizeMBstr, "%10.2f", sizeMB);
@@ -229,6 +232,7 @@ int Index::CheckFile(QStringList List, int ID)
 	QString separator = (QString)QDir::separator();
 	QString FilePath = this->FolderName + this->separator + List[1];
 	QFileInfo fileInfo(FilePath);
+	this->sizeOfServer += List[2].toInt();
 	// файл существует?
 	if (!fileInfo.isFile())
 	{
@@ -238,8 +242,8 @@ int Index::CheckFile(QStringList List, int ID)
 	}
 	// размер файла совпадает?
 	long int size;
-	size = List[2].toLong();
-	if (size != (long int)fileInfo.size())
+	size = List[2].toInt();
+	if (size != (int)fileInfo.size())
 	{
 		FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
 		this->FilesList.push_back(FilesInfo);
@@ -277,7 +281,7 @@ int Index::CheckFile(QStringList List, int ID)
 	return _CLIENT_FILE_STATUS_CHANGE
 	}*/
 	// типа все ОК
-	this->sizeOfClient += List[2].toInt();
+	this->sizeOfClient += (int)fileInfo.size();
 	FilesInfo.State = _CLIENT_FILE_STATUS_OK;
 	this->FilesList.push_back(FilesInfo);
 	return _CLIENT_FILE_STATUS_OK;
@@ -355,6 +359,7 @@ QString Index::getIndexForDelFilePath()
 
 void Index::httpRequestFinished(int reqId, bool error)
 {
+	static int count = 0;
 	if (reqId != this->httpGetId) return;
 	if (this->httpRequestAborted)
 	{
@@ -378,8 +383,14 @@ void Index::httpRequestFinished(int reqId, bool error)
 	this->file->close();
 	delete this->file;
 	this->file = 0;
-	if (!error)
+
+	if (!error && count == 0){
+		this->CopyRemoteFile(IndexForDelFile, getIndexForDelFilePath());
+		count++;
+	}
+	else if (!error && count == 1)
 	{
+		count = 0;
 		this->ParserIndexFile();
 	}
 	else

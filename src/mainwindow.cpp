@@ -15,18 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 	this->separator = "/"/*(QString)QDir::separator()*/;
 
 	// цепляем настройки из сохраненых
-	//QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-
-#ifdef Q_OS_WIN32
-
-	QSettings settings("x-csl-updater.ini", QSettings::IniFormat);
-
-#else
-
-
-#endif
-
-
+	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
 	move(settings.value("pos", QPoint(200, 200)).toPoint());
 
 #ifdef Q_OS_WIN32
@@ -119,8 +108,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-	//QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-	QSettings settings("x-csl-updater.ini", QSettings::IniFormat);
+	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
 	settings.setValue("pos", pos());
 	delete Indx;
 	delete Updt;

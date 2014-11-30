@@ -23,3 +23,4 @@ version.h
 *.pdb
 *.suo
 *.vcxproj.user
+TEST-DOWNLOADED/

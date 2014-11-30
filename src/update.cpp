@@ -84,20 +84,15 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 		{
 			if (this->MWUI->tableWidget->item(i, 0)->isSelected())
 			{
-				if (_FilesList[it].State == -999 && _FilesList[it].pathesToDelete.size() >= 2){
-					mSelectedListForDelete.push_back(_FilesList[it]);
-					continue;
+				QStringList list = Indx->mFileListForDel[i].List[1].split("/", QString::SkipEmptyParts);
+				if (this->MWUI->tableWidget->item(i, 1)->text() == list[0]){
+					qDebug() << Indx->mFileListForDel[i].List[1];
+					break;
 				}
-				if (this->MWUI->tableWidget->item(i, 6)->text() == "1")
-				{					
-					if (_FilesList[it].ID == this->MWUI->tableWidget->item(i, 0)->text().toInt())
-					{
-						if (_FilesList[it].State != 0)
-						{
-							this->FilesList.push_back(_FilesList[it]);
-						}
-					}
-				}
+// 				if (_FilesList[it].State == -999 && _FilesList[it].pathesToDelete.size() >= 2){
+// 					mSelectedListForDelete.push_back(_FilesList[it]);
+// 					continue;
+// 				}
 			}
 		}
 	}
@@ -149,10 +144,10 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 void Update::EndUpdate()
 {
 	int size = mSelectedListForDelete.size();
-	for (int i = 0; i < size; i++)
-	{
-		removePath(mSelectedListForDelete[i].pathesToDelete[1]);	
-	}
+// 	for (int i = 0; i < size; i++)
+// 	{
+// 		removePath(mSelectedListForDelete[i].pathesToDelete[1]);	
+// 	}
 
 	this->MWUI->CancelButton->setEnabled(false);
 	this->SetMessage(tr("Обновление завершено!"));

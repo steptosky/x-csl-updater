@@ -43,6 +43,9 @@ private:
     int sizeOfServer;
     int sizeOfNeedUpdate;
     int sizeOfClient;
+
+	QString IndexFile;
+	QString IndexForDelFile;
 };
 
 #endif // INDEX_H
