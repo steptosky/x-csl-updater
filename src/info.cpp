@@ -176,3 +176,8 @@ void info::changeEvent(QEvent *e)
 		break;
 	}
 }
+
+void info::requestStopAction() {
+	this->httpRequestAborted = true;
+	this->http->abort();
+}

@@ -26,7 +26,7 @@ void Update::CancelSlot()
 
 bool Update::removeDir(const QString & dirName)
 {
-	bool result = true;
+	bool result = false;
 	QDir dir(dirName);
 
 	if (dir.exists(dirName)) {
@@ -37,26 +37,22 @@ bool Update::removeDir(const QString & dirName)
 			else {
 				result = QFile::remove(info.absoluteFilePath());
 			}
-
-			if (!result) {
-				return result;
-			}
 		}
 		result = dir.rmdir(dirName);
 	}
 	return result;
 }
 
-void Update::removePath(QString path) {
+bool Update::removePath(QString path) {
 	QString correctedPath = QDir::toNativeSeparators(this->FolderName + separator + path).trimmed();
 	//qDebug() << correctedPath;
 	QFileInfo fileInfo(correctedPath);
 	QDir dir(correctedPath);
 	if (fileInfo.isFile()){
-		QFile::remove(correctedPath);
+		return QFile::remove(correctedPath);
 	}
 	else{
-		removeDir(correctedPath);
+		return removeDir(correctedPath);
 	}
 }
 
@@ -71,42 +67,36 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 	this->server = settings.value("curServer").toString();
 	int size = _FilesList.size();
 	int RowCount = this->MWUI->tableWidget->rowCount();
-
 	int sizeForDel = Indx->mFileListForDel.size();
-	for (int i = 0; i < sizeForDel; i++){
-
-		if (Indx->mFileListForDel[i].ID == 11){
-			mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
-			continue;
-		}
-
-		for (int i = 0; i < RowCount; i++)
-		{
-			if (this->MWUI->tableWidget->item(i, 0)->isSelected())
-			{
-				QStringList list = Indx->mFileListForDel[i].List[1].split("/", QString::SkipEmptyParts);
-				if (this->MWUI->tableWidget->item(i, 1)->text() == list[0]){
-					qDebug() << Indx->mFileListForDel[i].List[1];
-					break;
-				}
-// 				if (_FilesList[it].State == -999 && _FilesList[it].pathesToDelete.size() >= 2){
-// 					mSelectedListForDelete.push_back(_FilesList[it]);
-// 					continue;
+	// determine files to delete
+	// I think we must delete files in any case during update. so it code was commented...
+// 	for (int i = 0; i < sizeForDel; i++){
+// 
+// 		if (Indx->mFileListForDel[i].ID == 11){
+// 			mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
+// 			continue;
+// 		}
+// 
+// 		// I think we must delete files in any case during update. so it code was commented...
+// 		for (int ii = 0; ii < RowCount; ii++)
+// 		{
+// 			if (this->MWUI->tableWidget->item(ii, 0)->isSelected())
+// 			{
+// 				QStringList list = Indx->mFileListForDel[i].List[1].split("/", QString::SkipEmptyParts);
+// 				if (this->MWUI->tableWidget->item(ii, 1)->text() == list[0] && Indx->mFileListForDel[i].ID != 11){
+// 					mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
+// 					break;
 // 				}
-			}
-		}
-	}
-
+// 			}
+// 		}
+// 	}
+	// determine files to update
 	for (int it = 0; it < size; it++)
 	{
 		for (int i = 0; i < RowCount; i++)
 		{
 			if (this->MWUI->tableWidget->item(i, 0)->isSelected())
 			{
-				if (_FilesList[it].State == -999 && _FilesList[it].pathesToDelete.size() >= 2){
-					mSelectedListForDelete.push_back(_FilesList[it]);
-					continue;
-				}
 				if (this->MWUI->tableWidget->item(i, 6)->text() == "1")
 				{					
 					if (_FilesList[it].ID == this->MWUI->tableWidget->item(i, 0)->text().toInt())
@@ -143,10 +133,24 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 
 void Update::EndUpdate()
 {
-	int size = mSelectedListForDelete.size();
+	// remove files was planed to delete
+	int size = Indx->mFileListForDel.size();
+	int count = 0;
+	for (int i = 0; i < size; i++)
+	{
+		if (removePath(Indx->mFileListForDel[i].List[1])){
+			count++;
+			//this->SetMessage(tr("Removed file or directory: %1").arg(Indx->mFileListForDel[i].List[1]));
+		}
+	}
+	if (count > 0){
+		this->SetMessage(tr("Cleanup procedure done. Removed %1 files.").arg(count));
+	}	
+
+// 	int size = mSelectedListForDelete.size();
 // 	for (int i = 0; i < size; i++)
 // 	{
-// 		removePath(mSelectedListForDelete[i].pathesToDelete[1]);	
+// 		removePath(mSelectedListForDelete[i].List[1]);	
 // 	}
 
 	this->MWUI->CancelButton->setEnabled(false);
@@ -223,10 +227,6 @@ void Update::httpRequestFinished(int reqId, bool error)
 	{
 		this->SetMessage(tr("Îøèáêà: %1").arg(this->http->errorString()));
 	}
-	else
-	{
-		this->SetMessage(tr("OK!"));
-	}
 	this->file->close();
 	delete this->file;
 	this->file = 0;
@@ -258,15 +258,15 @@ void Update::readResponseHeader(const QHttpResponseHeader &responseHeader)
 		this->SetMessage(tr("Îøèáêà : %1.").arg(responseHeader.reasonPhrase()));
 		this->httpRequestAborted = true;
 		this->http->abort();
-		if (this->countMain < this->FilesList.size() - 1)
-		{
-			this->countMain++;
-			this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], this->FolderName + tr("/") + this->FilesList[this->countMain].List[1]);
-		}
-		else
-		{
-			this->EndUpdate();
-		}
+// 		if (this->countMain < this->FilesList.size() - 1)
+// 		{
+// 			this->countMain++;
+// 			this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], this->FolderName + tr("/") + this->FilesList[this->countMain].List[1]);
+// 		}
+// 		else
+// 		{
+// 			this->EndUpdate();
+// 		}
 		break;
 	}
 

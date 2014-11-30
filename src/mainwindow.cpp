@@ -256,14 +256,14 @@ void MainWindow::SetCustomFolder()
 
 void MainWindow::UpdateSlot()
 {
-	this->Updt->StartUpdate(this->Indx->FilesList, this->Indx);
 	this->ui->PrevButton->setDisabled(true);
 	this->ui->NextButton->setDisabled(true);
+	this->Updt->StartUpdate(this->Indx->FilesList, this->Indx);	
 }
 
 void MainWindow::IndexSlot()
 {
-	this->Indx->StartIndex();
 	this->ui->PrevButton->setDisabled(true);
 	this->ui->NextButton->setDisabled(true);
+	this->Indx->StartIndex();	
 }

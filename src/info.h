@@ -18,6 +18,7 @@ public:
     ~info();
     void GetInfoToTable();
     void OpenInfoWin();
+	void requestStopAction();
 
 protected:
     void changeEvent(QEvent *e);

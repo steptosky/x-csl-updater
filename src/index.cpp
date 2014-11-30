@@ -20,6 +20,7 @@ Index::~Index()
 
 void Index::StartIndex()
 {
+	this->Inf->requestStopAction();
 	this->httpRequestAborted = true;
 	this->http->abort();
 	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
@@ -29,13 +30,12 @@ void Index::StartIndex()
 	this->sizeOfNeedUpdate = 0;
 	this->sizeOfServer = 0;
 	this->FilesList.clear();
+	this->mFileListForDel.clear();
 	this->InitProgBar(0, 1, 0, 1);
 	IndexFile = settings.value("curServer").toString() + settings.value("IndexFile").toString();
 	IndexForDelFile = settings.value("curServer").toString() + settings.value("IndexForDelFile").toString();
-	qDebug() << IndexFile;
-	qDebug() << IndexForDelFile;
-	this->CopyRemoteFile(IndexFile, getIndexFilePath());
-	
+	this->SetMessage(tr("Downloading the indexes files from server \"%1\" ...").arg(QUrl(IndexFile).host()));
+	this->CopyRemoteFile(IndexFile, getIndexFilePath());	
 	//this->CopyRemoteFile(IndexFile, "sss");
 }
 
@@ -310,7 +310,7 @@ void Index::CopyRemoteFile(QString From, QString To)
 	this->DownSize = 0;
 	this->TotalDownSize = 0;
 	this->httpGetId = this->http->get(path, this->file);
-	this->SetMessage(tr("Скачиваем индексный файл с сервера \"%1\" ...").arg(url.host()));
+	//this->SetMessage(tr("Скачиваем индексный файл с сервера \"%1\" ...").arg(url.host()));
 }
 
 QString Index::getIndexFilePath()
@@ -375,10 +375,6 @@ void Index::httpRequestFinished(int reqId, bool error)
 	if (error)
 	{
 		this->SetMessage(tr("Ошибка: %1").arg(this->http->errorString()));
-	}
-	else
-	{
-		this->SetMessage(tr("OK!"));
 	}
 	this->file->close();
 	delete this->file;

@@ -23,8 +23,6 @@ public:
 		int ID;
 		QStringList List;
 		int State;
-
-		QStringList pathesToDelete;
 	};
 	QVector<FilesTypes> FilesList;
 
