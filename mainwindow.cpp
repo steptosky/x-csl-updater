@@ -63,11 +63,12 @@ MainWindow::MainWindow(QWidget *parent)
     // ширина колонок таблицы
     this->ui->tableWidget->setColumnWidth(0, 30);//ID
     this->ui->tableWidget->setColumnWidth(1, 150);//Title
-    this->ui->tableWidget->setColumnWidth(2, 200);//Info
+    this->ui->tableWidget->setColumnWidth(2, 230);//Info
     this->ui->tableWidget->setColumnWidth(3, 130);//Ver
     this->ui->tableWidget->setColumnWidth(4, 80);//sizeMB
     this->ui->tableWidget->setColumnWidth(5, 120);//status
     this->ui->tableWidget->setColumnWidth(6, 20);//code
+	this->ui->tableWidget->setColumnHidden(6, true);
 
     // всяко разно пишем в окне и другое
     this->ui->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
@@ -109,9 +110,9 @@ MainWindow::~MainWindow()
 {
     QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
     settings.setValue("pos", pos());
-    this->Indx->~Index();
-    this->Updt->~Update();
-    this->Inf->~info();
+    delete Indx;
+    delete Updt;
+    delete Inf;
     delete ui;
 }
 
