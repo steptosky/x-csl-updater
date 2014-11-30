@@ -13,6 +13,8 @@ class Index /*: public QThread*/: public BaseSteps
 {
     Q_OBJECT
 public:
+	QVector<FilesTypes> mFileListForDel;
+
     Index(QWidget *_MW, Ui::MainWindow *_MWUI, info *_Inf);
     ~Index();
     void StartIndex();
@@ -29,6 +31,7 @@ private:
     void EndIndex(int Next = true);
     void CopyRemoteFile(QString From, QString To);
     QString getIndexFilePath();
+	QString getIndexForDelFilePath();
 
     info *Inf;
     QHttp *http;

@@ -72,12 +72,38 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 	int size = _FilesList.size();
 	int RowCount = this->MWUI->tableWidget->rowCount();
 
-	for (int it = 0; it < size; it++)
-	{
-		if (_FilesList[it].ID == -999 && _FilesList[it].pathesToDelete.size() >= 2){// removing root node
-			removePath(_FilesList[it].pathesToDelete[1]);
+	int sizeForDel = Indx->mFileListForDel.size();
+	for (int i = 0; i < sizeForDel; i++){
+
+		if (Indx->mFileListForDel[i].ID == 11){
+			mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
 			continue;
 		}
+
+		for (int i = 0; i < RowCount; i++)
+		{
+			if (this->MWUI->tableWidget->item(i, 0)->isSelected())
+			{
+				if (_FilesList[it].State == -999 && _FilesList[it].pathesToDelete.size() >= 2){
+					mSelectedListForDelete.push_back(_FilesList[it]);
+					continue;
+				}
+				if (this->MWUI->tableWidget->item(i, 6)->text() == "1")
+				{					
+					if (_FilesList[it].ID == this->MWUI->tableWidget->item(i, 0)->text().toInt())
+					{
+						if (_FilesList[it].State != 0)
+						{
+							this->FilesList.push_back(_FilesList[it]);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (int it = 0; it < size; it++)
+	{
 		for (int i = 0; i < RowCount; i++)
 		{
 			if (this->MWUI->tableWidget->item(i, 0)->isSelected())

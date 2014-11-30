@@ -22,3 +22,4 @@ ipch/
 version.h
 *.pdb
 *.suo
+*.vcxproj.user

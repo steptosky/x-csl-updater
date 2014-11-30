@@ -30,9 +30,10 @@ void Index::StartIndex()
 	this->sizeOfServer = 0;
 	this->FilesList.clear();
 	this->InitProgBar(0, 1, 0, 1);
-	QString IndexFile;
-	IndexFile = settings.value("curServer").toString() + settings.value("IndexFile").toString();
+	QString IndexFile = settings.value("curServer").toString() + settings.value("IndexFile").toString();
+	QString IndexForDelFile = settings.value("curServer").toString() + settings.value("IndexForDelFile").toString();
 	this->CopyRemoteFile(IndexFile, getIndexFilePath());
+	this->CopyRemoteFile(IndexForDelFile, getIndexForDelFilePath());
 	//this->CopyRemoteFile(IndexFile, "sss");
 }
 
@@ -76,6 +77,29 @@ void Index::EndIndex(int Next)
 
 void Index::ParserIndexFile()
 {
+	QString FileForDelPath = getIndexForDelFilePath();
+	QFile fileForDel(FileForDelPath);
+	if (!fileForDel.open(QIODevice::ReadOnly))
+	{
+		this->SetMessage(tr("Îøèáêà: %1").arg(fileForDel.errorString()));
+		this->EndIndex(false);
+		return;
+	}
+	while(!fileForDel.atEnd()){
+		
+		QString line = fileForDel.readLine();
+		QString type = line.left(1);
+		if (type == "#" || type == "0" || type == false) continue;
+		QStringList list = line.split("%", QString::SkipEmptyParts);
+		if (list.size() >= 2){
+			FilesTypes fileInfo;
+			fileInfo.ID = list[0].toInt();
+			fileInfo.pathesToDelete = list;
+			fileInfo.State = -999;
+			this->mFileListForDel.push_back(fileInfo);
+		}
+	}
+
 	QString FilePath = getIndexFilePath();
 	QFile file(FilePath);
 	if (!file.open(QIODevice::ReadOnly))
@@ -114,17 +138,7 @@ void Index::ParserIndexFile()
 		}
 		if (type == "#" || type == "0" || type == false) continue;
 		QStringList list = line.split("%", QString::SkipEmptyParts);
-		if (list[0] == "110")// request removing root node
-		{
-			if (list.size() >= 2){
-				FilesTypes fileInfo;
-				fileInfo.ID = -999;
-				fileInfo.pathesToDelete = list;
-				fileInfo.State = -999;
-				this->FilesList.push_back(fileInfo);
-			}
-		}
-		else if (list.size() >= 6 && list[0] == "11")
+		if (list.size() >= 6 && list[0] == "11")
 		{
 			this->MWUI->tableWidget->setRowCount(count + 1);
 			char str[MAX_PATH];
@@ -196,16 +210,7 @@ int Index::CheckCslPack(int pos, int ID)
 		if (type == "#" || type == "0" || type == false) continue;
 		QStringList list = line.split("%", QString::SkipEmptyParts);
 		if (list[0] == "11") break;
-		if (list[0] == "110") break;
-		if (list[0] == "100" || list[0] == "150"){
-			FilesTypes filesInfo;
-			filesInfo.ID = ID;
-			filesInfo.pathesToDelete = list;
-			filesInfo.State = -999;
-			this->FilesList.push_back(filesInfo);
-			//status = 1;
-		}
-		else if (list[0] == "10")
+		if (list[0] == "10")
 		{
 			int st = this->CheckFile(list, ID);
 			if (st != 0) status = 1;
@@ -322,6 +327,28 @@ QString Index::getIndexFilePath()
 	if (!pathDir.exists()) pathDir.mkpath(path);
 
 	return path += "x-csl-indexes.idx";
+
+#endif
+}
+
+QString Index::getIndexForDelFilePath()
+{
+#ifdef Q_OS_WIN32
+	return "x-csl-indexes-for-delete.idx";
+#else
+	QString path(
+		QDir::homePath()
+		+this->separator+
+		".config"
+		+this->separator+
+		"X-CSL-Updater"
+		+this->separator
+		);
+
+	QDir pathDir(path);
+	if (!pathDir.exists()) pathDir.mkpath(path);
+
+	return path += "x-csl-indexes-for-delete.idx";
 
 #endif
 }
