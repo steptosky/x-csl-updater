@@ -26,3 +26,4 @@ version.h
 TEST-DOWNLOADED/
 TEST-DOWNLO/
 mtl.dat
+*.pri
