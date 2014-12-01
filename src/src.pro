@@ -38,5 +38,5 @@ unix:!macx {
 }
 
 macx {
-
+    CONFIG += x86_64
 }
