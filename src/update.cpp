@@ -70,26 +70,26 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 	int sizeForDel = Indx->mFileListForDel.size();
 	// determine files to delete
 	// I think we must delete files in any case during update. so it code was commented...
-// 	for (int i = 0; i < sizeForDel; i++){
-// 
-// 		if (Indx->mFileListForDel[i].ID == 11){
-// 			mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
-// 			continue;
-// 		}
-// 
-// 		// I think we must delete files in any case during update. so it code was commented...
-// 		for (int ii = 0; ii < RowCount; ii++)
-// 		{
-// 			if (this->MWUI->tableWidget->item(ii, 0)->isSelected())
-// 			{
-// 				QStringList list = Indx->mFileListForDel[i].List[1].split("/", QString::SkipEmptyParts);
-// 				if (this->MWUI->tableWidget->item(ii, 1)->text() == list[0] && Indx->mFileListForDel[i].ID != 11){
-// 					mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
-// 					break;
-// 				}
-// 			}
-// 		}
-// 	}
+	for (int i = 0; i < sizeForDel; i++){
+
+		if (Indx->mFileListForDel[i].ID == 11){
+			mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
+			continue;
+		}
+
+		// I think we must delete files in any case during update. so it code was commented...
+		for (int ii = 0; ii < RowCount; ii++)
+		{
+			if (this->MWUI->tableWidget->item(ii, 0)->isSelected())
+			{
+				QStringList list = Indx->mFileListForDel[i].List[1].split("/", QString::SkipEmptyParts);
+				if (this->MWUI->tableWidget->item(ii, 1)->text() == list[0] && Indx->mFileListForDel[i].ID != 11){
+					mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
+					break;
+				}
+			}
+		}
+	}
 	// determine files to update
 	for (int it = 0; it < size; it++)
 	{
@@ -135,25 +135,29 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 
 void Update::EndUpdate()
 {
-	// remove files was planed to delete
-	int size = Indx->mFileListForDel.size();
+	// remove files was planed to delete	
 	int count = 0;
+
+//	int size = Indx->mFileListForDel.size();
+// 	for (int i = 0; i < size; i++)
+// 	{
+// 		if (removePath(Indx->mFileListForDel[i].List[1])){
+// 			count++;
+// 			//this->SetMessage(tr("Removed file or directory: %1").arg(Indx->mFileListForDel[i].List[1]));
+// 		}
+// 	}	
+
+	int size = mSelectedListForDelete.size();
 	for (int i = 0; i < size; i++)
 	{
-		if (removePath(Indx->mFileListForDel[i].List[1])){
+		if (removePath(mSelectedListForDelete[i].List[1])){
 			count++;
 			//this->SetMessage(tr("Removed file or directory: %1").arg(Indx->mFileListForDel[i].List[1]));
 		}
 	}
 	if (count > 0){
 		this->SetMessage(tr("Cleanup procedure done. Removed %1 files.").arg(count));
-	}	
-
-// 	int size = mSelectedListForDelete.size();
-// 	for (int i = 0; i < size; i++)
-// 	{
-// 		removePath(mSelectedListForDelete[i].List[1]);	
-// 	}
+	}
 
 	this->MWUI->CancelButton->setEnabled(false);
 	this->SetMessage(tr("Обновление завершено!"));
