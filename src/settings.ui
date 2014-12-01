@@ -40,7 +40,7 @@
         <string/>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
@@ -281,7 +281,7 @@ p, li { white-space: pre-wrap; }
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="CheckGroup"/>
   <buttongroup name="LangGroup"/>
+  <buttongroup name="CheckGroup"/>
  </buttongroups>
 </ui>
