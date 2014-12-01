@@ -122,7 +122,9 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 	{
 		this->countMain = 0;
 		// first task - mtl.dat, so make correct path
-		QString corrFolderName = this->FolderName.left(this->FolderName.length() - 4);
+		QDir dir(this->FolderName);
+		dir.cdUp();
+		QString corrFolderName = dir.path();
 		this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], corrFolderName + separator + this->FilesList[this->countMain].List[1]);
 	}
 	else
