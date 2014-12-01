@@ -27,3 +27,4 @@ TEST-DOWNLOADED/
 TEST-DOWNLO/
 mtl.dat
 *.pri
+*.pro.user
