@@ -35,8 +35,7 @@ void Index::StartIndex()
 	IndexFile = settings.value("curServer").toString() + settings.value("IndexFile").toString();
 	IndexForDelFile = settings.value("curServer").toString() + settings.value("IndexForDelFile").toString();
 	this->SetMessage(tr("Downloading the indexes files from server \"%1\" ...").arg(QUrl(IndexFile).host()));
-	this->CopyRemoteFile(IndexFile, getIndexFilePath());	
-	//this->CopyRemoteFile(IndexFile, "sss");
+	this->CopyRemoteFile(IndexFile, getIndexFilePath());
 }
 
 void Index::EndIndex(int Next)
@@ -241,7 +240,7 @@ int Index::CheckFile(QStringList List, int ID)
 		return _CLIENT_FILE_STATUS_LOST;
 	}
 	// размер файла совпадает?
-	long int size;
+	int size;
 	size = List[2].toInt();
 	if (size != (int)fileInfo.size())
 	{
@@ -252,12 +251,15 @@ int Index::CheckFile(QStringList List, int ID)
 	// check hash if it is available
 	if (List[3] != "Reserve"){
 		static QCryptographicHash hash(QCryptographicHash::Md5);
-		hash.reset();
 		static QFile file;
+		hash.reset();		
+		file.close();
 		file.setFileName(FilePath);
 		if (file.open(QIODevice::ReadOnly)){
-			hash.addData(file.readAll(), QCryptographicHash::Md5);
-			if (List[3] != QString(hash.result())){
+			hash.addData(file.readAll());
+// 			qDebug() << List[1] << " - " << FilePath;
+// 			qDebug() << List[3] << " - " << QString(hash.result().toHex());
+			if (List[3] != QString(hash.result().toHex())){
 				FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
 				this->FilesList.push_back(FilesInfo);
 				return _CLIENT_FILE_STATUS_CHANGE;
@@ -269,6 +271,7 @@ int Index::CheckFile(QStringList List, int ID)
 			this->FilesList.push_back(FilesInfo);
 			return _CLIENT_FILE_STATUS_LOST;
 		}
+		QApplication::processEvents();
 	}
 
 	// Дата и время файла совпадает?
