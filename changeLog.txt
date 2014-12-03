@@ -1,0 +1,20 @@
+01.12.2014
+X-CSL-Updater 1.1.0
+- changed version format;
+- web part updated;
+- added new compare file algorithm based on md5 hashes;
+- added cleanup functional (now, the updater able remove unused files and folders);
+- added mtl.dat file into update list;
+- fixes for platform specified issues of install path logic;
+- changed place of the x-csl-indexes.idx file for cleanup a x-ivap log from some error messages;
+- some gui improvements;
+- fixes some errors in calculation sizes logic;
+
+
+03.09.2010
+X-CSL-Updater 1.0.0.1 only for Linux
+Small corrections for linux platforms;
+
+10.11.2009
+X-CSL-Updater 0.1.1.4.beta
+The first version of program;
