@@ -23,7 +23,7 @@ private slots:
     void CancelSlot();
 
 private:
-	bool Update::removeDir(const QString &dirName);
+    bool removeDir(const QString &dirName);
 	bool removePath(QString path);
     void CopyRemoteFile(QString From, QString To);
     void EndUpdate();

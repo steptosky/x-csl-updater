@@ -38,5 +38,6 @@ unix:!macx {
 }
 
 macx {
-
+    CONFIG += x86_64
+    ICON = xcsl.icns
 }
