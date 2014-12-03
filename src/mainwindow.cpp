@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->setupUi(this);
 
 	// установка нужного кодека
-	QTextCodec *codec = QTextCodec::codecForName("CP1251");
+    QTextCodec *codec = QTextCodec::codecForName("CP1251");
 	QTextCodec::setCodecForTr(codec);
 
 	// сепаратор
@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
 		tr("plugins") + this->separator +
 		tr("X-IvAp Resources") + this->separator +
 		tr("CSL");
-#elif Q_OS_LINUX
+#elif defined Q_OS_LINUX
 	QString default_path =
 		QDir::homePath()+this->separator+
 		tr("X-Plane")+this->separator+
@@ -204,7 +204,7 @@ void MainWindow::SetFolder()
 		tr("”кажите путь к исполн€емому файлу X-Plane"),
 		_FName,
 		"X-Plane*.exe (X-Plane*.exe)");
-#elif Q_OS_LINUX
+#elif defined Q_OS_LINUX
 	FName = QFileDialog::getOpenFileName(this,
 		tr("”кажите путь к исполн€емому файлу X-Plane"),
 		_FName,
