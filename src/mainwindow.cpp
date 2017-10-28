@@ -2,10 +2,10 @@
 #include <QAction>
 
 MainWindow::MainWindow(QWidget *parent)
-	: QMainWindow(parent), ui(new Ui::MainWindow)
+	: QMainWindow(parent), mUi(new Ui::MainWindow)
 {
 	// setup UI
-	ui->setupUi(this);
+	mUi->setupUi(this);
 
 	// установка нужного кодека
     QTextCodec *codec = QTextCodec::codecForName("CP1251");
@@ -61,49 +61,49 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(this->TableInfoAct, SIGNAL(activated()), this, SLOT(TableInfo()));
 
 	// ширина колонок таблицы
-	this->ui->tableWidget->setColumnWidth(0, 30);//ID
-	this->ui->tableWidget->setColumnWidth(1, 150);//Title
-	this->ui->tableWidget->setColumnWidth(2, 230);//Info
-	this->ui->tableWidget->setColumnWidth(3, 130);//Ver
-	this->ui->tableWidget->setColumnWidth(4, 80);//sizeMB
-	this->ui->tableWidget->setColumnWidth(5, 120);//status
-	this->ui->tableWidget->setColumnWidth(6, 20);//code
-	this->ui->tableWidget->setColumnHidden(6, true);
+	this->mUi->tableWidget->setColumnWidth(0, 30);//ID
+	this->mUi->tableWidget->setColumnWidth(1, 150);//Title
+	this->mUi->tableWidget->setColumnWidth(2, 230);//Info
+	this->mUi->tableWidget->setColumnWidth(3, 130);//Ver
+	this->mUi->tableWidget->setColumnWidth(4, 80);//sizeMB
+	this->mUi->tableWidget->setColumnWidth(5, 120);//status
+	this->mUi->tableWidget->setColumnWidth(6, 20);//code
+	this->mUi->tableWidget->setColumnHidden(6, true);
 
 	// всяко разно пишем в окне и другое
-	this->ui->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
-	this->ui->progressBar->setValue(0);
-	this->ui->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + VerProg);
+	this->mUi->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
+	this->mUi->progressBar->setValue(0);
+	this->mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + VerProg);
 
 	// Начало
 	/*QLocale Loc;
 	QString local(Loc.name());
 	this->ui->listWidget->addItem(local);*/
-	this->ui->listWidget->addItem(tr("Укажите путь к файлу X-Plane.exe и нажмите \"Индексировать\""));
-	this->ui->listWidget->addItem(tr("для индексирования и определения файлов, нуждающихся в обновлении."));
-	this->ui->listWidget->scrollToBottom();
+	this->mUi->listWidget->addItem(tr("Укажите путь к файлу X-Plane.exe и нажмите \"Индексировать\""));
+	this->mUi->listWidget->addItem(tr("для индексирования и определения файлов, нуждающихся в обновлении."));
+	this->mUi->listWidget->scrollToBottom();
 
 	// инициализация переменных
 
 	// инициализация обьектов
 	this->AboutWin = new About(this);
 	this->SettingsWin = new Settings(this);
-	this->Inf = new info(this, this->ui);
-	this->Indx = new Index(this, this->ui, this->Inf);
-	this->Updt = new Update(this, this->ui);
+	this->Inf = new Info(this, this->mUi);
+	this->Indx = new Index(this, this->mUi, this->Inf);
+	this->Updt = new Update(this, this->mUi);
 
 	// коннекты
-	connect(this->ui->actionAbout, SIGNAL(activated()), this, SLOT(AboutSlot()));
-	connect(this->ui->actionAbout_Qt, SIGNAL(activated()), qApp, SLOT(aboutQt()));
-	connect(this->ui->actionSetFolder, SIGNAL(activated()), this, SLOT(SetFolder()));
-	connect(this->ui->actionSettings, SIGNAL(activated()), this, SLOT(SettingSlot()));
-	connect(this->ui->listWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(ListContextMenu(const QPoint &)));
-	connect(this->ui->tableWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(TableContextMenu(const QPoint &)));
-	connect(this->ui->SelAllButton, SIGNAL(pressed()), this, SLOT(TableSelAll()));
-	connect(this->ui->NextButton, SIGNAL(pressed()), this, SLOT(UpdateSlot()));
-	connect(this->ui->PrevButton, SIGNAL(pressed()), this, SLOT(IndexSlot()));
-	connect(this->ui->ButtonSetFolder, SIGNAL(clicked()), this, SLOT(SetFolder()));
-	connect(this->ui->actionSet_Custom_Path, SIGNAL(activated()), this, SLOT(SetCustomFolder()));
+	connect(this->mUi->actionAbout, SIGNAL(activated()), this, SLOT(AboutSlot()));
+	connect(this->mUi->actionAbout_Qt, SIGNAL(activated()), qApp, SLOT(aboutQt()));
+	connect(this->mUi->actionSetFolder, SIGNAL(activated()), this, SLOT(SetFolder()));
+	connect(this->mUi->actionSettings, SIGNAL(activated()), this, SLOT(SettingSlot()));
+	connect(this->mUi->listWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(ListContextMenu(const QPoint &)));
+	connect(this->mUi->tableWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(TableContextMenu(const QPoint &)));
+	connect(this->mUi->SelAllButton, SIGNAL(pressed()), this, SLOT(TableSelAll()));
+	connect(this->mUi->NextButton, SIGNAL(pressed()), this, SLOT(UpdateSlot()));
+	connect(this->mUi->PrevButton, SIGNAL(pressed()), this, SLOT(IndexSlot()));
+	connect(this->mUi->ButtonSetFolder, SIGNAL(clicked()), this, SLOT(SetFolder()));
+	connect(this->mUi->actionSet_Custom_Path, SIGNAL(activated()), this, SLOT(SetCustomFolder()));
 }
 
 MainWindow::~MainWindow()
@@ -113,23 +113,23 @@ MainWindow::~MainWindow()
 	delete Indx;
 	delete Updt;
 	delete Inf;
-	delete ui;
+	delete mUi;
 }
 
 void MainWindow::ListClear()
 {
-	this->ui->listWidget->clear();
+	this->mUi->listWidget->clear();
 }
 
 void MainWindow::ListSelAll()
 {
-	this->ui->listWidget->selectAll();
+	this->mUi->listWidget->selectAll();
 }
 
 void MainWindow::TableSelAll()
 {
-	this->ui->tableWidget->selectAll();
-	this->ui->tableWidget->setFocus();
+	this->mUi->tableWidget->selectAll();
+	this->mUi->tableWidget->setFocus();
 }
 
 void MainWindow::AboutSlot()
@@ -148,13 +148,13 @@ void MainWindow::ListContextMenu(const QPoint & pos)
 	QMenu menu(this);
 	menu.addAction(this->ListClearAct);
 	menu.addAction(this->ListSelAllAct);
-	menu.exec(this->ui->listWidget->mapToGlobal(pos));
+	menu.exec(this->mUi->listWidget->mapToGlobal(pos));
 }
 
 void MainWindow::TableContextMenu(const QPoint & pos)
 {
 	QMenu menu(this);
-	if (this->ui->tableWidget->rowCount() < 1)
+	if (this->mUi->tableWidget->rowCount() < 1)
 	{
 		this->TableInfoAct->setDisabled(true);
 	}
@@ -164,7 +164,7 @@ void MainWindow::TableContextMenu(const QPoint & pos)
 	}
 	menu.addAction(this->TableInfoAct);
 	menu.addAction(this->TableSelAllAct);
-	menu.exec(this->ui->tableWidget->mapToGlobal(pos));
+	menu.exec(this->mUi->tableWidget->mapToGlobal(pos));
 }
 
 void MainWindow::contextMenuEvent(QContextMenuEvent * event)
@@ -227,12 +227,12 @@ void MainWindow::SetFolder()
 			this->FolderName = FName;
 			QSettings settings(ORGANISATION, PROGRAM_NAME);
 			settings.setValue("FolderName", this->FolderName);
-			this->ui->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
+			this->mUi->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
 		}
 		else
 		{
-			this->ui->listWidget->addItem(tr("Ошибка: В выбранной версии X-Plane не установлен плагин X-IvAp!"));
-			this->ui->listWidget->scrollToBottom();
+			this->mUi->listWidget->addItem(tr("Ошибка: В выбранной версии X-Plane не установлен плагин X-IvAp!"));
+			this->mUi->listWidget->scrollToBottom();
 		}
 	}
 	return;
@@ -248,7 +248,7 @@ void MainWindow::SetCustomFolder()
 	{
 		QSettings settings(ORGANISATION, PROGRAM_NAME);
 		settings.setValue("FolderName", this->FolderName);
-		this->ui->curPathLabel->setText(this->FolderName);
+		this->mUi->curPathLabel->setText(this->FolderName);
 		//this->ui->cur_ver_client->setText(this->ChVer->GetCurVerClient(this->FolderName));
 	}
 	return;
@@ -256,14 +256,14 @@ void MainWindow::SetCustomFolder()
 
 void MainWindow::UpdateSlot()
 {
-	this->ui->PrevButton->setDisabled(true);
-	this->ui->NextButton->setDisabled(true);
-	this->Updt->StartUpdate(this->Indx->FilesList, this->Indx);	
+	this->mUi->PrevButton->setDisabled(true);
+	this->mUi->NextButton->setDisabled(true);
+	this->Updt->StartUpdate(this->Indx->mFileList, this->Indx);	
 }
 
 void MainWindow::IndexSlot()
 {
-	this->ui->PrevButton->setDisabled(true);
-	this->ui->NextButton->setDisabled(true);
+	this->mUi->PrevButton->setDisabled(true);
+	this->mUi->NextButton->setDisabled(true);
 	this->Indx->StartIndex();	
 }

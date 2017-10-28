@@ -4,9 +4,9 @@ BaseSteps::BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI): QWidget(0)
 {
     this->MW = _MW;
     this->MWUI = _MWUI;
-    this->separator = "/"/*(QString)QDir::separator()*/;
+    this->mSeparator = "/"/*(QString)QDir::separator()*/;
     QSettings settings(ORGANISATION, PROGRAM_NAME);
-    this->FolderName = settings.value("FolderName").toString();
+    this->mCslFolderName = settings.value("FolderName").toString();
 }
 
 BaseSteps::~BaseSteps()

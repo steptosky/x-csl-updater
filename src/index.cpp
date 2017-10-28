@@ -1,220 +1,220 @@
 #include "index.h"
 #include <QDebug>
 
-Index::Index(QWidget *_MW, Ui::MainWindow *_MWUI, info *_Inf) : BaseSteps(_MW, _MWUI)
-{
-	this->Inf = _Inf;
-	this->http = new QHttp();
-
-	connect(this->http, SIGNAL(requestFinished(int, bool)), this, SLOT(httpRequestFinished(int, bool)));
-	connect(this->http, SIGNAL(dataReadProgress(int, int)), this, SLOT(updateDataReadProgress(int, int)));
-	connect(this->http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)), this, SLOT(readResponseHeader(const QHttpResponseHeader &)));
+Index::Index(QWidget *_MW, Ui::MainWindow *_MWUI, Info *_Inf) : BaseSteps(_MW, _MWUI) {
+	mPackInfo = _Inf;
+	mNetMng = new QNetworkAccessManager(this);
+	connect(mNetMng, &QNetworkAccessManager::finished, this, &Index::httpRequestFinished);
 }
 
-Index::~Index()
-{
-	this->httpRequestAborted = true;
-	this->http->abort();
-	this->http->close();
+Index::~Index() {
+	delete mNetMng;
+	mIndexFile->close();
+	mDelIndexFile->close();
+	delete mIndexFile;
+	delete mDelIndexFile;
 }
 
-void Index::StartIndex()
-{
-	this->Inf->requestStopAction();
-	this->httpRequestAborted = true;
-	this->http->abort();
+void Index::StartIndex() {
+	mPackInfo->requestStopAction();
 	QSettings settings(ORGANISATION, PROGRAM_NAME);
-	this->FolderName = settings.value("FolderName").toString();
-	this->SetMessage(tr("Индексирование:"));
-	this->sizeOfClient = 0;
-	this->sizeOfNeedUpdate = 0;
-	this->sizeOfServer = 0;
-	this->FilesList.clear();
-	this->mFileListForDel.clear();
-	this->InitProgBar(0, 1, 0, 1);
-	IndexFile = settings.value("curServer").toString() + settings.value("IndexFile").toString();
-	IndexForDelFile = settings.value("curServer").toString() + settings.value("IndexForDelFile").toString();
-	this->SetMessage(tr("Downloading the indexes files from server \"%1\" ...").arg(QUrl(IndexFile).host()));
-	this->CopyRemoteFile(IndexFile, getIndexFilePath());
+	mCslFolderName = settings.value("FolderName").toString();
+	SetMessage(tr("Индексирование:"));
+	mSizeOfClient = 0;
+	mSizeOfNeedUpdate = 0;
+	mSizeOfServer = 0;
+	mFileList.clear();
+	mFileListForDel.clear();
+	InitProgBar(0, 1, 0, 1);
+	mIndexFileUrl = settings.value("curServer").toString() + settings.value("IndexFile").toString();
+	mDelIndexFileUrl = settings.value("curServer").toString() + settings.value("IndexForDelFile").toString();
+	SetMessage(tr("Downloading the indexes files from server \"%1\" ...").arg(QUrl(mIndexFileUrl).host()));
+
+	mIndexBytesDownloaded = 0;
+	mTotalIndexBytes = 0;
+	mDelIndexBytesDownloaded = 0;
+	mTotalDelIndexBytes = 0;
+
+	if (!createIndexFile(getIndexFilePath(), &mIndexFile)) {
+		return;
+	}
+	if (!createIndexFile(getIndexForDelFilePath(), &mDelIndexFile)) {
+		return;
+	}
+
+	mFilesToDownload = 2;
+	QNetworkRequest request;
+	request.setUrl(mIndexFileUrl);
+	request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mIndexFile));
+	QNetworkReply *reply = mNetMng->get(request);
+	connect(this, &Index::cancelAll, reply, &QNetworkReply::abort);
+	connect(this, &Index::indexDonwloadProgress, reply, &QNetworkReply::downloadProgress);
+
+	request.setUrl(mDelIndexFileUrl);
+	request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mDelIndexFile));
+	reply = mNetMng->get(request);
+	connect(this, &Index::cancelAll, reply, &QNetworkReply::abort);
+	connect(this, &Index::delIndexDonwloadProgress, reply, &QNetworkReply::downloadProgress);
 }
 
-void Index::EndIndex(int Next)
-{
-	if (Next)
-	{
-		this->sizeOfNeedUpdate = this->sizeOfServer - this->sizeOfClient;
+void Index::EndIndex(int Next) {
+	if (Next) {
+		mSizeOfNeedUpdate = mSizeOfServer - mSizeOfClient;
 		//TODO: разобраццо с лишними символами в мегабайтах
 		float fsizeOfNeedUpdate, fsizeOfServer;
-		fsizeOfNeedUpdate = (float)this->sizeOfNeedUpdate / 1048576;
-		fsizeOfServer = (float)this->sizeOfServer / 1048576;
+		fsizeOfNeedUpdate = (float)mSizeOfNeedUpdate / 1048576;
+		fsizeOfServer = (float)mSizeOfServer / 1048576;
 		char cstrSizeNeed[13];
 		sprintf(cstrSizeNeed, "%10.2f", fsizeOfNeedUpdate);
 		char cstrSizeAll[13];
 		sprintf(cstrSizeAll, "%10.2f", fsizeOfServer);
 		QString strSizeNeed(cstrSizeNeed), strSizeAll(cstrSizeAll);
-		this->SetMessage(tr("Индексация завершена!"));
+		SetMessage(tr("Индексация завершена!"));
 		//1048576
-		if (this->sizeOfNeedUpdate != 0)
-		{
-			this->SetMessage(tr("Для полного обновления вам необходимо загрузить %1 MB из %2 MB").arg(strSizeNeed, strSizeAll));
-			this->SetMessage(tr("Выделите необходимые пакеты X-CSL моделей в списке и нажмите \"Обновить\"."));
+		if (mSizeOfNeedUpdate != 0) {
+			SetMessage(tr("Для полного обновления вам необходимо загрузить %1 MB из %2 MB").arg(strSizeNeed, strSizeAll));
+			SetMessage(tr("Выделите необходимые пакеты X-CSL моделей в списке и нажмите \"Обновить\"."));
 		}
-		else
-		{
-			this->SetMessage(tr("Поздравляем!, У вас имеется полная последняя версия пакетов X-CSL моделей."));
+		else {
+			SetMessage(tr("Поздравляем!, У вас имеется полная последняя версия пакетов X-CSL моделей."));
 		}
-		this->Inf->GetInfoToTable();
-		this->MWUI->NextButton->setEnabled(true);
-		this->MWUI->PrevButton->setEnabled(true);
+		mPackInfo->GetInfoToTable();
+		MWUI->NextButton->setEnabled(true);
+		MWUI->PrevButton->setEnabled(true);
 	}
-	else
-	{
-		this->SetMessage(tr("Невозможно выполнить индексацию!"));
-		this->MWUI->PrevButton->setEnabled(true);
+	else {
+		SetMessage(tr("Невозможно выполнить индексацию!"));
+		MWUI->PrevButton->setEnabled(true);
 	}
-	this->httpRequestAborted = true;
-	this->http->abort();
+	emit cancelAll();
 }
 
-void Index::ParserIndexFile()
-{
+void Index::ParseIndexFiles() {
 	QString FileForDelPath = getIndexForDelFilePath();
 	QFile fileForDel(FileForDelPath);
-	if (!fileForDel.open(QIODevice::ReadOnly))
-	{
-		this->SetMessage(tr("Ошибка: %1").arg(fileForDel.errorString()));
-		this->EndIndex(false);
+	if (!fileForDel.open(QIODevice::ReadOnly)) {
+		SetMessage(tr("Ошибка: %1").arg(fileForDel.errorString()));
+		EndIndex(false);
 		return;
 	}
-	while(!fileForDel.atEnd()){
-		
+	while (!fileForDel.atEnd()) {
+
 		QString line = fileForDel.readLine();
 		QString type = line.left(1);
 		if (type == "#" || type == "0" || type == false) continue;
 		QStringList list = line.split("%", QString::SkipEmptyParts);
-		if (list.size() >= 2){
+		if (list.size() >= 2) {
 			FilesTypes fileInfo;
 			fileInfo.ID = list[0].toInt();
 			fileInfo.List = list;
 			fileInfo.State = -999;
-			this->mFileListForDel.push_back(fileInfo);
+			mFileListForDel.push_back(fileInfo);
 		}
 	}
 	fileForDel.close();
 
 	QString FilePath = getIndexFilePath();
 	QFile file(FilePath);
-	if (!file.open(QIODevice::ReadOnly))
-	{
-		this->SetMessage(tr("Ошибка: %1").arg(file.errorString()));
-		this->EndIndex(false);
+	if (!file.open(QIODevice::ReadOnly)) {
+		SetMessage(tr("Ошибка: %1").arg(file.errorString()));
+		EndIndex(false);
 		return;
 	}
-	if (file.size() < 1)
-	{
-		this->SetMessage(tr("Ошибка: Индексный файл имеет нулевой размер! %1").arg(file.size()));
-		this->EndIndex(false);
+	if (file.size() < 1) {
+		SetMessage(tr("Ошибка: Индексный файл имеет нулевой размер! %1").arg(file.size()));
+		EndIndex(false);
 		return;
 	}
-	//this->SetMessage(tr("Индексируем CSL модели..."));
+	//SetMessage(tr("Индексируем CSL модели..."));
 	// QTextStream in(&file);
 	int count = 0;
 	int ver_file_stat = true;
-	this->MWUI->tableWidget->clearContents();
-	this->MWUI->tableWidget->setRowCount(0);
-	while (!file.atEnd())
-	{
+	MWUI->tableWidget->clearContents();
+	MWUI->tableWidget->setRowCount(0);
+	while (!file.atEnd()) {
 		QString line = file.readLine();
 		//qDebug() << line;
 		QString type = line.left(1);
-		if (ver_file_stat)
-		{
-			if (type != "0")
-			{
-				this->SetMessage(tr("Ошибка: Индексный файл имеет не верный формат!"));
+		if (ver_file_stat) {
+			if (type != "0") {
+				SetMessage(tr("Ошибка: Индексный файл имеет не верный формат!"));
 				file.close();
-				this->EndIndex(false);
+				EndIndex(false);
 				return;
 			}
 			ver_file_stat = false;
 		}
 		if (type == "#" || type == "0" || type == false) continue;
 		QStringList list = line.split("%", QString::SkipEmptyParts);
-		if (list.size() >= 6 && list[0] == "11")
-		{
-			this->MWUI->tableWidget->setRowCount(count + 1);
-			char str[MAX_PATH];
+		if (list.size() >= 6 && list[0] == "11") {
+			MWUI->tableWidget->setRowCount(count + 1);
+			char str[MY_MAX_PATH];
 			sprintf(str, "%i", count);
-			this->MWUI->tableWidget->setItem(count, 0, new QTableWidgetItem(str));
-			this->MWUI->tableWidget->setItem(count, 1, new QTableWidgetItem(list[1]));
-			this->MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Подождите...")));
+			MWUI->tableWidget->setItem(count, 0, new QTableWidgetItem(str));
+			MWUI->tableWidget->setItem(count, 1, new QTableWidgetItem(list[1]));
+			MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Подождите...")));
 			QString msg = tr("%3 (%4)").arg(list[4], list[5]);
-			this->MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(msg));
-			//this->sizeOfServer += list[2].toInt();
+			MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(msg));
+			//sizeOfServer += list[2].toInt();
 			float sizeMB = list[2].toFloat() / 1048576;
-			char sizeMBstr[MAX_PATH];
+			char sizeMBstr[MY_MAX_PATH];
 			sprintf(sizeMBstr, "%10.2f", sizeMB);
-			this->MWUI->tableWidget->setItem(count, 4, new QTableWidgetItem(sizeMBstr));
-			int status = this->CheckCslPack(file.pos(), count);
-			char StrStatus[MAX_PATH];
+			MWUI->tableWidget->setItem(count, 4, new QTableWidgetItem(sizeMBstr));
+			int status = CheckCslPack(file.pos(), count);
+			char StrStatus[MY_MAX_PATH];
 			sprintf(StrStatus, "%i", status);
 			QTableWidgetItem *Item = new QTableWidgetItem();
-			switch (status)
-			{
-			case 0:
-				Item->setText(tr("Установлено"));
-				Item->setTextColor(Qt::darkGreen);
-				this->MWUI->tableWidget->setItem(count, 5, Item);
-				//this->MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Установлено")));
-				this->MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
-				break;
-			case 1:
-				Item->setText(tr("Требует обновления"));
-				Item->setTextColor(Qt::red);
-				this->MWUI->tableWidget->setItem(count, 5, Item);
-				//this->MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Требует обновления")));
-				this->MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
-				break;
-			case -1:
-				this->MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Не установлено")));
-				this->MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
-				break;
-			default:
-				this->MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Не выяснено")));
-				this->MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
-				break;
+			switch (status) {
+				case 0:
+					Item->setText(tr("Установлено"));
+					Item->setTextColor(Qt::darkGreen);
+					MWUI->tableWidget->setItem(count, 5, Item);
+					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Установлено")));
+					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
+					break;
+				case 1:
+					Item->setText(tr("Требует обновления"));
+					Item->setTextColor(Qt::red);
+					MWUI->tableWidget->setItem(count, 5, Item);
+					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Требует обновления")));
+					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
+					break;
+				case -1:
+					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Не установлено")));
+					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
+					break;
+				default:
+					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Не выяснено")));
+					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
+					break;
 			}
 			count++;
 		}
 	}
 	file.close();
-	//this->MWUI->tableWidget->sortByColumn(1);
-	this->MWUI->tableWidget->sortItems(1);
-	this->EndIndex();
+	//MWUI->tableWidget->sortByColumn(1);
+	MWUI->tableWidget->sortItems(1);
+	EndIndex();
 }
 
-int Index::CheckCslPack(int pos, int ID)
-{
+int Index::CheckCslPack(int pos, int ID) {
 	QString FilePath = getIndexFilePath();
 	QFile file(FilePath);
-	if (!file.open(QIODevice::ReadOnly))
-	{
-		this->SetMessage(tr("Ошибка: %1").arg(file.errorString()));
+	if (!file.open(QIODevice::ReadOnly)) {
+		SetMessage(tr("Ошибка: %1").arg(file.errorString()));
 		return _CLIENT_FILE_STATUS_LOST;
 	}
 	QTextStream in(&file);
 	in.seek(pos);
 	int status = 0;
-	while (!in.atEnd())
-	{
+	while (!in.atEnd()) {
 		QString line = in.readLine();
 		QString type = line.left(1);
 		if (type == "#" || type == "0" || type == false) continue;
 		QStringList list = line.split("%", QString::SkipEmptyParts);
 		if (list[0] == "11") break;
-		if (list[0] == "10")
-		{
-			int st = this->CheckFile(list, ID);
+		if (list[0] == "10") {
+			int st = CheckFile(list, ID);
 			if (st != 0) status = 1;
 		}
 	}
@@ -223,52 +223,49 @@ int Index::CheckCslPack(int pos, int ID)
 	return status;
 }
 
-int Index::CheckFile(QStringList List, int ID)
-{
+int Index::CheckFile(QStringList List, int ID) {
 	FilesTypes FilesInfo;
 	FilesInfo.ID = ID;
 	FilesInfo.List = List;
 	QString separator = (QString)QDir::separator();
-	QString FilePath = this->FolderName + this->separator + List[1];
+	QString FilePath = mCslFolderName + separator + List[1];
 	QFileInfo fileInfo(FilePath);
-	this->sizeOfServer += List[2].toInt();
+	mSizeOfServer += List[2].toInt();
 	// файл существует?
-	if (!fileInfo.isFile())
-	{
+	if (!fileInfo.isFile()) {
 		FilesInfo.State = _CLIENT_FILE_STATUS_LOST;
-		this->FilesList.push_back(FilesInfo);
+		mFileList.push_back(FilesInfo);
 		return _CLIENT_FILE_STATUS_LOST;
 	}
 	// размер файла совпадает?
 	int size;
 	size = List[2].toInt();
-	if (size != (int)fileInfo.size())
-	{
+	if (size != (int)fileInfo.size()) {
 		FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
-		this->FilesList.push_back(FilesInfo);
+		mFileList.push_back(FilesInfo);
 		return _CLIENT_FILE_STATUS_CHANGE;
 	}
 	// check hash if it is available
-	if (List[3] != "Reserve"){
+	if (List[3] != "Reserve") {
 		static QCryptographicHash hash(QCryptographicHash::Md5);
 		static QFile file;
-		hash.reset();		
+		hash.reset();
 		file.close();
 		file.setFileName(FilePath);
-		if (file.open(QIODevice::ReadOnly)){
+		if (file.open(QIODevice::ReadOnly)) {
 			hash.addData(file.readAll());
-// 			qDebug() << List[1] << " - " << FilePath;
-// 			qDebug() << List[3] << " - " << QString(hash.result().toHex());
-			if (List[3] != QString(hash.result().toHex())){
+			// 			qDebug() << List[1] << " - " << FilePath;
+			// 			qDebug() << List[3] << " - " << QString(hash.result().toHex());
+			if (List[3] != QString(hash.result().toHex())) {
 				FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
-				this->FilesList.push_back(FilesInfo);
+				mFileList.push_back(FilesInfo);
 				return _CLIENT_FILE_STATUS_CHANGE;
 			}
 			file.close();
 		}
-		else{
+		else {
 			FilesInfo.State = _CLIENT_FILE_STATUS_LOST;
-			this->FilesList.push_back(FilesInfo);
+			mFileList.push_back(FilesInfo);
 			return _CLIENT_FILE_STATUS_LOST;
 		}
 		QApplication::processEvents();
@@ -280,55 +277,28 @@ int Index::CheckFile(QStringList List, int ID)
 	if (date_end_time != List[4]+" "+List[5])
 	{
 	FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
-	this->FilesList.push_back(FilesInfo);
+	FilesList.push_back(FilesInfo);
 	return _CLIENT_FILE_STATUS_CHANGE
 	}*/
 	// типа все ОК
-	this->sizeOfClient += (int)fileInfo.size();
+	mSizeOfClient += (int)fileInfo.size();
 	FilesInfo.State = _CLIENT_FILE_STATUS_OK;
-	this->FilesList.push_back(FilesInfo);
+	mFileList.push_back(FilesInfo);
 	return _CLIENT_FILE_STATUS_OK;
 }
 
-void Index::CopyRemoteFile(QString From, QString To)
-{
-	QUrl url(From);
-	QString fileName = To;
-
-	if (QFile::exists(fileName)) QFile::remove(fileName);
-
-	this->file = new QFile(fileName);
-
-	if (!file->open(QIODevice::WriteOnly))
-	{
-		this->SetMessage(tr("Ошибка: Не могу записать файл на ваш компьютер - %1 : %2.").arg(fileName).arg(this->file->errorString()));
-		delete this->file;
-		this->file = 0;
-		return;
-	}
-	this->http->setHost(url.host());
-	this->httpRequestAborted = false;
-	QByteArray path = QUrl::toPercentEncoding(url.path(), "!$&'()*+,;=:@/");
-	if (path.isEmpty()) path = "/";
-	this->DownSize = 0;
-	this->TotalDownSize = 0;
-	this->httpGetId = this->http->get(path, this->file);
-	//this->SetMessage(tr("Скачиваем индексный файл с сервера \"%1\" ...").arg(url.host()));
-}
-
-QString Index::getIndexFilePath()
-{
+QString Index::getIndexFilePath() {
 #ifdef Q_OS_WIN32
 	return "x-csl-indexes.idx";
 #else
 	QString path(
 		QDir::homePath()
-		+this->separator+
+		+ mSeparator +
 		".config"
-		+this->separator+
+		+ mSeparator +
 		PROGRAM_NAME
-		+this->separator
-		);
+		+ mSeparator
+	);
 
 	QDir pathDir(path);
 	if (!pathDir.exists()) pathDir.mkpath(path);
@@ -338,19 +308,18 @@ QString Index::getIndexFilePath()
 #endif
 }
 
-QString Index::getIndexForDelFilePath()
-{
+QString Index::getIndexForDelFilePath() {
 #ifdef Q_OS_WIN32
 	return "x-csl-indexes-for-delete.idx";
 #else
 	QString path(
 		QDir::homePath()
-		+this->separator+
+		+ mSeparator +
 		".config"
-		+this->separator+
+		+ mSeparator +
 		PROGRAM_NAME
-		+this->separator
-		);
+		+ mSeparator
+	);
 
 	QDir pathDir(path);
 	if (!pathDir.exists()) pathDir.mkpath(path);
@@ -360,71 +329,56 @@ QString Index::getIndexForDelFilePath()
 #endif
 }
 
-void Index::httpRequestFinished(int reqId, bool error)
-{
-	static int count = 0;
-	if (reqId != this->httpGetId) return;
-	if (this->httpRequestAborted)
-	{
-		if (this->file)
-		{
-			this->file->close();
-			this->file->remove();
-			delete this->file;
-			this->file = 0;
-		}
+void Index::httpRequestFinished(QNetworkReply *inReply) {
+	inReply->deleteLater();
+	QFile *indexFile = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QFile*>();
+
+	if (inReply->error() == QNetworkReply::NoError) {
+		indexFile->write(inReply->readAll());
+		indexFile->close();
+		--mFilesToDownload;
+	}
+	else {
+		// error details
+		QString errorUrl = inReply->request().url().toString();
+		QString httpStatus = inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+
+		SetMessage(tr("Ошибка : %1.").arg(httpStatus + " - " + httpStatusMessage));
+		EndIndex(false);
 		return;
 	}
-	if (error)
-	{
-		this->SetMessage(tr("Ошибка: %1").arg(this->http->errorString()));
-	}
-	this->file->close();
-	delete this->file;
-	this->file = 0;
-
-	if (!error && count == 0){
-		this->CopyRemoteFile(IndexForDelFile, getIndexForDelFilePath());
-		count++;
-	}
-	else if (!error && count == 1)
-	{
-		count = 0;
-		this->ParserIndexFile();
-	}
-	else
-	{
-		this->EndIndex(false);
+	if (mFilesToDownload <= 0) {
+		ParseIndexFiles();
 	}
 }
 
-void Index::readResponseHeader(const QHttpResponseHeader &responseHeader)
-{
-	switch (responseHeader.statusCode())
-	{
-	case 200:                   // Ok
-	case 301:                   // Moved Permanently
-	case 302:                   // Found
-	case 303:                   // See Other
-	case 307:                   // Temporary Redirect
-		// these are not error conditions
-		break;
-
-	default:
-		this->SetMessage(tr("Ошибка : %1.").arg(responseHeader.reasonPhrase()));
-		this->httpRequestAborted = true;
-		this->http->abort();
-		this->EndIndex(false);
-		break;
-	}
+void Index::indexDonwloadProgress(qint64 bytesRead, qint64 totalBytes) {
+	mTotalIndexBytes = totalBytes;
+	mIndexBytesDownloaded = bytesRead;
+	MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
+	MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
 }
 
-void Index::updateDataReadProgress(int bytesRead, int totalBytes)
-{
-	if (this->httpRequestAborted) return;
-	this->MWUI->progressBar->setMaximum(totalBytes);
-	this->MWUI->progressBar->setValue(bytesRead);
-	this->TotalDownSize = totalBytes;
-	this->DownSize = bytesRead;
+void Index::delIndexDonwloadProgress(qint64 bytesRead, qint64 totalBytes) {
+	mTotalDelIndexBytes = totalBytes;
+	mDelIndexBytesDownloaded = bytesRead;
+	MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
+	MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
+}
+
+bool Index::createIndexFile(QString inFileName, QFile **inIndexFile) {
+	if (QFile::exists(inFileName)) {
+		QFile::remove(inFileName);
+	}
+	*inIndexFile = new QFile(inFileName);
+	QFile *file = *inIndexFile;
+	if (!file->open(QIODevice::WriteOnly)) {
+		SetMessage(tr("Ошибка: Не могу записать файл на ваш компьютер - %1 : %2.").arg(inFileName).arg(file->errorString()));
+		delete *inIndexFile;
+		*inIndexFile = nullptr;
+		return false;
+	}
+	return true;
 }
 

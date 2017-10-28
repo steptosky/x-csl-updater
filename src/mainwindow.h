@@ -56,12 +56,12 @@ private slots:
     //void IndexFinish();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *mUi;
     About *AboutWin;
     Settings *SettingsWin;
     Index *Indx;
     Update *Updt;
-    info *Inf;
+    Info *Inf;
 
     // контекст меню Списка
     QAction *ListClearAct;

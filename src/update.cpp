@@ -44,7 +44,7 @@ bool Update::removeDir(const QString & dirName)
 }
 
 bool Update::removePath(QString path) {
-	QString correctedPath = QDir::toNativeSeparators(this->FolderName + separator + path).trimmed();
+	QString correctedPath = QDir::toNativeSeparators(this->mCslFolderName + mSeparator + path).trimmed();
 	//qDebug() << correctedPath;
 	QFileInfo fileInfo(correctedPath);
 	QDir dir(correctedPath);
@@ -60,8 +60,8 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 {
 	this->MWUI->CancelButton->setEnabled(true);
 	QSettings settings(ORGANISATION, PROGRAM_NAME);
-	this->FolderName = settings.value("FolderName").toString();
-	this->FilesList.clear();
+	this->mCslFolderName = settings.value("FolderName").toString();
+	this->mFileList.clear();
 	mSelectedListForDelete.clear();
 	this->Indx = _Indx;
 	this->server = settings.value("curServer").toString();
@@ -103,7 +103,7 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 					{
 						if (_FilesList[it].State != 0)
 						{
-							this->FilesList.push_back(_FilesList[it]);
+							this->mFileList.push_back(_FilesList[it]);
 						}
 					}
 				}
@@ -117,22 +117,22 @@ void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 	fileInfo.List.append("0");
 	fileInfo.List.append("mtl.dat");
 	fileInfo.State = -999;
-	this->FilesList.push_front(fileInfo);
-	if (!this->FilesList.empty())
+	this->mFileList.push_front(fileInfo);
+	if (!this->mFileList.empty())
 	{
 		this->countMain = 0;
 		// first task - mtl.dat, so make correct path
-		if (this->FolderName.contains("X-IvAp Resources")){
-			QDir dir(this->FolderName);
+		if (this->mCslFolderName.contains("X-IvAp Resources")){
+			QDir dir(this->mCslFolderName);
 			dir.cdUp();
 			QString corrFolderName = dir.path();
-			this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], corrFolderName + separator + this->FilesList[this->countMain].List[1]);
+			this->CopyRemoteFile(this->server + this->mFileList[this->countMain].List[1], corrFolderName + mSeparator + this->mFileList[this->countMain].List[1]);
 			
 			return;
 		}
 		this->countMain++;
-		if (this->countMain < this->FilesList.size() - 1){
-			this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], this->FolderName + separator + this->FilesList[this->countMain].List[1]);
+		if (this->countMain < this->mFileList.size() - 1){
+			this->CopyRemoteFile(this->server + this->mFileList[this->countMain].List[1], this->mCslFolderName + mSeparator + this->mFileList[this->countMain].List[1]);
 		}
 		else{
 			this->EndUpdate();
@@ -204,10 +204,10 @@ void Update::CopyRemoteFile(QString From, QString To)
 		this->SetMessage(tr("Ошибка: Не могу записать файл на ваш компьютер - %1 : %2.").arg(fileName).arg(this->file->errorString()));
 		delete this->file;
 		this->file = 0;
-		if (this->countMain < this->FilesList.size() - 1)
+		if (this->countMain < this->mFileList.size() - 1)
 		{
 			this->countMain++;
-			this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], this->FolderName + tr("/") + this->FilesList[this->countMain].List[1]);
+			this->CopyRemoteFile(this->server + this->mFileList[this->countMain].List[1], this->mCslFolderName + tr("/") + this->mFileList[this->countMain].List[1]);
 		}
 		else
 		{
@@ -247,10 +247,10 @@ void Update::httpRequestFinished(int reqId, bool error)
 	this->file->close();
 	delete this->file;
 	this->file = 0;
-	if (this->countMain < this->FilesList.size() - 1)
+	if (this->countMain < this->mFileList.size() - 1)
 	{
 		this->countMain++;
-		this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], this->FolderName + tr("/") + this->FilesList[this->countMain].List[1]);
+		this->CopyRemoteFile(this->server + this->mFileList[this->countMain].List[1], this->mCslFolderName + tr("/") + this->mFileList[this->countMain].List[1]);
 	}
 	else
 	{

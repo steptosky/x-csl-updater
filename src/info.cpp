@@ -1,20 +1,20 @@
 #include "info.h"
 
-info::info(QWidget *parent, Ui::MainWindow *_MWUI) :
+Info::Info(QWidget *parent, Ui::MainWindow *_MWUI) :
 	QDialog(parent),
 	mUi(new Ui::info) {
 	mUi->setupUi(this);
 	mMainUi = _MWUI;
 	mNetMng = new QNetworkAccessManager(this);
-	connect(mNetMng, &QNetworkAccessManager::finished, this, &info::httpRequestFinished);
+	connect(mNetMng, &QNetworkAccessManager::finished, this, &Info::httpRequestFinished);
 }
 
-info::~info() {
+Info::~Info() {
 	delete(mNetMng);
 	delete mUi;
 }
 
-void info::OpenInfoWin() {
+void Info::OpenInfoWin() {
 	for (int i = 0; i < mMainUi->tableWidget->rowCount(); ++i) {
 		if (mMainUi->tableWidget->item(i, 0)->isSelected()) {
 			int allCount = mPackInfo.size();
@@ -30,7 +30,7 @@ void info::OpenInfoWin() {
 	show();
 }
 
-void info::GetInfoToTable() {
+void Info::GetInfoToTable() {
 	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	mCslFolder = settings.value("FolderName").toString();
 	mServer = settings.value("curServer").toString();
@@ -40,7 +40,7 @@ void info::GetInfoToTable() {
 	}	
 }
 
-void info::getPackageInfo(int inPackID, int inRow) {
+void Info::getPackageInfo(int inPackID, int inRow) {
 	QString packPath = mMainUi->tableWidget->item(inRow, 1)->text();
 	QUrl url(mServer + packPath + tr("/x-csl-info.info"));
 	QString fileName = mCslFolder + "/" + packPath + tr("/x-csl-info.info");
@@ -51,10 +51,10 @@ void info::getPackageInfo(int inPackID, int inRow) {
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackName), packPath);
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackRow), inRow);
 	QNetworkReply *reply = mNetMng->get(request);
-	connect(this, &info::cancelAllSig, reply, &QNetworkReply::abort);
+	connect(this, &Info::cancelAllSig, reply, &QNetworkReply::abort);
 }
 
-void info::httpRequestFinished(QNetworkReply *inReply) {
+void Info::httpRequestFinished(QNetworkReply *inReply) {
 	inReply->deleteLater();
 
 	int packId = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackID)).toInt();
@@ -97,7 +97,7 @@ void info::httpRequestFinished(QNetworkReply *inReply) {
 	}
 }
 
-void info::changeEvent(QEvent *e) {
+void Info::changeEvent(QEvent *e) {
 	QDialog::changeEvent(e);
 	switch (e->type()) {
 		case QEvent::LanguageChange:
@@ -108,6 +108,6 @@ void info::changeEvent(QEvent *e) {
 	}
 }
 
-void info::requestStopAction() {
+void Info::requestStopAction() {
 	emit cancelAllSig();
 }

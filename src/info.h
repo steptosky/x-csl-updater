@@ -8,10 +8,10 @@
 #include <QtNetwork>
 
 namespace Ui {
-	class info;
+	class Info;
 }
 
-class info : public QDialog {
+class Info : public QDialog {
 	Q_OBJECT
 public:
 	enum eAttributes {
@@ -20,8 +20,8 @@ public:
 		PackRow = QNetworkRequest::UserMax - 3,
 	};
 
-	info(QWidget *parent, Ui::MainWindow *_MWUI);
-	~info();
+	Info(QWidget *parent, Ui::MainWindow *_MWUI);
+	~Info();
 	void GetInfoToTable();
 	void OpenInfoWin();
 	void requestStopAction();

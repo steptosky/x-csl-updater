@@ -5,47 +5,49 @@
 #include "base_steps.h"
 #include "info.h"
 
-#ifndef MAX_PATH
-#define MAX_PATH 1024
-#endif
-
-class Index /*: public QThread*/: public BaseSteps
-{
-    Q_OBJECT
+class Index /*: public QThread*/ : public BaseSteps {
+	Q_OBJECT
 public:
 	QVector<FilesTypes> mFileListForDel;
 
-    Index(QWidget *_MW, Ui::MainWindow *_MWUI, info *_Inf);
-    ~Index();
-    void StartIndex();
+	Index(QWidget *_MW, Ui::MainWindow *_MWUI, Info *_Inf);
+	~Index();
+	void StartIndex();
+
+signals:
+	void cancelAll();
 
 private slots:
-    void httpRequestFinished(int requestId, bool error);
-    void readResponseHeader(const QHttpResponseHeader &responseHeader);
-    void updateDataReadProgress(int bytesRead, int totalBytes);
+	void httpRequestFinished(QNetworkReply *inReply);
+	void indexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
+	void delIndexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
 
 private:
-    void ParserIndexFile();
-    int CheckCslPack(int pos, int ID);
-    int CheckFile(QStringList list, int ID);
-    void EndIndex(int Next = true);
-    void CopyRemoteFile(QString From, QString To);
-    QString getIndexFilePath();
+	void ParseIndexFiles();
+	int CheckCslPack(int pos, int ID);
+	int CheckFile(QStringList list, int ID);
+	void EndIndex(int Next = true);
+	QString getIndexFilePath();
 	QString getIndexForDelFilePath();
+	bool createIndexFile(QString inFileName, QFile **inIndexFile);
 
-    info *Inf;
-    QHttp *http;
-    QFile *file;
-    int httpGetId;
-    bool httpRequestAborted;
-    int DownSize;
-    int TotalDownSize;
-    int sizeOfServer;
-    int sizeOfNeedUpdate;
-    int sizeOfClient;
+	Info *mPackInfo;
+	QNetworkAccessManager *mNetMng;
+	QFile *mIndexFile;
+	QFile *mDelIndexFile;
 
-	QString IndexFile;
-	QString IndexForDelFile;
+	int mFilesToDownload = 2;
+	int mIndexBytesDownloaded;
+	int mTotalIndexBytes;
+	int mDelIndexBytesDownloaded;
+	int mTotalDelIndexBytes;
+
+	int mSizeOfServer;
+	int mSizeOfNeedUpdate;
+	int mSizeOfClient;
+
+	QString mIndexFileUrl;
+	QString mDelIndexFileUrl;
 };
 
 #endif // INDEX_H

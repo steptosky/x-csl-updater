@@ -43,4 +43,8 @@ struct FileInfoStruct
     int Flag;
 };
 
+#ifndef MY_MAX_PATH
+#define MY_MAX_PATH 1024
+#endif
+
 #endif // TYPES_H
