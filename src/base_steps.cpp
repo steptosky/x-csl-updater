@@ -5,7 +5,7 @@ BaseSteps::BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI): QWidget(0)
     this->MW = _MW;
     this->MWUI = _MWUI;
     this->separator = "/"/*(QString)QDir::separator()*/;
-    QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+    QSettings settings(ORGANISATION, PROGRAM_NAME);
     this->FolderName = settings.value("FolderName").toString();
 }
 

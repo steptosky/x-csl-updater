@@ -59,7 +59,7 @@ bool Update::removePath(QString path) {
 void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
 {
 	this->MWUI->CancelButton->setEnabled(true);
-	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	this->FolderName = settings.value("FolderName").toString();
 	this->FilesList.clear();
 	mSelectedListForDelete.clear();

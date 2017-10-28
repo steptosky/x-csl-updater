@@ -20,8 +20,11 @@ static QString VerProg =
 	+ " (" STS_REVISION_GLOBAL ")"
 ;
 
-// types of programm
+// some constants
+#define ORGANISATION "VA X-Air Team && StepToSky Team"
+#define PROGRAM_NAME "X-CSL-Updater"
 
+// types of program
 #define _CLIENT_FILE_STATUS_LOST	-1;
 #define _CLIENT_FILE_STATUS_CHANGE	1;
 #define _CLIENT_FILE_STATUS_OK		0;

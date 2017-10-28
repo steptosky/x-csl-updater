@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 	this->separator = "/"/*(QString)QDir::separator()*/;
 
 	// цепляем настройки из сохраненых
-	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	move(settings.value("pos", QPoint(200, 200)).toPoint());
 
 #ifdef Q_OS_WIN32
@@ -108,7 +108,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	settings.setValue("pos", pos());
 	delete Indx;
 	delete Updt;
@@ -225,7 +225,7 @@ void MainWindow::SetFolder()
 		if (dir.exists())
 		{
 			this->FolderName = FName;
-			QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+			QSettings settings(ORGANISATION, PROGRAM_NAME);
 			settings.setValue("FolderName", this->FolderName);
 			this->ui->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
 		}
@@ -240,13 +240,13 @@ void MainWindow::SetFolder()
 
 void MainWindow::SetCustomFolder()
 {
-	QMessageBox::warning(this, "X-CSL-Updater", tr("Внимание! Данная функция предназначена для профессионального использования. Возможно программа станет неработоспособной!"), QMessageBox::Ok);
+	QMessageBox::warning(this, PROGRAM_NAME, tr("Внимание! Данная функция предназначена для профессионального использования. Возможно программа станет неработоспособной!"), QMessageBox::Ok);
 	this->FolderName = QFileDialog::getExistingDirectory(this,
 		tr("X-CSL-Updater :: Выберите папку X-Plane"), this->FolderName, QFileDialog::ShowDirsOnly);
 
 	if (!this->FolderName.isEmpty())
 	{
-		QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+		QSettings settings(ORGANISATION, PROGRAM_NAME);
 		settings.setValue("FolderName", this->FolderName);
 		this->ui->curPathLabel->setText(this->FolderName);
 		//this->ui->cur_ver_client->setText(this->ChVer->GetCurVerClient(this->FolderName));

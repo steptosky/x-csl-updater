@@ -23,7 +23,7 @@ void Index::StartIndex()
 	this->Inf->requestStopAction();
 	this->httpRequestAborted = true;
 	this->http->abort();
-	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	this->FolderName = settings.value("FolderName").toString();
 	this->SetMessage(tr("Индексирование:"));
 	this->sizeOfClient = 0;
@@ -326,7 +326,7 @@ QString Index::getIndexFilePath()
 		+this->separator+
 		".config"
 		+this->separator+
-		"X-CSL-Updater"
+		PROGRAM_NAME
 		+this->separator
 		);
 
@@ -348,7 +348,7 @@ QString Index::getIndexForDelFilePath()
 		+this->separator+
 		".config"
 		+this->separator+
-		"X-CSL-Updater"
+		PROGRAM_NAME
 		+this->separator
 		);
 

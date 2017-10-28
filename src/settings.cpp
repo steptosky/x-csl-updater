@@ -31,7 +31,7 @@ void Settings::CancelSlot()
 
 void Settings::LoadSettings()
 {
-    QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+    QSettings settings(ORGANISATION, PROGRAM_NAME);
     //http://csl-updater.loc/CSL-Package/
     this->m_ui->server1->setText(settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
     this->m_ui->server2->setText(settings.value("Server2").toString());
@@ -79,7 +79,7 @@ void Settings::LoadSettings()
 
 void Settings::SaveSettings()
 {
-    QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+    QSettings settings(ORGANISATION, PROGRAM_NAME);
     if (this->m_ui->checkEng->isChecked())
     {
 	settings.setValue("lang", ":/lang/english.qm");

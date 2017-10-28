@@ -1,40 +1,27 @@
 #include "info.h"
 
 info::info(QWidget *parent, Ui::MainWindow *_MWUI) :
-QDialog(parent),
-m_ui(new Ui::info)
-{
-	m_ui->setupUi(this);
-	this->MW = parent;
-	this->MWUI = _MWUI;
-	this->http = new QHttp();
-
-	connect(this->http, SIGNAL(requestFinished(int, bool)), this, SLOT(httpRequestFinished(int, bool)));
-	connect(this->http, SIGNAL(dataReadProgress(int, int)), this, SLOT(updateDataReadProgress(int, int)));
-	connect(this->http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)), this, SLOT(readResponseHeader(const QHttpResponseHeader &)));
+	QDialog(parent),
+	mUi(new Ui::info) {
+	mUi->setupUi(this);
+	this->mMainUi = _MWUI;
+	this->mNetMng = new QNetworkAccessManager(this);
+	connect(mNetMng, &QNetworkAccessManager::finished, this, &info::httpRequestFinished);
 }
 
-info::~info()
-{
-	this->httpRequestAborted = true;
-	this->http->abort();
-	this->http->close();
-	delete m_ui;
+info::~info() {
+	delete(this->mNetMng);
+	delete mUi;
 }
 
-void info::OpenInfoWin()
-{
-	for (int i = 0; i < this->Rows; ++i)
-	{
-		if (this->MWUI->tableWidget->item(i, 0)->isSelected())
-		{
-			int all_count = this->FileInfo.size();
-			int ID = this->MWUI->tableWidget->item(i, 0)->text().toInt();
-			for (int it = 0; it < all_count; ++it)
-			{
-				if (ID == this->FileInfo[it].ID)
-				{
-					this->m_ui->textBrowser->setHtml(this->FileInfo[it].Info);
+void info::OpenInfoWin() {
+	for (int i = 0; i < this->mMainUi->tableWidget->rowCount(); ++i) {
+		if (this->mMainUi->tableWidget->item(i, 0)->isSelected()) {
+			int allCount = this->mPackInfo.size();
+			int ID = this->mMainUi->tableWidget->item(i, 0)->text().toInt();
+			for (int it = 0; it < allCount; ++it) {
+				if (ID == this->mPackInfo[it].ID) {
+					this->mUi->textBrowser->setHtml(this->mPackInfo[it].Info);
 					break;
 				}
 			}
@@ -43,141 +30,115 @@ void info::OpenInfoWin()
 	this->show();
 }
 
-void info::GetInfoToTable()
-{
-	this->httpRequestAborted = true;
-	this->http->abort();
-	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-	this->FolderName = settings.value("FolderName").toString();
-	this->server = settings.value("curServer").toString();
-	this->FileInfo.clear();
-	this->Rows = this->MWUI->tableWidget->rowCount();
-	this->countMain = 0;
-	this->CopyRemoteFile(this->MWUI->tableWidget->item(this->countMain, 1)->text());
+void info::GetInfoToTable() {
+	QSettings settings(ORGANISATION, PROGRAM_NAME);
+	this->mCslFolder = settings.value("FolderName").toString();
+	this->mServer = settings.value("curServer").toString();
+	this->mPackInfo.clear();
+	for (size_t i = 0; i < this->mMainUi->tableWidget->rowCount(); i++) {
+		this->getPackageInfo(this->mMainUi->tableWidget->item(i, 0)->text().toInt(), i);
+	}	
 }
 
-void info::CopyRemoteFile(QString From)
-{
-	QUrl url(this->server + From + tr("/x-csl-info.info"));
-	QString fileName = this->FolderName + tr("/") + From + tr("/x-csl-info.info");
-	this->buffer = new QBuffer();
-	this->buffer->open(QIODevice::WriteOnly);
+void info::getPackageInfo(int inPackID, int inRow) {
+	QString packPath = this->mMainUi->tableWidget->item(inRow, 1)->text();
+	QUrl url(this->mServer + packPath + tr("/x-csl-info.info"));
+	QString fileName = this->mCslFolder + "/" + packPath + tr("/x-csl-info.info");
 
-	if (!this->buffer->isOpen())
-	{
-		this->MWUI->listWidget->addItem(this->buffer->errorString());
-		this->buffer = 0;
-		InfoType Info;
-		Info.ID = this->MWUI->tableWidget->item(this->countMain, 0)->text().toInt();
-		Info.Info = tr("Информация отсутствует...");
-		Info.ShortInfo = tr("Информация отсутствует...");
-		this->FileInfo.push_back(Info);
-		this->MWUI->tableWidget->setItem(this->countMain, 2, new QTableWidgetItem(Info.ShortInfo));
-		if (this->countMain < this->Rows - 1)
-		{
-			this->countMain++;
-			this->CopyRemoteFile(this->MWUI->tableWidget->item(this->countMain, 1)->text());
-		}
+	QNetworkRequest request;
+	request.setUrl(url);
+	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackID), inPackID);
+	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackName), packPath);
+	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackRow), inRow);
+	QNetworkReply *reply = mNetMng->get(request);
+	connect(this, &info::cancelAllSig, reply, &QNetworkReply::abort);
+}
+
+void info::httpRequestFinished(QNetworkReply *inReply) {
+	inReply->deleteLater();
+
+	int packId = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackID)).toInt();
+	QString packName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackName)).toString();
+	int row = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackRow)).toInt();
+
+	if (mMainUi->tableWidget->item(row, 0)->text().toInt() != packId
+		|| mMainUi->tableWidget->item(row, 1)->text() != packName) {
+		// something is wrong, maybe the table has been resorted.
 		return;
 	}
-	this->http->setHost(url.host());
-	this->httpRequestAborted = false;
-	QByteArray path = QUrl::toPercentEncoding(url.path(), "!$&'()*+,;=:@/");
-	if (path.isEmpty()) path = "/";
-	this->httpGetId = this->http->get(path, this->buffer);
-}
-
-void info::httpRequestFinished(int reqId, bool error)
-{
-	if (reqId != this->httpGetId) return;
-	if (this->httpRequestAborted)
-	{
-		if (this->buffer->isOpen())
-		{
-			this->buffer->close();
-			delete this->buffer;
-			this->buffer = 0;
-		}
-		this->buffer = 0;
-		return;
+	
+	if (inReply->error() == QNetworkReply::NoError) {
+		PackInfo packInfo;
+		packInfo.ID = packId;
+		packInfo.Info = inReply->readAll();
+		QStringList list = packInfo.Info.split("\n", QString::SkipEmptyParts);
+		QString s_str(list[0]);
+		int size = s_str.length();
+		packInfo.ShortInfo = s_str.left(size - 1);
+		this->mPackInfo.push_back(packInfo);
+		QTableWidgetItem *Item = new QTableWidgetItem(packInfo.ShortInfo);
+		this->mMainUi->tableWidget->setItem(row, 2, Item);
 	}
-	QByteArray Array(this->buffer->data());
-	this->buffer->close();
-	delete this->buffer;
-	this->buffer = 0;
-	QString str(tr(Array));
-	InfoType Info;
-	Info.ID = this->MWUI->tableWidget->item(this->countMain, 0)->text().toInt();
-	Info.Info = str;
-	QStringList list = str.split("\n", QString::SkipEmptyParts);
-	QString s_str(list[0]);
-	int size = s_str.length();
-	/*int home = str.indexOf(tr("<x-title>"));
-	int end = str.indexOf(tr("</x-title>"));*/
-	//Info.ShortInfo = str.section("<x-title>", 1, 1);
-	Info.ShortInfo = s_str.left(size - 1);
-	this->FileInfo.push_back(Info);
-	this->MWUI->tableWidget->setItem(this->countMain, 2, new QTableWidgetItem(Info.ShortInfo));
-	if (this->countMain < this->Rows - 1)
-	{
-		this->countMain++;
-		this->CopyRemoteFile(this->MWUI->tableWidget->item(this->countMain, 1)->text());
-	}
-}
-
-void info::readResponseHeader(const QHttpResponseHeader &responseHeader)
-{
-
-	switch (responseHeader.statusCode())
-	{
-	case 200:                   // Ok
-	case 301:                   // Moved Permanently
-	case 302:                   // Found
-	case 303:                   // See Other
-	case 307:                   // Temporary Redirect
-		// these are not error conditions
-		break;
-	default:
-		this->httpRequestAborted = true;
-		this->http->abort();
-		InfoType Info;
-		Info.ID = this->MWUI->tableWidget->item(this->countMain, 0)->text().toInt();
-		Info.Info = tr("Информация отсутствует...");
-		Info.ShortInfo = tr("Информация отсутствует...");
-		this->FileInfo.push_back(Info);
-		QTableWidgetItem *Item = new QTableWidgetItem(Info.ShortInfo);
+	else {
+		PackInfo packInfo;
+		packInfo.ID = packId;
+		packInfo.Info = tr("Информация отсутствует...");
+		packInfo.ShortInfo = tr("Информация отсутствует...");
+		this->mPackInfo.push_back(packInfo);
+		QTableWidgetItem *Item = new QTableWidgetItem(packInfo.ShortInfo);
 		Item->setTextColor(Qt::lightGray);
-		this->MWUI->tableWidget->setItem(this->countMain, 2, Item);
-		//this->MWUI->tableWidget->setItem(this->countMain, 2, new QTableWidgetItem(Info.ShortInfo));
-		if (this->countMain < this->Rows - 1)
-		{
-			this->countMain++;
-			this->CopyRemoteFile(this->MWUI->tableWidget->item(this->countMain, 1)->text());
-		}
-		break;
+		this->mMainUi->tableWidget->setItem(row, 2, Item);
+
+		// error details
+		QString errorUrl = inReply->request.url();
+		QString httpStatus = inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+
 	}
 }
 
-void info::updateDataReadProgress(int bytesRead, int totalBytes)
-{
-	if (this->httpRequestAborted) return;
-	/*this->MWUI->progressBar->setMaximum(totalBytes);
-	this->MWUI->progressBar->setValue(bytesRead);*/
-}
+// void info::readResponseHeader(const QHttpResponseHeader &responseHeader) {
+// 
+// 	switch (responseHeader.statusCode()) {
+// 		case 200:                   // Ok
+// 		case 301:                   // Moved Permanently
+// 		case 302:                   // Found
+// 		case 303:                   // See Other
+// 		case 307:                   // Temporary Redirect
+// 			// these are not error conditions
+// 			break;
+// 		default:
+// 			this->httpRequestAborted = true;
+// 			this->mNetMng->abort();
+// 			PackInfo Info;
+// 			Info.ID = this->mMainUi->tableWidget->item(this->countMain, 0)->text().toInt();
+// 			Info.Info = tr("Информация отсутствует...");
+// 			Info.ShortInfo = tr("Информация отсутствует...");
+// 			this->mPackInfo.push_back(Info);
+// 			QTableWidgetItem *Item = new QTableWidgetItem(Info.ShortInfo);
+// 			Item->setTextColor(Qt::lightGray);
+// 			this->mMainUi->tableWidget->setItem(this->countMain, 2, Item);
+// 			//this->MWUI->tableWidget->setItem(this->countMain, 2, new QTableWidgetItem(Info.ShortInfo));
+// 			if (this->countMain < this->Rows - 1) {
+// 				this->countMain++;
+// 				this->getPackageInfo(this->mMainUi->tableWidget->item(this->countMain, 1)->text());
+// 			}
+// 			break;
+// 	}
+// }
 
-void info::changeEvent(QEvent *e)
-{
+
+void info::changeEvent(QEvent *e) {
 	QDialog::changeEvent(e);
 	switch (e->type()) {
-	case QEvent::LanguageChange:
-		m_ui->retranslateUi(this);
-		break;
-	default:
-		break;
+		case QEvent::LanguageChange:
+			mUi->retranslateUi(this);
+			break;
+		default:
+			break;
 	}
 }
 
 void info::requestStopAction() {
-	this->httpRequestAborted = true;
-	this->http->abort();
+	emit cancelAllSig();
 }

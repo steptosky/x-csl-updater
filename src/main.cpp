@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
+    QSettings settings(ORGANISATION, PROGRAM_NAME);
     QString lang;
     if (settings.value("first", "no").toString() == "no")
     {
