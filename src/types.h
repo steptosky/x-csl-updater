@@ -2,25 +2,17 @@
 #define TYPES_H
 
 #include <QtGui>
-
-#include "../version.h"
+#include "Info.h"
 
 #define VERSION_MAJOR    1
 #define VERSION_MINOR    2
 #define VERSION_PATCH    0
 
-static QString VerProg = 
-	QString::number(VERSION_MAJOR)
-	+ "." +
-	QString::number(VERSION_MINOR)
-	+ "." +
-	QString::number(VERSION_PATCH)
-	+ " (" STS_REVISION_GLOBAL ")"
-;
+static QString VerProg = QString(STS_XCSL_VERSION_STRING) + "+" STS_XCSL_REVISION;
 
 // some constants
-#define ORGANISATION "VA X-Air Team && StepToSky Team"
-#define PROGRAM_NAME "X-CSL-Updater"
+#define ORGANISATION STS_XCSL_ORGANIZATION_NAME
+#define PROGRAM_NAME STS_XCSL_PROJECT_SHORT_NAME
 
 // types of program
 #define _CLIENT_FILE_STATUS_LOST	-1;

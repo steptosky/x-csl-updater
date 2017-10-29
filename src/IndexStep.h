@@ -3,15 +3,15 @@
 
 #include <QtGui>
 #include "base_steps.h"
-#include "info.h"
+#include "PackageAdditionalInfo.h"
 
-class Index /*: public QThread*/ : public BaseSteps {
+class IndexStep /*: public QThread*/ : public BaseSteps {
 	Q_OBJECT
 public:
 	QVector<PackageEntry> mFileListForDel;
 
-	Index(QWidget *_MW, Ui::MainWindow *_MWUI, Info *_Inf);
-	~Index();
+	IndexStep(QWidget *_MW, Ui::MainWindow *_MWUI, PackageAdditionalInfo *_Inf);
+	~IndexStep();
 	void StartIndex();
 
 signals:
@@ -31,7 +31,7 @@ private:
 	QString getIndexForDelFilePath();
 	bool createIndexFile(QString inFileName, QFile **inIndexFile);
 
-	Info *mPackInfo;
+	PackageAdditionalInfo *mPackInfo;
 	QNetworkAccessManager *mNetMng;
 	QFile *mIndexFile = nullptr;
 	QFile *mDelIndexFile = nullptr;

@@ -91,9 +91,9 @@ MainWindow::MainWindow(QWidget *parent)
 	// инициализация обьектов
 	this->AboutWin = new About(this);
 	this->SettingsWin = new Settings(this);
-	this->Inf = new Info(this, this->mUi);
-	this->Indx = new Index(this, this->mUi, this->Inf);
-	this->Updt = new Update(this, this->mUi);
+	this->Inf = new PackageAdditionalInfo(this, this->mUi);
+	this->Indx = new IndexStep(this, this->mUi, this->Inf);
+	this->Updt = new UpdateStep(this, this->mUi);
 
 	// коннекты
 	connect(this->mUi->actionAbout, &QAction::triggered, this, &MainWindow::AboutSlot);

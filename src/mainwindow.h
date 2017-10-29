@@ -6,9 +6,9 @@
 #include "types.h"
 #include "about.h"
 #include "settings.h"
-#include "index.h"
-#include "update.h"
-#include "info.h"
+#include "IndexStep.h"
+#include "UpdateStep.h"
+#include "PackageAdditionalInfo.h"
 
 namespace Ui
 {
@@ -59,9 +59,9 @@ private:
     Ui::MainWindow *mUi;
     About *AboutWin;
     Settings *SettingsWin;
-    Index *Indx;
-    Update *Updt;
-    Info *Inf;
+    IndexStep *Indx;
+    UpdateStep *Updt;
+    PackageAdditionalInfo *Inf;
 
     // контекст меню Списка
     QAction *ListClearAct;

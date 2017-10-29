@@ -1,20 +1,20 @@
-#include "info.h"
+#include "PackageAdditionalInfo.h"
 
-Info::Info(QWidget *parent, Ui::MainWindow *_MWUI) :
+PackageAdditionalInfo::PackageAdditionalInfo(QWidget *parent, Ui::MainWindow *_MWUI) :
 	QDialog(parent),
-	mUi(new Ui::info) {
+	mUi(new Ui::PackageAdditionalInfo) {
 	mUi->setupUi(this);
 	mMainUi = _MWUI;
 	mNetMng = new QNetworkAccessManager(this);
-	connect(mNetMng, &QNetworkAccessManager::finished, this, &Info::httpRequestFinished);
+	connect(mNetMng, &QNetworkAccessManager::finished, this, &PackageAdditionalInfo::httpRequestFinished);
 }
 
-Info::~Info() {
+PackageAdditionalInfo::~PackageAdditionalInfo() {
 	delete(mNetMng);
 	delete mUi;
 }
 
-void Info::OpenInfoWin() {
+void PackageAdditionalInfo::OpenInfoWin() {
 	for (int i = 0; i < mMainUi->tableWidget->rowCount(); ++i) {
 		if (mMainUi->tableWidget->item(i, 0)->isSelected()) {
 			int allCount = mPackInfo.size();
@@ -30,7 +30,7 @@ void Info::OpenInfoWin() {
 	show();
 }
 
-void Info::GetInfoToTable() {
+void PackageAdditionalInfo::GetInfoToTable() {
 	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	mCslFolder = settings.value("FolderName").toString();
 	mServer = settings.value("curServer").toString();
@@ -40,7 +40,7 @@ void Info::GetInfoToTable() {
 	}	
 }
 
-void Info::getPackageInfo(int inPackID, int inRow) {
+void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) {
 	QString packPath = mMainUi->tableWidget->item(inRow, 1)->text();
 	QUrl url(mServer + packPath + tr("/x-csl-info.info"));
 	QString fileName = mCslFolder + "/" + packPath + tr("/x-csl-info.info");
@@ -51,10 +51,10 @@ void Info::getPackageInfo(int inPackID, int inRow) {
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackName), packPath);
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackRow), inRow);
 	QNetworkReply *reply = mNetMng->get(request);
-	connect(this, &Info::cancelAllSig, reply, &QNetworkReply::abort);
+	connect(this, &PackageAdditionalInfo::cancelAllSig, reply, &QNetworkReply::abort);
 }
 
-void Info::httpRequestFinished(QNetworkReply *inReply) {
+void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 	inReply->deleteLater();
 
 	int packId = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackID)).toInt();
@@ -98,7 +98,7 @@ void Info::httpRequestFinished(QNetworkReply *inReply) {
 	}
 }
 
-void Info::changeEvent(QEvent *e) {
+void PackageAdditionalInfo::changeEvent(QEvent *e) {
 	QDialog::changeEvent(e);
 	switch (e->type()) {
 		case QEvent::LanguageChange:
@@ -109,6 +109,6 @@ void Info::changeEvent(QEvent *e) {
 	}
 }
 
-void Info::requestStopAction() {
+void PackageAdditionalInfo::requestStopAction() {
 	emit cancelAllSig();
 }

@@ -1,19 +1,19 @@
-#include "index.h"
+#include "IndexStep.h"
 #include <QDebug>
 
-Index::Index(QWidget *_MW, Ui::MainWindow *_MWUI, Info *_Inf) : BaseSteps(_MW, _MWUI) {
+IndexStep::IndexStep(QWidget *_MW, Ui::MainWindow *_MWUI, PackageAdditionalInfo *_Inf) : BaseSteps(_MW, _MWUI) {
 	mPackInfo = _Inf;
 	mNetMng = new QNetworkAccessManager(this);
-	connect(mNetMng, &QNetworkAccessManager::finished, this, &Index::httpRequestFinished);
+	connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::httpRequestFinished);
 }
 
-Index::~Index() {
+IndexStep::~IndexStep() {
 	delete mNetMng;
 	delete mIndexFile;
 	delete mDelIndexFile;
 }
 
-void Index::StartIndex() {
+void IndexStep::StartIndex() {
 	mPackInfo->requestStopAction();
 	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	mCslFolderName = settings.value("FolderName").toString();
@@ -44,21 +44,21 @@ void Index::StartIndex() {
 	request.setUrl(mIndexFileUrl);
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mIndexFile));
 	QNetworkReply *reply = mNetMng->get(request);
-	connect(this, &Index::cancelAll, reply, &QNetworkReply::abort);
-	connect(reply, &QNetworkReply::downloadProgress, this, &Index::indexDonwloadProgress);
+	connect(this, &IndexStep::cancelAll, reply, &QNetworkReply::abort);
+	connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::indexDonwloadProgress);
 
 	request.setUrl(mDelIndexFileUrl);
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mDelIndexFile));
 	reply = mNetMng->get(request);
-	connect(this, &Index::cancelAll, reply, &QNetworkReply::abort);
-	connect(reply, &QNetworkReply::downloadProgress, this, &Index::delIndexDonwloadProgress);
+	connect(this, &IndexStep::cancelAll, reply, &QNetworkReply::abort);
+	connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::delIndexDonwloadProgress);
 	//
 }
 
-void Index::EndIndex(int Next) {
+void IndexStep::EndIndex(int Next) {
 	if (Next) {
 		mSizeOfNeedUpdate = mSizeOfServer - mSizeOfClient;
-		//TODO: ‡ÁÓ·‡ˆˆÓ Ò ÎË¯ÌËÏË ÒËÏ‚ÓÎ‡ÏË ‚ ÏÂ„‡·‡ÈÚ‡ı
+		//TODO: —Ä–∞–∑–æ–±—Ä–∞—Ü—Ü–æ —Å –ª–∏—à–Ω–∏–º–∏ —Å–∏–º–≤–æ–ª–∞–º–∏ –≤ –º–µ–≥–∞–±–∞–π—Ç–∞—Ö
 		float fsizeOfNeedUpdate, fsizeOfServer;
 		fsizeOfNeedUpdate = (float)mSizeOfNeedUpdate / 1048576;
 		fsizeOfServer = (float)mSizeOfServer / 1048576;
@@ -69,28 +69,28 @@ void Index::EndIndex(int Next) {
 		QString strSizeNeed(cstrSizeNeed), strSizeAll(cstrSizeAll);
 		//1048576
 		if (mSizeOfNeedUpdate != 0) {
-			SetMessage(tr("ƒÎˇ ÔÓÎÌÓ„Ó Ó·ÌÓ‚ÎÂÌËˇ ‚‡Ï ÌÂÓ·ıÓ‰ËÏÓ Á‡„ÛÁËÚ¸ %1 MB ËÁ %2 MB").arg(strSizeNeed, strSizeAll));
-			SetMessage(tr("¬˚‰ÂÎËÚÂ ÌÂÓ·ıÓ‰ËÏ˚Â Ô‡ÍÂÚ˚ X-CSL ÏÓ‰ÂÎÂÈ ‚ ÒÔËÒÍÂ Ë Ì‡ÊÏËÚÂ \"Œ·ÌÓ‚ËÚ¸\"."));
+			SetMessage(tr("–î–ª—è –ø–æ–ª–Ω–æ–≥–æ –æ–±–Ω–æ–≤–ª–µ–Ω–∏—è –≤–∞–º –Ω–µ–æ–±—Ö–æ–¥–∏–º–æ –∑–∞–≥—Ä—É–∑–∏—Ç—å %1 MB –∏–∑ %2 MB").arg(strSizeNeed, strSizeAll));
+			SetMessage(tr("–í—ã–¥–µ–ª–∏—Ç–µ –Ω–µ–æ–±—Ö–æ–¥–∏–º—ã–µ –ø–∞–∫–µ—Ç—ã X-CSL –º–æ–¥–µ–ª–µ–π –≤ —Å–ø–∏—Å–∫–µ –∏ –Ω–∞–∂–º–∏—Ç–µ \"–û–±–Ω–æ–≤–∏—Ç—å\"."));
 		}
 		else {
-			SetMessage(tr("œÓÁ‰‡‚ÎˇÂÏ!, ” ‚‡Ò ËÏÂÂÚÒˇ ÔÓÎÌ‡ˇ ÔÓÒÎÂ‰Ìˇˇ ‚ÂÒËˇ Ô‡ÍÂÚÓ‚ X-CSL ÏÓ‰ÂÎÂÈ."));
+			SetMessage(tr("–ü–æ–∑–¥—Ä–∞–≤–ª—è–µ–º!, –£ –≤–∞—Å –∏–º–µ–µ—Ç—Å—è –ø–æ–ª–Ω–∞—è –ø–æ—Å–ª–µ–¥–Ω—è—è –≤–µ—Ä—Å–∏—è –ø–∞–∫–µ—Ç–æ–≤ X-CSL –º–æ–¥–µ–ª–µ–π."));
 		}
 		mPackInfo->GetInfoToTable();
 		MWUI->NextButton->setEnabled(true);
 		MWUI->PrevButton->setEnabled(true);
 	}
 	else {
-		SetMessage(tr("ÕÂ‚ÓÁÏÓÊÌÓ ‚˚ÔÓÎÌËÚ¸ ËÌ‰ÂÍÒ‡ˆË˛!"));
+		SetMessage(tr("–ù–µ–≤–æ–∑–º–æ–∂–Ω–æ –≤—ã–ø–æ–ª–Ω–∏—Ç—å –∏–Ω–¥–µ–∫—Å–∞—Ü–∏—é!"));
 		MWUI->PrevButton->setEnabled(true);
 	}
 	emit cancelAll();
 }
 
-void Index::ParseIndexFiles() {
+void IndexStep::ParseIndexFiles() {
 	QString FileForDelPath = getIndexForDelFilePath();
 	QFile fileForDel(FileForDelPath);
 	if (!fileForDel.open(QIODevice::ReadOnly)) {
-		SetMessage(tr("Œ¯Ë·Í‡: %1").arg(fileForDel.errorString()));
+		SetMessage(tr("–û—à–∏–±–∫–∞: %1").arg(fileForDel.errorString()));
 		EndIndex(false);
 		return;
 	}
@@ -113,16 +113,16 @@ void Index::ParseIndexFiles() {
 	QString FilePath = getIndexFilePath();
 	QFile file(FilePath);
 	if (!file.open(QIODevice::ReadOnly)) {
-		SetMessage(tr("Œ¯Ë·Í‡: %1").arg(file.errorString()));
+		SetMessage(tr("–û—à–∏–±–∫–∞: %1").arg(file.errorString()));
 		EndIndex(false);
 		return;
 	}
 	if (file.size() < 1) {
-		SetMessage(tr("Œ¯Ë·Í‡: »Ì‰ÂÍÒÌ˚È Ù‡ÈÎ ËÏÂÂÚ ÌÛÎÂ‚ÓÈ ‡ÁÏÂ! %1").arg(file.size()));
+		SetMessage(tr("–û—à–∏–±–∫–∞: –ò–Ω–¥–µ–∫—Å–Ω—ã–π —Ñ–∞–π–ª –∏–º–µ–µ—Ç –Ω—É–ª–µ–≤–æ–π —Ä–∞–∑–º–µ—Ä! %1").arg(file.size()));
 		EndIndex(false);
 		return;
 	}
-	//SetMessage(tr("»Ì‰ÂÍÒËÛÂÏ CSL ÏÓ‰ÂÎË..."));
+	//SetMessage(tr("–ò–Ω–¥–µ–∫—Å–∏—Ä—É–µ–º CSL –º–æ–¥–µ–ª–∏..."));
 	// QTextStream in(&file);
 	int count = 0;
 	int ver_file_stat = true;
@@ -134,7 +134,7 @@ void Index::ParseIndexFiles() {
 		QString type = line.left(1);
 		if (ver_file_stat) {
 			if (type != "0") {
-				SetMessage(tr("Œ¯Ë·Í‡: »Ì‰ÂÍÒÌ˚È Ù‡ÈÎ ËÏÂÂÚ ÌÂ ‚ÂÌ˚È ÙÓÏ‡Ú!"));
+				SetMessage(tr("–û—à–∏–±–∫–∞: –ò–Ω–¥–µ–∫—Å–Ω—ã–π —Ñ–∞–π–ª –∏–º–µ–µ—Ç –Ω–µ –≤–µ—Ä–Ω—ã–π —Ñ–æ—Ä–º–∞—Ç!"));
 				file.close();
 				EndIndex(false);
 				return;
@@ -149,7 +149,7 @@ void Index::ParseIndexFiles() {
 			sprintf(str, "%i", count);
 			MWUI->tableWidget->setItem(count, 0, new QTableWidgetItem(str));
 			MWUI->tableWidget->setItem(count, 1, new QTableWidgetItem(list[1]));
-			MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("œÓ‰ÓÊ‰ËÚÂ...")));
+			MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("–ü–æ–¥–æ–∂–¥–∏—Ç–µ...")));
 			QString msg = tr("%3 (%4)").arg(list[4], list[5]);
 			MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(msg));
 			//sizeOfServer += list[2].toInt();
@@ -163,25 +163,25 @@ void Index::ParseIndexFiles() {
 			QTableWidgetItem *Item = new QTableWidgetItem();
 			switch (status) {
 				case 0:
-					Item->setText(tr("”ÒÚ‡ÌÓ‚ÎÂÌÓ"));
+					Item->setText(tr("–£—Å—Ç–∞–Ω–æ–≤–ª–µ–Ω–æ"));
 					Item->setTextColor(Qt::darkGreen);
 					MWUI->tableWidget->setItem(count, 5, Item);
-					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("”ÒÚ‡ÌÓ‚ÎÂÌÓ")));
+					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("–£—Å—Ç–∞–Ω–æ–≤–ª–µ–Ω–æ")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 				case 1:
-					Item->setText(tr("“Â·ÛÂÚ Ó·ÌÓ‚ÎÂÌËˇ"));
+					Item->setText(tr("–¢—Ä–µ–±—É–µ—Ç –æ–±–Ω–æ–≤–ª–µ–Ω–∏—è"));
 					Item->setTextColor(Qt::red);
 					MWUI->tableWidget->setItem(count, 5, Item);
-					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("“Â·ÛÂÚ Ó·ÌÓ‚ÎÂÌËˇ")));
+					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("–¢—Ä–µ–±—É–µ—Ç –æ–±–Ω–æ–≤–ª–µ–Ω–∏—è")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 				case -1:
-					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("ÕÂ ÛÒÚ‡ÌÓ‚ÎÂÌÓ")));
+					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("–ù–µ —É—Å—Ç–∞–Ω–æ–≤–ª–µ–Ω–æ")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 				default:
-					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("ÕÂ ‚˚ˇÒÌÂÌÓ")));
+					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("–ù–µ –≤—ã—è—Å–Ω–µ–Ω–æ")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 			}
@@ -194,11 +194,11 @@ void Index::ParseIndexFiles() {
 	EndIndex();
 }
 
-int Index::CheckCslPack(int pos, int ID) {
+int IndexStep::CheckCslPack(int pos, int ID) {
 	QString FilePath = getIndexFilePath();
 	QFile file(FilePath);
 	if (!file.open(QIODevice::ReadOnly)) {
-		SetMessage(tr("Œ¯Ë·Í‡: %1").arg(file.errorString()));
+		SetMessage(tr("–û—à–∏–±–∫–∞: %1").arg(file.errorString()));
 		return _CLIENT_FILE_STATUS_LOST;
 	}
 	QTextStream in(&file);
@@ -220,7 +220,7 @@ int Index::CheckCslPack(int pos, int ID) {
 	return status;
 }
 
-int Index::CheckFile(QStringList List, int ID) {
+int IndexStep::CheckFile(QStringList List, int ID) {
 	PackageEntry FilesInfo;
 	FilesInfo.ID = ID;
 	FilesInfo.data = List;
@@ -228,13 +228,13 @@ int Index::CheckFile(QStringList List, int ID) {
 	QString FilePath = mCslFolderName + separator + List[1];
 	QFileInfo fileInfo(FilePath);
 	mSizeOfServer += List[2].toInt();
-	// Ù‡ÈÎ ÒÛ˘ÂÒÚ‚ÛÂÚ?
+	// —Ñ–∞–π–ª —Å—É—â–µ—Å—Ç–≤—É–µ—Ç?
 	if (!fileInfo.isFile()) {
 		FilesInfo.state = _CLIENT_FILE_STATUS_LOST;
 		mEntryList.push_back(FilesInfo);
 		return _CLIENT_FILE_STATUS_LOST;
 	}
-	// ‡ÁÏÂ Ù‡ÈÎ‡ ÒÓ‚Ô‡‰‡ÂÚ?
+	// —Ä–∞–∑–º–µ—Ä —Ñ–∞–π–ª–∞ —Å–æ–≤–ø–∞–¥–∞–µ—Ç?
 	int size;
 	size = List[2].toInt();
 	if (size != (int)fileInfo.size()) {
@@ -268,7 +268,7 @@ int Index::CheckFile(QStringList List, int ID) {
 		QApplication::processEvents();
 	}
 
-	// ƒ‡Ú‡ Ë ‚ÂÏˇ Ù‡ÈÎ‡ ÒÓ‚Ô‡‰‡ÂÚ?
+	// –î–∞—Ç–∞ –∏ –≤—Ä–µ–º—è —Ñ–∞–π–ª–∞ —Å–æ–≤–ø–∞–¥–∞–µ—Ç?
 	/*QString date_end_time;
 	date_end_time = file.lastModified().toString("dd.MM.yyyy hh:mm:ss");
 	if (date_end_time != List[4]+" "+List[5])
@@ -277,14 +277,14 @@ int Index::CheckFile(QStringList List, int ID) {
 	FilesList.push_back(FilesInfo);
 	return _CLIENT_FILE_STATUS_CHANGE
 	}*/
-	// ÚËÔ‡ ‚ÒÂ Œ 
+	// —Ç–∏–ø–∞ –≤—Å–µ –û–ö
 	mSizeOfClient += (int)fileInfo.size();
 	FilesInfo.state = _CLIENT_FILE_STATUS_OK;
 	mEntryList.push_back(FilesInfo);
 	return _CLIENT_FILE_STATUS_OK;
 }
 
-QString Index::getIndexFilePath() {
+QString IndexStep::getIndexFilePath() {
 #ifdef Q_OS_WIN32
 	return "x-csl-indexes.idx";
 #else
@@ -305,7 +305,7 @@ QString Index::getIndexFilePath() {
 #endif
 }
 
-QString Index::getIndexForDelFilePath() {
+QString IndexStep::getIndexForDelFilePath() {
 #ifdef Q_OS_WIN32
 	return "x-csl-indexes-for-delete.idx";
 #else
@@ -326,7 +326,7 @@ QString Index::getIndexForDelFilePath() {
 #endif
 }
 
-void Index::httpRequestFinished(QNetworkReply *inReply) {
+void IndexStep::httpRequestFinished(QNetworkReply *inReply) {
 	inReply->deleteLater();
 	QFile *indexFile = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QFile*>();
 
@@ -341,7 +341,7 @@ void Index::httpRequestFinished(QNetworkReply *inReply) {
 		QString httpStatus = inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 		QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
 
-		SetMessage(tr("Œ¯Ë·Í‡ : %1.").arg(httpStatus + " - " + httpStatusMessage));
+		SetMessage(tr("–û—à–∏–±–∫–∞ : %1.").arg(httpStatus + " - " + httpStatusMessage));
 		EndIndex(false);
 		return;
 	}
@@ -350,21 +350,21 @@ void Index::httpRequestFinished(QNetworkReply *inReply) {
 	}
 }
 
-void Index::indexDonwloadProgress(qint64 bytesRead, qint64 totalBytes) {
+void IndexStep::indexDonwloadProgress(qint64 bytesRead, qint64 totalBytes) {
 	mTotalIndexBytes = totalBytes;
 	mIndexBytesDownloaded = bytesRead;
 	MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
 	MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
 }
 
-void Index::delIndexDonwloadProgress(qint64 bytesRead, qint64 totalBytes) {
+void IndexStep::delIndexDonwloadProgress(qint64 bytesRead, qint64 totalBytes) {
 	mTotalDelIndexBytes = totalBytes;
 	mDelIndexBytesDownloaded = bytesRead;
 	MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
 	MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
 }
 
-bool Index::createIndexFile(QString inFileName, QFile **inIndexFile) {
+bool IndexStep::createIndexFile(QString inFileName, QFile **inIndexFile) {
 	if (QFile::exists(inFileName)) {
 		QFile::remove(inFileName);
 	}
@@ -372,7 +372,7 @@ bool Index::createIndexFile(QString inFileName, QFile **inIndexFile) {
 	*inIndexFile = new QFile(inFileName);
 	QFile *file = *inIndexFile;
 	if (!file->open(QIODevice::WriteOnly)) {
-		SetMessage(tr("Œ¯Ë·Í‡: ÕÂ ÏÓ„Û Á‡ÔËÒ‡Ú¸ Ù‡ÈÎ Ì‡ ‚‡¯ ÍÓÏÔ¸˛ÚÂ - %1 : %2.").arg(inFileName).arg(file->errorString()));
+		SetMessage(tr("–û—à–∏–±–∫–∞: –ù–µ –º–æ–≥—É –∑–∞–ø–∏—Å–∞—Ç—å —Ñ–∞–π–ª –Ω–∞ –≤–∞—à –∫–æ–º–ø—å—é—Ç–µ—Ä - %1 : %2.").arg(inFileName).arg(file->errorString()));
 		delete *inIndexFile;
 		*inIndexFile = nullptr;
 		return false;

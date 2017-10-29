@@ -3,15 +3,15 @@
 
 #include <QtGui>
 #include "base_steps.h"
-#include "index.h"
+#include "IndexStep.h"
 
-class Update : public BaseSteps {
+class UpdateStep : public BaseSteps {
 	Q_OBJECT
 
 public:
-	Update(QWidget *_MW, Ui::MainWindow *_MWUI);
-	~Update();
-	void StartUpdate(QVector<PackageEntry> FilesList, Index *Indx);
+	UpdateStep(QWidget *_MW, Ui::MainWindow *_MWUI);
+	~UpdateStep();
+	void StartUpdate(QVector<PackageEntry> FilesList, IndexStep *Indx);
 
 signals:
 	void cancelDownloading();
@@ -28,7 +28,7 @@ private:
 	void CopyRemoteFile(PackageEntry inPackageEntry);
 	void EndUpdate();
 
-	Index *mIndexStep;
+	IndexStep *mIndexStep;
 	QNetworkAccessManager *mNetMng;
 	QFile *mDownloadingFile = nullptr;
 	QString mDownloadingFileName;

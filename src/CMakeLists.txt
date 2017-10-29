@@ -82,3 +82,6 @@ set_target_properties(${TARGET_NAME}
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
 )
 
+# Install script
+include(${CMAKE_SOURCE_DIR}/Install.cmake)
+

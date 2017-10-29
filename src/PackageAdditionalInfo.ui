@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>info</class>
- <widget class="QDialog" name="info">
+ <class>PackageAdditionalInfo</class>
+ <widget class="QDialog" name="PackageAdditionalInfo">
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
@@ -103,7 +103,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>pushButton</sender>
    <signal>pressed()</signal>
-   <receiver>info</receiver>
+   <receiver>PackageAdditionalInfo</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

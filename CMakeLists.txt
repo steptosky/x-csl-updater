@@ -11,4 +11,11 @@ set(PLATFORM_BITS "x64" CACHE STRING "user specified flag: x86 or x64")
 
 project( ${SOLUTION} )
 
+include(cmake/GenInfoFile.cmake)
+genInfoFile("${INFO_H_PATH}" "${CMAKE_SOURCE_DIR}/Description.cmake")
+
+include(cmake/DeployFolder.cmake)
+makeDeployFolderString()
+message("Info: Generated deploy folder name: ${DEPLOY_FOLDER}")
+
 add_subdirectory(src)

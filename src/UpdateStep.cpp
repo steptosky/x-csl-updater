@@ -1,18 +1,18 @@
-#include "update.h"
+#include "UpdateStep.h"
 
-Update::Update(QWidget *_MW, Ui::MainWindow *_MWUI) : BaseSteps(_MW, _MWUI) {
+UpdateStep::UpdateStep(QWidget *_MW, Ui::MainWindow *_MWUI) : BaseSteps(_MW, _MWUI) {
 	mNetMng = new QNetworkAccessManager(this);
-	connect(mNetMng, &QNetworkAccessManager::finished, this, &Update::httpRequestFinished);
+	connect(mNetMng, &QNetworkAccessManager::finished, this, &UpdateStep::httpRequestFinished);
 	connect(MWUI->CancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
 
 }
 
-Update::~Update() {
+UpdateStep::~UpdateStep() {
 	delete mNetMng;
 	delete mDownloadingFile;
 }
 
-void Update::CancelSlot() {
+void UpdateStep::CancelSlot() {
 	SetMessage(tr("Операция прервана пользователем!"));
 	emit cancelDownloading();
 
@@ -22,7 +22,7 @@ void Update::CancelSlot() {
 	mIndexStep->StartIndex();
 }
 
-bool Update::removeDir(const QString & dirName) {
+bool UpdateStep::removeDir(const QString & dirName) {
 	bool result = false;
 	QDir dir(dirName);
 
@@ -43,7 +43,7 @@ bool Update::removeDir(const QString & dirName) {
 	return result;
 }
 
-bool Update::removePath(QString path) {
+bool UpdateStep::removePath(QString path) {
 	QString correctedPath = QDir::toNativeSeparators(mCslFolderName + mSeparator + path).trimmed();
 	//qDebug() << correctedPath;
 	QFileInfo fileInfo(correctedPath);
@@ -60,7 +60,7 @@ bool Update::removePath(QString path) {
 	}
 }
 
-bool Update::createDownloadingFile(PackageEntry inPackageEntry) {
+bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 	QString fileName = mCslFolderName + mSeparator + inPackageEntry.data[1];
 	if (inPackageEntry.ID == 100) {// files for root recourses folder
 		QDir dir(mCslFolderName);
@@ -94,7 +94,7 @@ bool Update::createDownloadingFile(PackageEntry inPackageEntry) {
 	return true;
 }
 
-void Update::StartUpdate(QVector<PackageEntry> inFileList, Index *inIndexStep) {
+void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inIndexStep) {
 	MWUI->CancelButton->setEnabled(true);
 	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	mCslFolderName = settings.value("FolderName").toString();
@@ -141,7 +141,7 @@ void Update::StartUpdate(QVector<PackageEntry> inFileList, Index *inIndexStep) {
 	}
 }
 
-void Update::EndUpdate() {
+void UpdateStep::EndUpdate() {
 	// remove files was planed to delete	
 	for (int i = 0; i < mSelectedListForDelete.size(); i++) {
 		removePath(mSelectedListForDelete[i].data[1]);
@@ -162,7 +162,7 @@ void Update::EndUpdate() {
 	mIndexStep->StartIndex();
 }
 
-void Update::CopyRemoteFile(PackageEntry inPackageEntry) {
+void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
 	QString From = mServer + inPackageEntry.data[1];	
 	QUrl url(From);
 	if (!createDownloadingFile(inPackageEntry)) {// cannot create file
@@ -182,12 +182,12 @@ void Update::CopyRemoteFile(PackageEntry inPackageEntry) {
 	QNetworkRequest request;
 	request.setUrl(url);
 	QNetworkReply *reply = mNetMng->get(request);
-	connect(this, &Update::cancelDownloading, reply, &QNetworkReply::abort);
-	connect(reply, &QNetworkReply::downloadProgress, this, &Update::updateDataReadProgress);
+	connect(this, &UpdateStep::cancelDownloading, reply, &QNetworkReply::abort);
+	connect(reply, &QNetworkReply::downloadProgress, this, &UpdateStep::updateDataReadProgress);
 	SetMessage(tr("Обновляем: %1...").arg(mDownloadingFileName));
 }
 
-void Update::httpRequestFinished(QNetworkReply *inReply) {
+void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
 	inReply->deleteLater();
 	if (inReply->error() != QNetworkReply::OperationCanceledError) {
 		if (inReply->error() == QNetworkReply::NoError) {
@@ -224,7 +224,7 @@ void Update::httpRequestFinished(QNetworkReply *inReply) {
 	}
 }
 
-void Update::updateDataReadProgress(qint64 bytesRead, qint64 totalBytes) {
+void UpdateStep::updateDataReadProgress(qint64 bytesRead, qint64 totalBytes) {
 	mTotalBytes = totalBytes;
 	mDownloadedBytes = bytesRead;
 	MWUI->progressBar->setMaximum(mTotalBytes);
