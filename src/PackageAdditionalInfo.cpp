@@ -83,8 +83,8 @@ void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 	else {
 		PackInfo packInfo;
 		packInfo.ID = packId;
-		packInfo.Info = tr("Èíôîðìàöèÿ îòñóòñòâóåò...");
-		packInfo.ShortInfo = tr("Èíôîðìàöèÿ îòñóòñòâóåò...");
+		packInfo.Info = tr("Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ Ð¾Ñ‚ÑÑƒÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚...");
+		packInfo.ShortInfo = tr("Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ Ð¾Ñ‚ÑÑƒÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚...");
 		mPackInfo.push_back(packInfo);
 		QTableWidgetItem *Item = new QTableWidgetItem(packInfo.ShortInfo);
 		Item->setTextColor(Qt::lightGray);

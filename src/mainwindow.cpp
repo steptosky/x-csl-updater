@@ -10,14 +10,14 @@ MainWindow::MainWindow(QWidget *parent)
 	// setup UI
 	mUi->setupUi(this);
 
-	// óñòàíîâêà íóæíîãî êîäåêà
+	// ÑƒÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð½ÑƒÐ¶Ð½Ð¾Ð³Ð¾ ÐºÐ¾Ð´ÐµÐºÐ°
 //     QTextCodec *codec = QTextCodec::codecForName("CP1251");
 // 	QTextCodec::setCodecForTr(codec);
 
-	// ñåïàðàòîð
+	// ÑÐµÐ¿Ð°Ñ€Ð°Ñ‚Ð¾Ñ€
 	this->separator = "/"/*(QString)QDir::separator()*/;
 
-	// öåïëÿåì íàñòðîéêè èç ñîõðàíåíûõ
+	// Ñ†ÐµÐ¿Ð»ÑÐµÐ¼ Ð½Ð°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ¸ Ð¸Ð· ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ñ‹Ñ…
 	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	move(settings.value("pos", QPoint(200, 200)).toPoint());
 
@@ -49,21 +49,21 @@ MainWindow::MainWindow(QWidget *parent)
 
 	this->FolderName = settings.value("FolderName", default_path).toString();
 
-	// êîíòåêñò ìåíþ ËÈÑÒÀ
-	this->ListClearAct = new QAction(tr("Î÷èñòèòü"), this);
+	// ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚ Ð¼ÐµÐ½ÑŽ Ð›Ð˜Ð¡Ð¢Ð
+	this->ListClearAct = new QAction(tr("ÐžÑ‡Ð¸ÑÑ‚Ð¸Ñ‚ÑŒ"), this);
 	connect(this->ListClearAct, &QAction::triggered, this, &MainWindow::ListClear);
-	this->ListSelAllAct = new QAction(tr("Âûäåëèòü Âñå"), this);
+	this->ListSelAllAct = new QAction(tr("Ð’Ñ‹Ð´ÐµÐ»Ð¸Ñ‚ÑŒ Ð’ÑÐµ"), this);
 	this->ListSelAllAct->setShortcut(tr("Ctrl+A"));
 	connect(this->ListSelAllAct, &QAction::triggered, this, &MainWindow::ListSelAll);
 
-	// êîíòåêñò ìåíþ Òàáëèöû
-	this->TableSelAllAct = new QAction(tr("Âûäåëèòü Âñå"), this);
+	// ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚ Ð¼ÐµÐ½ÑŽ Ð¢Ð°Ð±Ð»Ð¸Ñ†Ñ‹
+	this->TableSelAllAct = new QAction(tr("Ð’Ñ‹Ð´ÐµÐ»Ð¸Ñ‚ÑŒ Ð’ÑÐµ"), this);
 	this->TableSelAllAct->setShortcut(tr("Ctrl+A"));
 	connect(this->TableSelAllAct, &QAction::triggered, this, &MainWindow::TableSelAll);
-	this->TableInfoAct = new QAction(tr("Èíôîðìàöèÿ"), this);
+	this->TableInfoAct = new QAction(tr("Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ"), this);
 	connect(this->TableInfoAct, &QAction::triggered, this, &MainWindow::TableInfo);
 
-	// øèðèíà êîëîíîê òàáëèöû
+	// ÑˆÐ¸Ñ€Ð¸Ð½Ð° ÐºÐ¾Ð»Ð¾Ð½Ð¾Ðº Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ñ‹
 	this->mUi->tableWidget->setColumnWidth(0, 30);//ID
 	this->mUi->tableWidget->setColumnWidth(1, 150);//Title
 	this->mUi->tableWidget->setColumnWidth(2, 230);//Info
@@ -73,29 +73,29 @@ MainWindow::MainWindow(QWidget *parent)
 	this->mUi->tableWidget->setColumnWidth(6, 20);//code
 	this->mUi->tableWidget->setColumnHidden(6, true);
 
-	// âñÿêî ðàçíî ïèøåì â îêíå è äðóãîå
+	// Ð²ÑÑÐºÐ¾ Ñ€Ð°Ð·Ð½Ð¾ Ð¿Ð¸ÑˆÐµÐ¼ Ð² Ð¾ÐºÐ½Ðµ Ð¸ Ð´Ñ€ÑƒÐ³Ð¾Ðµ
 	this->mUi->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
 	this->mUi->progressBar->setValue(0);
 	this->mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + VerProg);
 
-	// Íà÷àëî
+	// ÐÐ°Ñ‡Ð°Ð»Ð¾
 	/*QLocale Loc;
 	QString local(Loc.name());
 	this->ui->listWidget->addItem(local);*/
-	this->mUi->listWidget->addItem(tr("Óêàæèòå ïóòü ê ôàéëó X-Plane.exe è íàæìèòå \"Èíäåêñèðîâàòü\""));
-	this->mUi->listWidget->addItem(tr("äëÿ èíäåêñèðîâàíèÿ è îïðåäåëåíèÿ ôàéëîâ, íóæäàþùèõñÿ â îáíîâëåíèè."));
+	this->mUi->listWidget->addItem(tr("Ð£ÐºÐ°Ð¶Ð¸Ñ‚Ðµ Ð¿ÑƒÑ‚ÑŒ Ðº Ñ„Ð°Ð¹Ð»Ñƒ X-Plane.exe Ð¸ Ð½Ð°Ð¶Ð¼Ð¸Ñ‚Ðµ \"Ð˜Ð½Ð´ÐµÐºÑÐ¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ\""));
+	this->mUi->listWidget->addItem(tr("Ð´Ð»Ñ Ð¸Ð½Ð´ÐµÐºÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð¸ Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÐµÐ½Ð¸Ñ Ñ„Ð°Ð¹Ð»Ð¾Ð², Ð½ÑƒÐ¶Ð´Ð°ÑŽÑ‰Ð¸Ñ…ÑÑ Ð² Ð¾Ð±Ð½Ð¾Ð²Ð»ÐµÐ½Ð¸Ð¸."));
 	this->mUi->listWidget->scrollToBottom();
 
-	// èíèöèàëèçàöèÿ ïåðåìåííûõ
+	// Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð¿ÐµÑ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ñ…
 
-	// èíèöèàëèçàöèÿ îáüåêòîâ
+	// Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð¾Ð±ÑŒÐµÐºÑ‚Ð¾Ð²
 	this->AboutWin = new About(this);
 	this->SettingsWin = new Settings(this);
 	this->Inf = new PackageAdditionalInfo(this, this->mUi);
 	this->Indx = new IndexStep(this, this->mUi, this->Inf);
 	this->Updt = new UpdateStep(this, this->mUi);
 
-	// êîííåêòû
+	// ÐºÐ¾Ð½Ð½ÐµÐºÑ‚Ñ‹
 	connect(this->mUi->actionAbout, &QAction::triggered, this, &MainWindow::AboutSlot);
 	connect(this->mUi->actionAbout_Qt, &QAction::triggered, qApp, &QApplication::aboutQt);
 	connect(this->mUi->actionSetFolder, &QAction::triggered, this, &MainWindow::SetFolder);
@@ -204,17 +204,17 @@ void MainWindow::SetFolder()
 
 #ifdef Q_OS_WIN32
 	FName = QFileDialog::getOpenFileName(this,
-		tr("Óêàæèòå ïóòü ê èñïîëíÿåìîìó ôàéëó X-Plane"),
+		tr("Ð£ÐºÐ°Ð¶Ð¸Ñ‚Ðµ Ð¿ÑƒÑ‚ÑŒ Ðº Ð¸ÑÐ¿Ð¾Ð»Ð½ÑÐµÐ¼Ð¾Ð¼Ñƒ Ñ„Ð°Ð¹Ð»Ñƒ X-Plane"),
 		_FName,
 		"X-Plane*.exe (X-Plane*.exe)");
 #elif defined Q_OS_LINUX
 	FName = QFileDialog::getOpenFileName(this,
-		tr("Óêàæèòå ïóòü ê èñïîëíÿåìîìó ôàéëó X-Plane"),
+		tr("Ð£ÐºÐ°Ð¶Ð¸Ñ‚Ðµ Ð¿ÑƒÑ‚ÑŒ Ðº Ð¸ÑÐ¿Ð¾Ð»Ð½ÑÐµÐ¼Ð¾Ð¼Ñƒ Ñ„Ð°Ð¹Ð»Ñƒ X-Plane"),
 		_FName,
 		"X-Plane* (X-Plane*)");
 #else
 	FName = QFileDialog::getOpenFileName(this,
-		tr("Óêàæèòå ïóòü ê èñïîëíÿåìîìó ôàéëó X-Plane"),
+		tr("Ð£ÐºÐ°Ð¶Ð¸Ñ‚Ðµ Ð¿ÑƒÑ‚ÑŒ Ðº Ð¸ÑÐ¿Ð¾Ð»Ð½ÑÐµÐ¼Ð¾Ð¼Ñƒ Ñ„Ð°Ð¹Ð»Ñƒ X-Plane"),
 		_FName,
 		"X-Plane*.app (X-Plane*.app)");
 #endif
@@ -234,7 +234,7 @@ void MainWindow::SetFolder()
 		}
 		else
 		{
-			this->mUi->listWidget->addItem(tr("Îøèáêà: Â âûáðàííîé âåðñèè X-Plane íå óñòàíîâëåí ïëàãèí X-IvAp!"));
+			this->mUi->listWidget->addItem(tr("ÐžÑˆÐ¸Ð±ÐºÐ°: Ð’ Ð²Ñ‹Ð±Ñ€Ð°Ð½Ð½Ð¾Ð¹ Ð²ÐµÑ€ÑÐ¸Ð¸ X-Plane Ð½Ðµ ÑƒÑÑ‚Ð°Ð½Ð¾Ð²Ð»ÐµÐ½ Ð¿Ð»Ð°Ð³Ð¸Ð½ X-IvAp!"));
 			this->mUi->listWidget->scrollToBottom();
 		}
 	}
@@ -243,9 +243,9 @@ void MainWindow::SetFolder()
 
 void MainWindow::SetCustomFolder()
 {
-	QMessageBox::warning(this, PROGRAM_NAME, tr("Âíèìàíèå! Äàííàÿ ôóíêöèÿ ïðåäíàçíà÷åíà äëÿ ïðîôåññèîíàëüíîãî èñïîëüçîâàíèÿ. Âîçìîæíî ïðîãðàììà ñòàíåò íåðàáîòîñïîñîáíîé!"), QMessageBox::Ok);
+	QMessageBox::warning(this, PROGRAM_NAME, tr("Ð’Ð½Ð¸Ð¼Ð°Ð½Ð¸Ðµ! Ð”Ð°Ð½Ð½Ð°Ñ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ñ Ð¿Ñ€ÐµÐ´Ð½Ð°Ð·Ð½Ð°Ñ‡ÐµÐ½Ð° Ð´Ð»Ñ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ð³Ð¾ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ð½Ð¸Ñ. Ð’Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ð° ÑÑ‚Ð°Ð½ÐµÑ‚ Ð½ÐµÑ€Ð°Ð±Ð¾Ñ‚Ð¾ÑÐ¿Ð¾ÑÐ¾Ð±Ð½Ð¾Ð¹!"), QMessageBox::Ok);
 	this->FolderName = QFileDialog::getExistingDirectory(this,
-		tr("X-CSL-Updater :: Âûáåðèòå ïàïêó X-Plane"), this->FolderName, QFileDialog::ShowDirsOnly);
+		tr("X-CSL-Updater :: Ð’Ñ‹Ð±ÐµÑ€Ð¸Ñ‚Ðµ Ð¿Ð°Ð¿ÐºÑƒ X-Plane"), this->FolderName, QFileDialog::ShowDirsOnly);
 
 	if (!this->FolderName.isEmpty())
 	{
