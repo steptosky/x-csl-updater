@@ -151,7 +151,7 @@ void Update::EndUpdate() {
 	}
 
 	if (mFailedFileCounter > 0) {
-		SetMessage(tr("Обновление завершено! Не удалось обновить %1 файлов!").arg(mFailedFileCounter));
+		SetMessage(tr("Обновление НЕ завершено! Не удалось обновить %1 файлов!").arg(mFailedFileCounter));
 	}
 	else {
 		SetMessage(tr("Обновление завершено!"));
@@ -183,7 +183,7 @@ void Update::CopyRemoteFile(PackageEntry inPackageEntry) {
 	request.setUrl(url);
 	QNetworkReply *reply = mNetMng->get(request);
 	connect(this, &Update::cancelDownloading, reply, &QNetworkReply::abort);
-	connect(this, &Update::updateDataReadProgress, reply, &QNetworkReply::downloadProgress);
+	connect(reply, &QNetworkReply::downloadProgress, this, &Update::updateDataReadProgress);
 	SetMessage(tr("Обновляем: %1...").arg(mDownloadingFileName));
 }
 

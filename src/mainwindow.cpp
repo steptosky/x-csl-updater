@@ -51,17 +51,17 @@ MainWindow::MainWindow(QWidget *parent)
 
 	// контекст меню ЛИСТА
 	this->ListClearAct = new QAction(tr("Очистить"), this);
-	connect(this->ListClearAct, SIGNAL(activated()), this, SLOT(ListClear()));
+	connect(this->ListClearAct, &QAction::triggered, this, &MainWindow::ListClear);
 	this->ListSelAllAct = new QAction(tr("Выделить Все"), this);
 	this->ListSelAllAct->setShortcut(tr("Ctrl+A"));
-	connect(this->ListSelAllAct, SIGNAL(activated()), this, SLOT(ListSelAll()));
+	connect(this->ListSelAllAct, &QAction::triggered, this, &MainWindow::ListSelAll);
 
 	// контекст меню Таблицы
 	this->TableSelAllAct = new QAction(tr("Выделить Все"), this);
 	this->TableSelAllAct->setShortcut(tr("Ctrl+A"));
-	connect(this->TableSelAllAct, SIGNAL(activated()), this, SLOT(TableSelAll()));
+	connect(this->TableSelAllAct, &QAction::triggered, this, &MainWindow::TableSelAll);
 	this->TableInfoAct = new QAction(tr("Информация"), this);
-	connect(this->TableInfoAct, SIGNAL(activated()), this, SLOT(TableInfo()));
+	connect(this->TableInfoAct, &QAction::triggered, this, &MainWindow::TableInfo);
 
 	// ширина колонок таблицы
 	this->mUi->tableWidget->setColumnWidth(0, 30);//ID
@@ -96,17 +96,17 @@ MainWindow::MainWindow(QWidget *parent)
 	this->Updt = new Update(this, this->mUi);
 
 	// коннекты
-	connect(this->mUi->actionAbout, SIGNAL(activated()), this, SLOT(AboutSlot()));
-	connect(this->mUi->actionAbout_Qt, SIGNAL(activated()), qApp, SLOT(aboutQt()));
-	connect(this->mUi->actionSetFolder, SIGNAL(activated()), this, SLOT(SetFolder()));
-	connect(this->mUi->actionSettings, SIGNAL(activated()), this, SLOT(SettingSlot()));
-	connect(this->mUi->listWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(ListContextMenu(const QPoint &)));
-	connect(this->mUi->tableWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(TableContextMenu(const QPoint &)));
-	connect(this->mUi->SelAllButton, SIGNAL(pressed()), this, SLOT(TableSelAll()));
-	connect(this->mUi->NextButton, SIGNAL(pressed()), this, SLOT(UpdateSlot()));
-	connect(this->mUi->PrevButton, SIGNAL(pressed()), this, SLOT(IndexSlot()));
-	connect(this->mUi->ButtonSetFolder, SIGNAL(clicked()), this, SLOT(SetFolder()));
-	connect(this->mUi->actionSet_Custom_Path, SIGNAL(activated()), this, SLOT(SetCustomFolder()));
+	connect(this->mUi->actionAbout, &QAction::triggered, this, &MainWindow::AboutSlot);
+	connect(this->mUi->actionAbout_Qt, &QAction::triggered, qApp, &QApplication::aboutQt);
+	connect(this->mUi->actionSetFolder, &QAction::triggered, this, &MainWindow::SetFolder);
+	connect(this->mUi->actionSettings, &QAction::triggered, this, &MainWindow::SettingSlot);
+	connect(this->mUi->listWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::ListContextMenu);
+	connect(this->mUi->tableWidget, &QTableWidget::customContextMenuRequested, this, &MainWindow::TableContextMenu);
+	connect(this->mUi->SelAllButton, &QPushButton::pressed, this, &MainWindow::TableSelAll);
+	connect(this->mUi->NextButton, &QPushButton::pressed, this, &MainWindow::UpdateSlot);
+	connect(this->mUi->PrevButton, &QPushButton::pressed, this, &MainWindow::IndexSlot);
+	connect(this->mUi->ButtonSetFolder, &QPushButton::pressed, this, &MainWindow::SetFolder);
+	connect(this->mUi->actionSet_Custom_Path, &QAction::triggered, this, &MainWindow::SetCustomFolder);
 }
 
 MainWindow::~MainWindow()

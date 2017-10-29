@@ -6,10 +6,8 @@
 #include "../version.h"
 
 #define VERSION_MAJOR    1
-#define VERSION_MINOR    1
+#define VERSION_MINOR    2
 #define VERSION_PATCH    0
-
-//static QString VerProg = "0.1.1.4.beta";
 
 static QString VerProg = 
 	QString::number(VERSION_MAJOR)

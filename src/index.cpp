@@ -9,8 +9,6 @@ Index::Index(QWidget *_MW, Ui::MainWindow *_MWUI, Info *_Inf) : BaseSteps(_MW, _
 
 Index::~Index() {
 	delete mNetMng;
-	mIndexFile->close();
-	mDelIndexFile->close();
 	delete mIndexFile;
 	delete mDelIndexFile;
 }
@@ -19,7 +17,6 @@ void Index::StartIndex() {
 	mPackInfo->requestStopAction();
 	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	mCslFolderName = settings.value("FolderName").toString();
-	SetMessage(tr("Индексирование:"));
 	mSizeOfClient = 0;
 	mSizeOfNeedUpdate = 0;
 	mSizeOfServer = 0;
@@ -48,13 +45,14 @@ void Index::StartIndex() {
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mIndexFile));
 	QNetworkReply *reply = mNetMng->get(request);
 	connect(this, &Index::cancelAll, reply, &QNetworkReply::abort);
-	connect(this, &Index::indexDonwloadProgress, reply, &QNetworkReply::downloadProgress);
+	connect(reply, &QNetworkReply::downloadProgress, this, &Index::indexDonwloadProgress);
 
 	request.setUrl(mDelIndexFileUrl);
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mDelIndexFile));
 	reply = mNetMng->get(request);
 	connect(this, &Index::cancelAll, reply, &QNetworkReply::abort);
-	connect(this, &Index::delIndexDonwloadProgress, reply, &QNetworkReply::downloadProgress);
+	connect(reply, &QNetworkReply::downloadProgress, this, &Index::delIndexDonwloadProgress);
+	//
 }
 
 void Index::EndIndex(int Next) {
@@ -69,7 +67,6 @@ void Index::EndIndex(int Next) {
 		char cstrSizeAll[13];
 		sprintf(cstrSizeAll, "%10.2f", fsizeOfServer);
 		QString strSizeNeed(cstrSizeNeed), strSizeAll(cstrSizeAll);
-		SetMessage(tr("Индексация завершена!"));
 		//1048576
 		if (mSizeOfNeedUpdate != 0) {
 			SetMessage(tr("Для полного обновления вам необходимо загрузить %1 MB из %2 MB").arg(strSizeNeed, strSizeAll));
