@@ -5,39 +5,44 @@
 #include "base_steps.h"
 #include "index.h"
 
-class Update : public BaseSteps
-{
-    Q_OBJECT
+class Update : public BaseSteps {
+	Q_OBJECT
 
 public:
-    Update(QWidget *_MW, Ui::MainWindow *_MWUI);
-    ~Update();
-    void StartUpdate(QVector<FilesTypes> FilesList, Index *Indx);
+	Update(QWidget *_MW, Ui::MainWindow *_MWUI);
+	~Update();
+	void StartUpdate(QVector<PackageEntry> FilesList, Index *Indx);
 
 signals:
+	void cancelDownloading();
 
 private slots:
-    void httpRequestFinished(int requestId, bool error);
-    void readResponseHeader(const QHttpResponseHeader &responseHeader);
-    void updateDataReadProgress(int bytesRead, int totalBytes);
-    void CancelSlot();
+	void httpRequestFinished(QNetworkReply *inReply);
+	void updateDataReadProgress(qint64 bytesRead, qint64 totalBytes);
+	void CancelSlot();
 
 private:
-    bool removeDir(const QString &dirName);
+	bool removeDir(const QString &dirName);
 	bool removePath(QString path);
-    void CopyRemoteFile(QString From, QString To);
-    void EndUpdate();
-    Index *Indx;
-    QHttp *http;
-    QFile *file;
-    int httpGetId;
-    bool httpRequestAborted;
-    int DownSize;
-    int TotalDownSize;
-    int countMain;
-    QString server;
+	bool createDownloadingFile(PackageEntry inPackageEntry);
+	void CopyRemoteFile(PackageEntry inPackageEntry);
+	void EndUpdate();
 
-	QVector<FilesTypes> mSelectedListForDelete;
+	Index *mIndexStep;
+	QNetworkAccessManager *mNetMng;
+	QFile *mDownloadingFile;
+	QString mDownloadingFileName;
+
+	int mDownloadedBytes;
+	int mTotalBytes;
+	int mFileCounter;
+	int mFailedFileCounter;
+
+	int mDeletedFiles;
+
+	QString mServer;
+
+	QVector<PackageEntry> mSelectedListForDelete;
 };
 
 #endif // UPDATE_H

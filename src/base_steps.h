@@ -14,13 +14,13 @@ public:
 	Ui::MainWindow *MWUI;
 	QString mSeparator;
 	QString mCslFolderName;
-	struct FilesTypes
+	struct PackageEntry
 	{
 		int ID;
-		QStringList List;
-		int State;
+		QStringList data;
+		int state;
 	};
-	QVector<FilesTypes> mFileList;
+	QVector<PackageEntry> mEntryList;
 
 	BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI);
 	~BaseSteps();

@@ -1,31 +1,28 @@
 #include "update.h"
 
-Update::Update(QWidget *_MW, Ui::MainWindow *_MWUI) : BaseSteps(_MW, _MWUI)
-{
-	this->http = new QHttp();
-
-	connect(this->http, SIGNAL(requestFinished(int, bool)), this, SLOT(httpRequestFinished(int, bool)));
-	connect(this->http, SIGNAL(dataReadProgress(int, int)), this, SLOT(updateDataReadProgress(int, int)));
-	connect(this->http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)), this, SLOT(readResponseHeader(const QHttpResponseHeader &)));
-	connect(this->MWUI->CancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
+Update::Update(QWidget *_MW, Ui::MainWindow *_MWUI) : BaseSteps(_MW, _MWUI) {
+	mNetMng = new QNetworkAccessManager(this);
+	connect(mNetMng, &QNetworkAccessManager::finished, this, &Update::httpRequestFinished);
+	connect(MWUI->CancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
 
 }
 
-Update::~Update()
-{
-	this->http->abort();
-	this->http->close();
+Update::~Update() {
+	delete mNetMng;
+	delete mDownloadingFile;
 }
 
-void Update::CancelSlot()
-{
-	this->SetMessage(tr("Операция прервана пользователем! Подождите..."));
-	this->httpRequestAborted = true;
-	this->MWUI->CancelButton->setEnabled(false);
+void Update::CancelSlot() {
+	SetMessage(tr("Операция прервана пользователем!"));
+	emit cancelDownloading();
+
+	MWUI->CancelButton->setEnabled(false);
+	mIndexStep->StartIndex();
+	MWUI->PrevButton->setEnabled(true);
+	MWUI->NextButton->setEnabled(true);
 }
 
-bool Update::removeDir(const QString & dirName)
-{
+bool Update::removeDir(const QString & dirName) {
 	bool result = false;
 	QDir dir(dirName);
 
@@ -36,6 +33,9 @@ bool Update::removeDir(const QString & dirName)
 			}
 			else {
 				result = QFile::remove(info.absoluteFilePath());
+				if (result) {
+					++mDeletedFiles;
+				}
 			}
 		}
 		result = dir.rmdir(dirName);
@@ -44,258 +44,180 @@ bool Update::removeDir(const QString & dirName)
 }
 
 bool Update::removePath(QString path) {
-	QString correctedPath = QDir::toNativeSeparators(this->mCslFolderName + mSeparator + path).trimmed();
+	QString correctedPath = QDir::toNativeSeparators(mCslFolderName + mSeparator + path).trimmed();
 	//qDebug() << correctedPath;
 	QFileInfo fileInfo(correctedPath);
 	QDir dir(correctedPath);
-	if (fileInfo.isFile()){
-		return QFile::remove(correctedPath);
+	if (fileInfo.isFile()) {
+		bool res = QFile::remove(correctedPath);
+		if (res) {
+			++mDeletedFiles;
+		}
+		return res;
 	}
-	else{
+	else {
 		return removeDir(correctedPath);
 	}
 }
 
-void Update::StartUpdate(QVector<FilesTypes> _FilesList, Index *_Indx)
-{
-	this->MWUI->CancelButton->setEnabled(true);
-	QSettings settings(ORGANISATION, PROGRAM_NAME);
-	this->mCslFolderName = settings.value("FolderName").toString();
-	this->mFileList.clear();
-	mSelectedListForDelete.clear();
-	this->Indx = _Indx;
-	this->server = settings.value("curServer").toString();
-	int size = _FilesList.size();
-	int RowCount = this->MWUI->tableWidget->rowCount();
-	int sizeForDel = Indx->mFileListForDel.size();
-	// determine files to delete
-	// I think we must delete files in any case during update. so it code was commented...
-	for (int i = 0; i < sizeForDel; i++){
-
-		if (Indx->mFileListForDel[i].ID == 11){
-			mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
-			continue;
-		}
-
-		// I think we must delete files in any case during update. so it code was commented...
-		for (int ii = 0; ii < RowCount; ii++)
-		{
-			if (this->MWUI->tableWidget->item(ii, 0)->isSelected())
-			{
-				QStringList list = Indx->mFileListForDel[i].List[1].split("/", QString::SkipEmptyParts);
-				if (this->MWUI->tableWidget->item(ii, 1)->text() == list[0] && Indx->mFileListForDel[i].ID != 11){
-					mSelectedListForDelete.push_back(Indx->mFileListForDel[i]);
-					break;
-				}
-			}
-		}
+bool Update::createDownloadingFile(PackageEntry inPackageEntry) {
+	QString fileName = mCslFolderName + mSeparator + inPackageEntry.data[1];
+	if (inPackageEntry.ID == 100) {// files for root recourses folder
+		QDir dir(mCslFolderName);
+		dir.cdUp();
+		QString corrFolderName = dir.path();
+		fileName = corrFolderName + mSeparator + inPackageEntry.data[1];
 	}
+	if (QFile::exists(fileName)) {
+		QFile::remove(fileName);
+	}
+	delete mDownloadingFile;
+	mDownloadingFile = new QFile(fileName);
+	mDownloadingFile->open(QIODevice::WriteOnly);
+	if (!mDownloadingFile->isOpen()) {
+		SetMessage(tr("Ошибка: Не могу записать файл на ваш компьютер - %1 : %2.").arg(fileName).arg(mDownloadingFile->errorString()));
+		delete mDownloadingFile;
+		mDownloadingFile = nullptr;
+		return false;
+	}
+	mDownloadingFileName = fileName;
+	return true;
+}
+
+void Update::StartUpdate(QVector<PackageEntry> inFileList, Index *inIndexStep) {
+	MWUI->CancelButton->setEnabled(true);
+	QSettings settings(ORGANISATION, PROGRAM_NAME);
+	mCslFolderName = settings.value("FolderName").toString();
+	mEntryList.clear();
+	mSelectedListForDelete.clear();
+	mIndexStep = inIndexStep;
+	mServer = settings.value("curServer").toString();
+	int size = inFileList.size();
+	int rowCount = MWUI->tableWidget->rowCount();
+	// determine files to delete, we just will delete all files server wants.
+	mSelectedListForDelete = mIndexStep->mFileListForDel;
+	mDeletedFiles = 0;
 	// determine files to update
-	for (int it = 0; it < size; it++)
-	{
-		for (int i = 0; i < RowCount; i++)
-		{
-			if (this->MWUI->tableWidget->item(i, 0)->isSelected())
-			{
-				if (this->MWUI->tableWidget->item(i, 6)->text() == "1")
-				{					
-					if (_FilesList[it].ID == this->MWUI->tableWidget->item(i, 0)->text().toInt())
-					{
-						if (_FilesList[it].State != 0)
-						{
-							this->mFileList.push_back(_FilesList[it]);
+	for (int it = 0; it < size; it++) {
+		for (int i = 0; i < rowCount; i++) {
+			if (MWUI->tableWidget->item(i, 0)->isSelected()) {
+				if (MWUI->tableWidget->item(i, 6)->text() == "1") {
+					if (inFileList[it].ID == MWUI->tableWidget->item(i, 0)->text().toInt()) {
+						if (inFileList[it].state != 0) {
+							mEntryList.push_back(inFileList[it]);
 						}
 					}
 				}
 			}
 		}
 	}
-	this->InitProgBar(0, 1, 0, 1);
+	InitProgBar(0, 1, 0, 1);
 	// added task for download mtl.dat
-	FilesTypes fileInfo;
-	fileInfo.ID = -999;
-	fileInfo.List.append("0");
-	fileInfo.List.append("mtl.dat");
-	fileInfo.State = -999;
-	this->mFileList.push_front(fileInfo);
-	if (!this->mFileList.empty())
-	{
-		this->countMain = 0;
-		// first task - mtl.dat, so make correct path
-		if (this->mCslFolderName.contains("X-IvAp Resources")){
-			QDir dir(this->mCslFolderName);
-			dir.cdUp();
-			QString corrFolderName = dir.path();
-			this->CopyRemoteFile(this->server + this->mFileList[this->countMain].List[1], corrFolderName + mSeparator + this->mFileList[this->countMain].List[1]);
-			
-			return;
-		}
-		this->countMain++;
-		if (this->countMain < this->mFileList.size() - 1){
-			this->CopyRemoteFile(this->server + this->mFileList[this->countMain].List[1], this->mCslFolderName + mSeparator + this->mFileList[this->countMain].List[1]);
-		}
-		else{
-			this->EndUpdate();
-		}
+	if (mCslFolderName.contains("X-IvAp Resources")) {
+		PackageEntry entry;
+		entry.ID = 100;// files for root recourses folder
+		entry.data.append("100");
+		entry.data.append("mtl.dat");
+		entry.state = 1;
+		mEntryList.push_front(entry);
+	}	
+	if (!mEntryList.empty()) {
+		mFileCounter = 0;
+		mFailedFileCounter = 0;
+		CopyRemoteFile(mEntryList[mFileCounter]);
 	}
-	else
-	{
-		this->EndUpdate();
+	else {
+		EndUpdate();
 	}
 }
 
-void Update::EndUpdate()
-{
+void Update::EndUpdate() {
 	// remove files was planed to delete	
-	int count = 0;
-
-//	int size = Indx->mFileListForDel.size();
-// 	for (int i = 0; i < size; i++)
-// 	{
-// 		if (removePath(Indx->mFileListForDel[i].List[1])){
-// 			count++;
-// 			//this->SetMessage(tr("Removed file or directory: %1").arg(Indx->mFileListForDel[i].List[1]));
-// 		}
-// 	}	
-
-	int size = mSelectedListForDelete.size();
-	for (int i = 0; i < size; i++)
-	{
-		if (removePath(mSelectedListForDelete[i].List[1])){
-			count++;
-			//this->SetMessage(tr("Removed file or directory: %1").arg(Indx->mFileListForDel[i].List[1]));
-		}
+	for (int i = 0; i < mSelectedListForDelete.size(); i++) {
+		removePath(mSelectedListForDelete[i].data[1]);
 	}
-	if (count > 0){
-		this->SetMessage(tr("Cleanup procedure done. Removed %1 files.").arg(count));
+	if (mDeletedFiles > 0) {
+		SetMessage(tr("Cleanup procedure done. Removed %1 files.").arg(mDeletedFiles));
 	}
 
-	this->MWUI->CancelButton->setEnabled(false);
-	this->SetMessage(tr("Обновление завершено!"));
-	this->Indx->StartIndex();
-	this->MWUI->PrevButton->setEnabled(true);
-	this->MWUI->NextButton->setEnabled(true);
+	MWUI->CancelButton->setEnabled(false);
+	if (mFailedFileCounter > 0) {
+		SetMessage(tr("Обновление завершено! Не удалось обновить %1 файлов!").arg(mFailedFileCounter));
+	}
+	else {
+		SetMessage(tr("Обновление завершено!"));
+	}	
+	mIndexStep->StartIndex();
+	MWUI->PrevButton->setEnabled(true);
+	MWUI->NextButton->setEnabled(true);
 }
 
-void Update::CopyRemoteFile(QString From, QString To)
-{
+void Update::CopyRemoteFile(PackageEntry inPackageEntry) {
+	QString From = mServer + inPackageEntry.data[1];	
 	QUrl url(From);
-	QString fileName = To;
-
-	if (QFile::exists(fileName)) QFile::remove(fileName);
-
-	this->file = new QFile(fileName);
-	this->file->open(QIODevice::WriteOnly);
-
-	if (!this->file->isOpen())
-	{
-		int index = fileName.lastIndexOf(tr("/"));
-		const QString dir_path = fileName.left(index);
-		QDir dir("");
-		dir.mkpath(dir_path);
-		delete this->file;
-		this->file = 0;
-		this->file = new QFile(fileName);
-		this->file->open(QIODevice::WriteOnly);
-	}
-
-	if (!this->file->isOpen())
-	{
-		this->SetMessage(tr("Ошибка: Не могу записать файл на ваш компьютер - %1 : %2.").arg(fileName).arg(this->file->errorString()));
-		delete this->file;
-		this->file = 0;
-		if (this->countMain < this->mFileList.size() - 1)
-		{
-			this->countMain++;
-			this->CopyRemoteFile(this->server + this->mFileList[this->countMain].List[1], this->mCslFolderName + tr("/") + this->mFileList[this->countMain].List[1]);
+	if (!createDownloadingFile(inPackageEntry)) {// cannot create file
+		++mFailedFileCounter;
+		++mFileCounter;
+		if (mFileCounter < mEntryList.size()) {			
+			CopyRemoteFile(mEntryList[mFileCounter]);
 		}
-		else
-		{
-			this->EndUpdate();
+		else {
+			EndUpdate();
 		}
 		return;
 	}
-	this->http->setHost(url.host());
-	this->httpRequestAborted = false;
-	QByteArray path = QUrl::toPercentEncoding(url.path(), "!$&'()*+,;=:@/");
-	if (path.isEmpty()) path = "/";
-	this->DownSize = 0;
-	this->TotalDownSize = 0;
-	this->httpGetId = this->http->get(path, this->file);
-	this->SetMessage(tr("Обновляем: %1...").arg(To));
+	// start downloading
+	mDownloadedBytes = 0;
+	mTotalBytes = 0;
+	QNetworkRequest request;
+	request.setUrl(url);
+	QNetworkReply *reply = mNetMng->get(request);
+	connect(this, &Update::cancelDownloading, reply, &QNetworkReply::abort);
+	connect(this, &Update::updateDataReadProgress, reply, &QNetworkReply::downloadProgress);
+	SetMessage(tr("Обновляем: %1...").arg(mDownloadingFileName));
 }
 
-void Update::httpRequestFinished(int reqId, bool error)
-{
-	if (reqId != this->httpGetId) return;
-	if (this->httpRequestAborted)
-	{
-		if (this->file)
-		{
-			this->file->close();
-			this->file->remove();
-			delete this->file;
-			this->file = 0;
+void Update::httpRequestFinished(QNetworkReply *inReply) {
+	inReply->deleteLater();
+	if (inReply->error() != QNetworkReply::OperationCanceledError) {
+		if (inReply->error() == QNetworkReply::NoError) {
+			mDownloadingFile->write(inReply->readAll());
+			mDownloadingFile->close();
 		}
-		this->EndUpdate();
-		return;
+		else {
+			// error details
+			QString errorUrl = inReply->request().url().toString();
+			QString httpStatus = inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+			QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+			++mFailedFileCounter;
+			mDownloadingFile->close();
+			mDownloadingFile->remove();
+			SetMessage(tr("Ошибка : %1.").arg(httpStatus + " - " + httpStatusMessage));
+		}
+		// start for next file
+		delete mDownloadingFile;
+		mDownloadingFile = nullptr;
+		++mFileCounter;
+		if (mFileCounter < mEntryList.size()) {
+			CopyRemoteFile(mEntryList[mFileCounter]);
+		}
+		else {
+			EndUpdate();
+		}
 	}
-	if (error)
-	{
-		this->SetMessage(tr("Ошибка: %1").arg(this->http->errorString()));
-	}
-	this->file->close();
-	delete this->file;
-	this->file = 0;
-	if (this->countMain < this->mFileList.size() - 1)
-	{
-		this->countMain++;
-		this->CopyRemoteFile(this->server + this->mFileList[this->countMain].List[1], this->mCslFolderName + tr("/") + this->mFileList[this->countMain].List[1]);
-	}
-	else
-	{
-		this->EndUpdate();
+	else {
+		// we canceled
+		mDownloadingFile->remove();
+		mDownloadingFile->close();
+		delete mDownloadingFile;
+		mDownloadingFile = nullptr;
 	}
 }
 
-void Update::readResponseHeader(const QHttpResponseHeader &responseHeader)
-{
-
-	switch (responseHeader.statusCode())
-	{
-	case 200:                   // Ok
-	case 301:                   // Moved Permanently
-	case 302:                   // Found
-	case 303:                   // See Other
-	case 307:                   // Temporary Redirect
-		// these are not error conditions
-		break;
-
-	default:
-		this->SetMessage(tr("Ошибка : %1.").arg(responseHeader.reasonPhrase()));
-		this->httpRequestAborted = true;
-		this->http->abort();
-// 		if (this->countMain < this->FilesList.size() - 1)
-// 		{
-// 			this->countMain++;
-// 			this->CopyRemoteFile(this->server + this->FilesList[this->countMain].List[1], this->FolderName + tr("/") + this->FilesList[this->countMain].List[1]);
-// 		}
-// 		else
-// 		{
-// 			this->EndUpdate();
-// 		}
-		break;
-	}
-
-}
-
-void Update::updateDataReadProgress(int bytesRead, int totalBytes)
-{
-	if (this->httpRequestAborted) return;
-	this->MWUI->progressBar->setMaximum(totalBytes);
-	this->MWUI->progressBar->setValue(bytesRead);
-	this->TotalDownSize = totalBytes;
-	this->DownSize = bytesRead;
-	//this->InitProgBar(0, totalBytes, bytesRead, 1);
+void Update::updateDataReadProgress(qint64 bytesRead, qint64 totalBytes) {
+	mTotalBytes = totalBytes;
+	mDownloadedBytes = bytesRead;
+	MWUI->progressBar->setMaximum(mTotalBytes);
+	MWUI->progressBar->setValue(mDownloadedBytes);
 }
 

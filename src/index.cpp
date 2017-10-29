@@ -23,7 +23,7 @@ void Index::StartIndex() {
 	mSizeOfClient = 0;
 	mSizeOfNeedUpdate = 0;
 	mSizeOfServer = 0;
-	mFileList.clear();
+	mEntryList.clear();
 	mFileListForDel.clear();
 	InitProgBar(0, 1, 0, 1);
 	mIndexFileUrl = settings.value("curServer").toString() + settings.value("IndexFile").toString();
@@ -104,10 +104,10 @@ void Index::ParseIndexFiles() {
 		if (type == "#" || type == "0" || type == false) continue;
 		QStringList list = line.split("%", QString::SkipEmptyParts);
 		if (list.size() >= 2) {
-			FilesTypes fileInfo;
+			PackageEntry fileInfo;
 			fileInfo.ID = list[0].toInt();
-			fileInfo.List = list;
-			fileInfo.State = -999;
+			fileInfo.data = list;
+			fileInfo.state = -999;
 			mFileListForDel.push_back(fileInfo);
 		}
 	}
@@ -224,25 +224,25 @@ int Index::CheckCslPack(int pos, int ID) {
 }
 
 int Index::CheckFile(QStringList List, int ID) {
-	FilesTypes FilesInfo;
+	PackageEntry FilesInfo;
 	FilesInfo.ID = ID;
-	FilesInfo.List = List;
+	FilesInfo.data = List;
 	QString separator = (QString)QDir::separator();
 	QString FilePath = mCslFolderName + separator + List[1];
 	QFileInfo fileInfo(FilePath);
 	mSizeOfServer += List[2].toInt();
 	// файл существует?
 	if (!fileInfo.isFile()) {
-		FilesInfo.State = _CLIENT_FILE_STATUS_LOST;
-		mFileList.push_back(FilesInfo);
+		FilesInfo.state = _CLIENT_FILE_STATUS_LOST;
+		mEntryList.push_back(FilesInfo);
 		return _CLIENT_FILE_STATUS_LOST;
 	}
 	// размер файла совпадает?
 	int size;
 	size = List[2].toInt();
 	if (size != (int)fileInfo.size()) {
-		FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
-		mFileList.push_back(FilesInfo);
+		FilesInfo.state = _CLIENT_FILE_STATUS_CHANGE;
+		mEntryList.push_back(FilesInfo);
 		return _CLIENT_FILE_STATUS_CHANGE;
 	}
 	// check hash if it is available
@@ -257,15 +257,15 @@ int Index::CheckFile(QStringList List, int ID) {
 			// 			qDebug() << List[1] << " - " << FilePath;
 			// 			qDebug() << List[3] << " - " << QString(hash.result().toHex());
 			if (List[3] != QString(hash.result().toHex())) {
-				FilesInfo.State = _CLIENT_FILE_STATUS_CHANGE;
-				mFileList.push_back(FilesInfo);
+				FilesInfo.state = _CLIENT_FILE_STATUS_CHANGE;
+				mEntryList.push_back(FilesInfo);
 				return _CLIENT_FILE_STATUS_CHANGE;
 			}
 			file.close();
 		}
 		else {
-			FilesInfo.State = _CLIENT_FILE_STATUS_LOST;
-			mFileList.push_back(FilesInfo);
+			FilesInfo.state = _CLIENT_FILE_STATUS_LOST;
+			mEntryList.push_back(FilesInfo);
 			return _CLIENT_FILE_STATUS_LOST;
 		}
 		QApplication::processEvents();
@@ -282,8 +282,8 @@ int Index::CheckFile(QStringList List, int ID) {
 	}*/
 	// типа все ОК
 	mSizeOfClient += (int)fileInfo.size();
-	FilesInfo.State = _CLIENT_FILE_STATUS_OK;
-	mFileList.push_back(FilesInfo);
+	FilesInfo.state = _CLIENT_FILE_STATUS_OK;
+	mEntryList.push_back(FilesInfo);
 	return _CLIENT_FILE_STATUS_OK;
 }
 
@@ -371,6 +371,7 @@ bool Index::createIndexFile(QString inFileName, QFile **inIndexFile) {
 	if (QFile::exists(inFileName)) {
 		QFile::remove(inFileName);
 	}
+	delete *inIndexFile;
 	*inIndexFile = new QFile(inFileName);
 	QFile *file = *inIndexFile;
 	if (!file->open(QIODevice::WriteOnly)) {

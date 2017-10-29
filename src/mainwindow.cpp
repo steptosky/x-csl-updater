@@ -258,7 +258,7 @@ void MainWindow::UpdateSlot()
 {
 	this->mUi->PrevButton->setDisabled(true);
 	this->mUi->NextButton->setDisabled(true);
-	this->Updt->StartUpdate(this->Indx->mFileList, this->Indx);	
+	this->Updt->StartUpdate(this->Indx->mEntryList, this->Indx);	
 }
 
 void MainWindow::IndexSlot()
