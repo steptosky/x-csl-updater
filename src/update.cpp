@@ -13,13 +13,13 @@ Update::~Update() {
 }
 
 void Update::CancelSlot() {
-	SetMessage(tr("Операция прервана пользователем!"));
+	SetMessage(tr("РћРїРµСЂР°С†РёСЏ РїСЂРµСЂРІР°РЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј!"));
 	emit cancelDownloading();
 
 	MWUI->CancelButton->setEnabled(false);
+	MWUI->PrevButton->setEnabled(false);
+	MWUI->NextButton->setEnabled(false);
 	mIndexStep->StartIndex();
-	MWUI->PrevButton->setEnabled(true);
-	MWUI->NextButton->setEnabled(true);
 }
 
 bool Update::removeDir(const QString & dirName) {
@@ -74,8 +74,18 @@ bool Update::createDownloadingFile(PackageEntry inPackageEntry) {
 	delete mDownloadingFile;
 	mDownloadingFile = new QFile(fileName);
 	mDownloadingFile->open(QIODevice::WriteOnly);
+	if (!mDownloadingFile->isOpen()) {// lets suppose that path to file is not exist
+		int index = fileName.lastIndexOf(tr("/"));
+		const QString dir_path = fileName.left(index);
+		QDir dir("");
+		dir.mkpath(dir_path);
+		delete mDownloadingFile;
+		mDownloadingFile = nullptr;
+		mDownloadingFile = new QFile(fileName);
+		mDownloadingFile->open(QIODevice::WriteOnly);
+	}
 	if (!mDownloadingFile->isOpen()) {
-		SetMessage(tr("Ошибка: Не могу записать файл на ваш компьютер - %1 : %2.").arg(fileName).arg(mDownloadingFile->errorString()));
+		SetMessage(tr("РћС€РёР±РєР°: РќРµ РјРѕРіСѓ Р·Р°РїРёСЃР°С‚СЊ С„Р°Р№Р» РЅР° РІР°С€ РєРѕРјРїСЊСЋС‚РµСЂ - %1 : %2.").arg(fileName).arg(mDownloadingFile->errorString()));
 		delete mDownloadingFile;
 		mDownloadingFile = nullptr;
 		return false;
@@ -140,16 +150,16 @@ void Update::EndUpdate() {
 		SetMessage(tr("Cleanup procedure done. Removed %1 files.").arg(mDeletedFiles));
 	}
 
-	MWUI->CancelButton->setEnabled(false);
 	if (mFailedFileCounter > 0) {
-		SetMessage(tr("Обновление завершено! Не удалось обновить %1 файлов!").arg(mFailedFileCounter));
+		SetMessage(tr("РћР±РЅРѕРІР»РµРЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ! РќРµ СѓРґР°Р»РѕСЃСЊ РѕР±РЅРѕРІРёС‚СЊ %1 С„Р°Р№Р»РѕРІ!").arg(mFailedFileCounter));
 	}
 	else {
-		SetMessage(tr("Обновление завершено!"));
+		SetMessage(tr("РћР±РЅРѕРІР»РµРЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ!"));
 	}	
+	MWUI->CancelButton->setEnabled(false);
+	MWUI->PrevButton->setEnabled(false);
+	MWUI->NextButton->setEnabled(false);
 	mIndexStep->StartIndex();
-	MWUI->PrevButton->setEnabled(true);
-	MWUI->NextButton->setEnabled(true);
 }
 
 void Update::CopyRemoteFile(PackageEntry inPackageEntry) {
@@ -174,7 +184,7 @@ void Update::CopyRemoteFile(PackageEntry inPackageEntry) {
 	QNetworkReply *reply = mNetMng->get(request);
 	connect(this, &Update::cancelDownloading, reply, &QNetworkReply::abort);
 	connect(this, &Update::updateDataReadProgress, reply, &QNetworkReply::downloadProgress);
-	SetMessage(tr("Обновляем: %1...").arg(mDownloadingFileName));
+	SetMessage(tr("РћР±РЅРѕРІР»СЏРµРј: %1...").arg(mDownloadingFileName));
 }
 
 void Update::httpRequestFinished(QNetworkReply *inReply) {
@@ -192,7 +202,7 @@ void Update::httpRequestFinished(QNetworkReply *inReply) {
 			++mFailedFileCounter;
 			mDownloadingFile->close();
 			mDownloadingFile->remove();
-			SetMessage(tr("Ошибка : %1.").arg(httpStatus + " - " + httpStatusMessage));
+			SetMessage(tr("РћС€РёР±РєР° : %1.").arg(httpStatus + " - " + httpStatusMessage));
 		}
 		// start for next file
 		delete mDownloadingFile;

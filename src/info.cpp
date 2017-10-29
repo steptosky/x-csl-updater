@@ -61,7 +61,8 @@ void Info::httpRequestFinished(QNetworkReply *inReply) {
 	QString packName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackName)).toString();
 	int row = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackRow)).toInt();
 
-	if (mMainUi->tableWidget->item(row, 0)->text().toInt() != packId
+	if (row >= mMainUi->tableWidget->rowCount()
+		|| mMainUi->tableWidget->item(row, 0)->text().toInt() != packId
 		|| mMainUi->tableWidget->item(row, 1)->text() != packName) {
 		// something is wrong, maybe the table has been resorted.
 		return;
