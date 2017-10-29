@@ -30,7 +30,7 @@ private:
 
 	Index *mIndexStep;
 	QNetworkAccessManager *mNetMng;
-	QFile *mDownloadingFile;
+	QFile *mDownloadingFile = nullptr;
 	QString mDownloadingFileName;
 
 	int mDownloadedBytes;

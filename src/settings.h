@@ -1,7 +1,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QtGui>
+#include <QtWidgets>
 
 namespace Ui {
     class Settings;

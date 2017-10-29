@@ -1,5 +1,8 @@
 #include "mainwindow.h"
 #include <QAction>
+// #include <QMessageBox>
+// #include "QFileDialog"
+#include <QtWidgets>
 
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent), mUi(new Ui::MainWindow)
@@ -8,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
 	mUi->setupUi(this);
 
 	// установка нужного кодека
-    QTextCodec *codec = QTextCodec::codecForName("CP1251");
-	QTextCodec::setCodecForTr(codec);
+//     QTextCodec *codec = QTextCodec::codecForName("CP1251");
+// 	QTextCodec::setCodecForTr(codec);
 
 	// сепаратор
 	this->separator = "/"/*(QString)QDir::separator()*/;
@@ -167,7 +170,7 @@ void MainWindow::TableContextMenu(const QPoint & pos)
 	menu.exec(this->mUi->tableWidget->mapToGlobal(pos));
 }
 
-void MainWindow::contextMenuEvent(QContextMenuEvent * event)
+void MainWindow::contextMenuEvent(QContextMenuEvent *)
 {
 	/*QMenu menu(this);
 	 menu.addAction(this->ui->actionAbout);

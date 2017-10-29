@@ -75,3 +75,10 @@ target_link_libraries (${TARGET_NAME} Qt5::Widgets)
 target_link_libraries (${TARGET_NAME} Qt5::Network)
 
 
+# Setup output folders for specified project
+set_target_properties(${TARGET_NAME}
+    PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+)
+

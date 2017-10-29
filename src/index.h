@@ -33,8 +33,8 @@ private:
 
 	Info *mPackInfo;
 	QNetworkAccessManager *mNetMng;
-	QFile *mIndexFile;
-	QFile *mDelIndexFile;
+	QFile *mIndexFile = nullptr;
+	QFile *mDelIndexFile = nullptr;
 
 	int mFilesToDownload = 2;
 	int mIndexBytesDownloaded;
