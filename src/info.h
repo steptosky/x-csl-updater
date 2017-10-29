@@ -28,4 +28,4 @@
 #define STS_XCSL_COMPILE_TIME __TIME__
 
 /* hg */
-#define STS_XCSL_REVISION "5b08306f21c7"
+#define STS_XCSL_REVISION "9d8c462c3d48"
