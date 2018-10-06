@@ -30,3 +30,4 @@ mtl.dat
 *.pro.user
 Project_vs2015x64/
 src\Info.h
+bin/Debug/
