@@ -70,7 +70,7 @@ private:
     QAction *TableSelAllAct;
     QAction *TableInfoAct;
 
-    QString removeCslSpecifiedPath(const QString &inPath);
+    QString removeCslSpecifiedPathIfNeeded(const QString &inPath);
 };
 
 #endif // MAINWINDOW_H
