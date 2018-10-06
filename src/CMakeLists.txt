@@ -36,7 +36,7 @@ endforeach()
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 
 	message ("Building <${PROJECT}> using settings for <${CMAKE_CXX_COMPILER_ID}> compiler")
-	add_definitions (/W4  -wd4996 -wd4244 -wd4099 -wd4800)
+	add_definitions (/W4  -wd4996 -wd4244 -wd4099 -wd4800 -wd4127)
 	
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL AppleClang)
 
@@ -81,6 +81,15 @@ set_target_properties(${TARGET_NAME}
     PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
+)
+
+# Copy Qt libs
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD 
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different 
+    $<TARGET_FILE:Qt5::Core> $<TARGET_FILE_DIR:${PROJECT}>
+    $<TARGET_FILE:Qt5::Network> $<TARGET_FILE_DIR:${PROJECT}>
+    $<TARGET_FILE:Qt5::Gui> $<TARGET_FILE_DIR:${PROJECT}>
+    $<TARGET_FILE:Qt5::Widgets> $<TARGET_FILE_DIR:${PROJECT}>
 )
 
 # Install script

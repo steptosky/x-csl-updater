@@ -20,14 +20,14 @@ void BaseSteps::SetMessage(QString Msg)
     this->MWUI->listWidget->scrollToBottom();
 }
 
-void BaseSteps::InitProgBar(int start, int end, int current, int step)
+void BaseSteps::InitProgBar(int inStart, int inEnd, int inCurrent, int inStep)
 {
     //this->MWUI->progressBar->setMaximum();
     //this->MWUI->progressBar->setMinimum();
-    this->step = step;
-    this->current = current;
-    this->MWUI->progressBar->setRange(start, end);
-    this->MWUI->progressBar->setValue(current);
+    this->step = inStep;
+    this->current = inCurrent;
+    this->MWUI->progressBar->setRange(inStart, inEnd);
+    this->MWUI->progressBar->setValue(inCurrent);
 }
 
 void BaseSteps::StepProgBar()

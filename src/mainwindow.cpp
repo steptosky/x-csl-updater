@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget * parent)
     // load settings
     QSettings settings(ORGANISATION, PROGRAM_NAME);
     move(settings.value("pos", QPoint(200, 200)).toPoint());
+    resize(settings.value("size", QSize(810, 700)).toSize());
 
 #ifdef Q_OS_WIN32
     const QString pathPrefix = tr("C:");
@@ -94,6 +95,7 @@ MainWindow::MainWindow(QWidget * parent)
 MainWindow::~MainWindow() {
     QSettings settings(ORGANISATION, PROGRAM_NAME);
     settings.setValue("pos", pos());
+    settings.setValue("size", size());
     delete Indx;
     delete Updt;
     delete Inf;

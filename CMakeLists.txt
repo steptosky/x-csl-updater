@@ -15,8 +15,4 @@ set(VcsType "hg")
 include(cmake/GenInfoFile.cmake)
 genInfoFile("${INFO_H_PATH}" "${CMAKE_SOURCE_DIR}/Description.cmake")
 
-include(cmake/DeployFolder.cmake)
-makeDeployFolderString()
-message("Info: Generated deploy folder name: ${DEPLOY_FOLDER}")
-
 add_subdirectory(src)

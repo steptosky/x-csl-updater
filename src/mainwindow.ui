@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>810</width>
-    <height>605</height>
+    <height>733</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -69,6 +69,9 @@
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinimumSize</enum>
+      </property>
       <item>
        <widget class="QGroupBox" name="groupBoxLogo">
         <property name="minimumSize">
@@ -237,7 +240,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>351</height>
+        <height>493</height>
        </size>
       </property>
       <property name="contextMenuPolicy">
