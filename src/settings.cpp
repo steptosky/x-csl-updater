@@ -33,7 +33,7 @@ void Settings::CancelSlot()
 void Settings::LoadSettings()
 {
     QSettings settings(ORGANISATION, PROGRAM_NAME);
-    //http://csl-updater.loc/CSL-Package/
+    // http://csl-updater.loc/CSL-Package/
     this->m_ui->server1->setText(settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
     this->m_ui->server2->setText(settings.value("Server2").toString());
     this->m_ui->server3->setText(settings.value("Server3").toString());

@@ -231,7 +231,7 @@ void MainWindow::SetFolder()
 
 void MainWindow::SetCustomFolder()
 {
-    QMessageBox::warning(this, PROGRAM_NAME, tr("Error! This function is designed for advanced users. Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
+    QMessageBox::warning(this, PROGRAM_NAME, tr("Warning! This function is designed for advanced users. Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
 	this->FolderName = QFileDialog::getExistingDirectory(this,
 		tr("X-CSL-Updater :: Specify target folder"), this->FolderName, QFileDialog::ShowDirsOnly);
 

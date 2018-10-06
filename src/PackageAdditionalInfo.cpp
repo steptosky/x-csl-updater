@@ -83,8 +83,8 @@ void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 	else {
 		PackInfo packInfo;
 		packInfo.ID = packId;
-		packInfo.Info = tr("Информация отсутствует...");
-		packInfo.ShortInfo = tr("Информация отсутствует...");
+		packInfo.Info = tr("There is no information...");
+		packInfo.ShortInfo = tr("There is no information...");
 		mPackInfo.push_back(packInfo);
 		QTableWidgetItem *Item = new QTableWidgetItem(packInfo.ShortInfo);
 		Item->setTextColor(Qt::lightGray);

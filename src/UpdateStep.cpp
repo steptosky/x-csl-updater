@@ -13,7 +13,7 @@ UpdateStep::~UpdateStep() {
 }
 
 void UpdateStep::CancelSlot() {
-	SetMessage(tr("Операция прервана пользователем!"));
+	SetMessage(tr("The operation has been canceled by user!"));
 	emit cancelDownloading();
 
 	MWUI->CancelButton->setEnabled(false);
@@ -85,7 +85,7 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 		mDownloadingFile->open(QIODevice::WriteOnly);
 	}
 	if (!mDownloadingFile->isOpen()) {
-		SetMessage(tr("Ошибка: Не могу записать файл на ваш компьютер - %1 : %2.").arg(fileName).arg(mDownloadingFile->errorString()));
+        SetMessage(tr("Error: Cannot write file: <%1>; Reason: %2").arg(fileName).arg(mDownloadingFile->errorString()));
 		delete mDownloadingFile;
 		mDownloadingFile = nullptr;
 		return false;
@@ -151,10 +151,10 @@ void UpdateStep::EndUpdate() {
 	}
 
 	if (mFailedFileCounter > 0) {
-		SetMessage(tr("Обновление НЕ завершено! Не удалось обновить %1 файлов!").arg(mFailedFileCounter));
+        SetMessage(tr("Warning: Updating process is NOT done! %1 files have NOT been updated for some reasons.").arg(mFailedFileCounter));
 	}
 	else {
-		SetMessage(tr("Обновление завершено!"));
+		SetMessage(tr("Updating process is successfully done!"));
 	}	
 	MWUI->CancelButton->setEnabled(false);
 	MWUI->PrevButton->setEnabled(false);
@@ -184,7 +184,7 @@ void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
 	QNetworkReply *reply = mNetMng->get(request);
 	connect(this, &UpdateStep::cancelDownloading, reply, &QNetworkReply::abort);
 	connect(reply, &QNetworkReply::downloadProgress, this, &UpdateStep::updateDataReadProgress);
-	SetMessage(tr("Обновляем: %1...").arg(mDownloadingFileName));
+	SetMessage(tr("Updating: %1...").arg(mDownloadingFileName));
 }
 
 void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
@@ -202,7 +202,7 @@ void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
 			++mFailedFileCounter;
 			mDownloadingFile->close();
 			mDownloadingFile->remove();
-			SetMessage(tr("Ошибка : %1.").arg(httpStatus + " - " + httpStatusMessage));
+			SetMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
 		}
 		// start for next file
 		delete mDownloadingFile;
