@@ -352,7 +352,7 @@ void IndexStep::httpRequestFinished(QNetworkReply *inReply) {
 	else {
 		// error details
 		QString errorUrl = inReply->request().url().toString();
-		QString httpStatus = inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
 		QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
 
 		SetMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));

@@ -68,7 +68,7 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 		QString corrFolderName = dir.path();
 		fileName = corrFolderName + mSeparator + inPackageEntry.data[1];
 	}
-	if (QFile::exists(fileName)) {
+	if (QFile::exists(fileName) && inPackageEntry.ID != 100) { // we don't want to remove root resource files
 		QFile::remove(fileName);
 	}
 	delete mDownloadingFile;
@@ -123,14 +123,30 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inInde
 		}
 	}
 	InitProgBar(0, 1, 0, 1);
-	// added task for download mtl.dat
+	// added task for download several resource files
 	if (mCslFolderName.contains("X-IvAp Resources")) {
 		PackageEntry entry;
+        // mtl.dat
 		entry.ID = 100;// files for root recourses folder
+        entry.data.clear();
 		entry.data.append("100");
 		entry.data.append("mtl.dat");
 		entry.state = CLIENT_FILE_STATUS_CHANGE;
 		mEntryList.push_front(entry);
+        // Doc8643.txt
+        entry.ID = 100;// files for root recourses folder
+        entry.data.clear();
+        entry.data.append("100");
+        entry.data.append("Doc8643.txt");
+        entry.state = CLIENT_FILE_STATUS_CHANGE;
+        mEntryList.push_front(entry);
+        // related.txt
+        entry.ID = 100;// files for root recourses folder
+        entry.data.clear();
+        entry.data.append("100");
+        entry.data.append("related.txt");
+        entry.state = CLIENT_FILE_STATUS_CHANGE;
+        mEntryList.push_front(entry);
 	}	
 	if (!mEntryList.empty()) {
 		mFileCounter = 0;
@@ -198,7 +214,7 @@ void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
 		else {
 			// error details
 			QString errorUrl = inReply->request().url().toString();
-			QString httpStatus = inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+			QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
 			QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
 			++mFailedFileCounter;
 			mDownloadingFile->close();
