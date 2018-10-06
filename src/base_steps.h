@@ -18,7 +18,7 @@ public:
 	{
 		int ID;
 		QStringList data;
-		int state;
+		eFileState state;
 	};
 	QVector<PackageEntry> mEntryList;
 

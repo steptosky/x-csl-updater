@@ -111,9 +111,10 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inInde
 	for (int it = 0; it < size; it++) {
 		for (int i = 0; i < rowCount; i++) {
 			if (MWUI->tableWidget->item(i, 0)->isSelected()) {
-				if (MWUI->tableWidget->item(i, 6)->text() == "1") {
+                const ePackageState packageState = static_cast<ePackageState>(MWUI->tableWidget->item(i, 6)->text().toInt());
+				if (packageState == CLIENT_PACKAGE_STATUS_CHANGE || packageState == CLIENT_PACKAGE_STATUS_LOST) {
 					if (inFileList[it].ID == MWUI->tableWidget->item(i, 0)->text().toInt()) {
-						if (inFileList[it].state != 0) {
+						if (inFileList[it].state == CLIENT_FILE_STATUS_CHANGE || inFileList[it].state == CLIENT_FILE_STATUS_LOST) {
 							mEntryList.push_back(inFileList[it]);
 						}
 					}
@@ -128,7 +129,7 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inInde
 		entry.ID = 100;// files for root recourses folder
 		entry.data.append("100");
 		entry.data.append("mtl.dat");
-		entry.state = 1;
+		entry.state = CLIENT_FILE_STATUS_CHANGE;
 		mEntryList.push_front(entry);
 	}	
 	if (!mEntryList.empty()) {

@@ -104,7 +104,7 @@ void IndexStep::ParseIndexFiles() {
 			PackageEntry fileInfo;
 			fileInfo.ID = list[0].toInt();
 			fileInfo.data = list;
-			fileInfo.state = -999;
+			fileInfo.state = CLIENT_FILE_STATUS_NONE;
 			mFileListForDel.push_back(fileInfo);
 		}
 	}
@@ -162,19 +162,19 @@ void IndexStep::ParseIndexFiles() {
 			sprintf(StrStatus, "%i", status);
 			QTableWidgetItem *Item = new QTableWidgetItem();
 			switch (status) {
-				case _CLIENT_PACKAGE_STATUS_OK:
+				case CLIENT_PACKAGE_STATUS_OK:
 					Item->setText(tr("Up-to-date"));
 					Item->setTextColor(Qt::darkGreen);
 					MWUI->tableWidget->setItem(count, 5, Item);
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
-				case _CLIENT_PACKAGE_STATUS_CHANGE:
+				case CLIENT_PACKAGE_STATUS_CHANGE:
 					Item->setText(tr("Out-of-date"));
 					Item->setTextColor(Qt::red);
 					MWUI->tableWidget->setItem(count, 5, Item);
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
-				case _CLIENT_PACKAGE_STATUS_LOST:
+				case CLIENT_PACKAGE_STATUS_LOST:
                     Item->setText(tr("Not installed"));
                     Item->setTextColor(Qt::darkRed);
 					MWUI->tableWidget->setItem(count, 5, Item);
@@ -201,7 +201,7 @@ ePackageState IndexStep::CheckCslPack(int pos, int ID) {
 	QFile file(FilePath);
 	if (!file.open(QIODevice::ReadOnly)) {
 		SetMessage(tr("Error: %1").arg(file.errorString()));
-		return _CLIENT_PACKAGE_STATUS_LOST;
+		return CLIENT_PACKAGE_STATUS_LOST;
 	}
 	QTextStream in(&file);
 	in.seek(pos);    
@@ -215,21 +215,21 @@ ePackageState IndexStep::CheckCslPack(int pos, int ID) {
 		if (list[0] == "11") break;
 		if (list[0] == "10") {
 			int st = CheckFile(list, ID);
-            if (st == _CLIENT_FILE_STATUS_CHANGE) {
+            if (st == CLIENT_FILE_STATUS_CHANGE) {
                 wereChangedFiles = true;
             }
-            if (st == _CLIENT_FILE_STATUS_LOST) {
+            if (st == CLIENT_FILE_STATUS_LOST) {
                 wereLostFiles = true;
             }
 		}
 	}
 	file.close();
-    ePackageState status = _CLIENT_PACKAGE_STATUS_OK;
+    ePackageState status = CLIENT_PACKAGE_STATUS_OK;
     if (wereLostFiles) {
-        status = _CLIENT_PACKAGE_STATUS_LOST;
+        status = CLIENT_PACKAGE_STATUS_LOST;
     }
     if (wereChangedFiles) {
-        status = _CLIENT_PACKAGE_STATUS_CHANGE;
+        status = CLIENT_PACKAGE_STATUS_CHANGE;
     }
 	return status;
 }
@@ -244,17 +244,17 @@ eFileState IndexStep::CheckFile(QStringList List, int ID) {
 	mSizeOfServer += List[2].toInt();
 	// does file exist?
 	if (!fileInfo.isFile()) {
-		FilesInfo.state = _CLIENT_FILE_STATUS_LOST;
+		FilesInfo.state = CLIENT_FILE_STATUS_LOST;
 		mEntryList.push_back(FilesInfo);
-		return _CLIENT_FILE_STATUS_LOST;
+		return CLIENT_FILE_STATUS_LOST;
 	}
 	// is the size is the same?
 	int size;
 	size = List[2].toInt();
 	if (size != (int)fileInfo.size()) {
-		FilesInfo.state = _CLIENT_FILE_STATUS_CHANGE;
+		FilesInfo.state = CLIENT_FILE_STATUS_CHANGE;
 		mEntryList.push_back(FilesInfo);
-		return _CLIENT_FILE_STATUS_CHANGE;
+		return CLIENT_FILE_STATUS_CHANGE;
 	}
 	// check hash if it is available
 	if (List[3] != "Reserve") {
@@ -268,16 +268,16 @@ eFileState IndexStep::CheckFile(QStringList List, int ID) {
 			// 			qDebug() << List[1] << " - " << FilePath;
 			// 			qDebug() << List[3] << " - " << QString(hash.result().toHex());
 			if (List[3] != QString(hash.result().toHex())) {
-				FilesInfo.state = _CLIENT_FILE_STATUS_CHANGE;
+				FilesInfo.state = CLIENT_FILE_STATUS_CHANGE;
 				mEntryList.push_back(FilesInfo);
-				return _CLIENT_FILE_STATUS_CHANGE;
+				return CLIENT_FILE_STATUS_CHANGE;
 			}
 			file.close();
 		}
 		else {
-			FilesInfo.state = _CLIENT_FILE_STATUS_LOST;
+			FilesInfo.state = CLIENT_FILE_STATUS_LOST;
 			mEntryList.push_back(FilesInfo);
-			return _CLIENT_FILE_STATUS_LOST;
+			return CLIENT_FILE_STATUS_LOST;
 		}
 		QApplication::processEvents();
 	}
@@ -293,9 +293,9 @@ eFileState IndexStep::CheckFile(QStringList List, int ID) {
 	}*/
 	// типа все ОК
 	mSizeOfClient += (int)fileInfo.size();
-	FilesInfo.state = _CLIENT_FILE_STATUS_OK;
+	FilesInfo.state = CLIENT_FILE_STATUS_OK;
 	mEntryList.push_back(FilesInfo);
-	return _CLIENT_FILE_STATUS_OK;
+	return CLIENT_FILE_STATUS_OK;
 }
 
 QString IndexStep::getIndexFilePath() {
