@@ -18,8 +18,8 @@ file(GLOB_RECURSE CM_FILES
     "*.hpp"
     "*.cpp"
     "*.ui"
-    "*.qm"
-    "*.ts"
+#    "*.qm"
+#    "*.ts"
     "*.qrc"
 )
 
@@ -64,6 +64,7 @@ endif ()
 # Find the Qt libraries
 find_package(Qt5Widgets)
 find_package(Qt5Network)
+#find_package(Qt5LinguistTools)
 
 # Tell CMake to create the ${PROJECT} executable
 add_executable(${TARGET_NAME} WIN32 ${CM_FILES})

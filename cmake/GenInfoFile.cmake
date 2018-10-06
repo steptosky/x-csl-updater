@@ -1,7 +1,7 @@
 # generator of the .h info  file witch is describing the project
 function(genInfoFile destinationFile descriptionFile)
 
-	message("Auto-generate info file to: <${destinationFile}>")
+	message("Auto-generating info file to: <${destinationFile}>")
 
 	include(${descriptionFile})	
 	loadDescription()
@@ -35,7 +35,7 @@ function(genInfoFile destinationFile descriptionFile)
 	set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}COMPILE_DATE __DATE__\n")
 	set(CONTENT  "${CONTENT}/*! \\warning For internal use only */\n")
 	set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}COMPILE_TIME __TIME__\n\n")
-	
+
 	if (${VcsType} STREQUAL hg)
 		execute_process(
 			COMMAND "hg" "parent" "--template" "{node|short}"
@@ -65,5 +65,6 @@ function(genInfoFile destinationFile descriptionFile)
 	#-----------------------------------------------------------#
 		
 	file(WRITE ${destinationFile} "${CONTENT}")
+    message("Auto-generating info file is DONE. File: <${destinationFile}>")
 	
 endfunction()
