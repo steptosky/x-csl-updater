@@ -6,7 +6,7 @@ macro(loadDescription)
 
 	set(IdentificationName "XCSLUPDATER")
 
-	set(OrganizationName "VA X-AiR Team")
+	set(OrganizationName "VA X-Air Team && StepToSky Team")
 	set(OrganizationWebLink "www.x-air.ru")
 	
 	set(ProjectName "X-CSL-Updater")

@@ -28,6 +28,9 @@
   <property name="windowTitle">
    <string>X-CSL-Updater :: Settings</string>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <layout class="QGridLayout" name="gridLayout_5">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
@@ -44,7 +47,7 @@
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>Сервер</string>
+         <string>Server</string>
         </attribute>
         <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
@@ -59,7 +62,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Сервер 1:</string>
+             <string>Server 1:</string>
             </property>
            </widget>
           </item>
@@ -67,6 +70,9 @@
            <widget class="QLineEdit" name="server1">
             <property name="enabled">
              <bool>false</bool>
+            </property>
+            <property name="toolTip">
+             <string>Server address #1</string>
             </property>
             <property name="readOnly">
              <bool>true</bool>
@@ -76,10 +82,10 @@
           <item row="0" column="2">
            <widget class="QCheckBox" name="checkBox_1">
             <property name="toolTip">
-             <string>Выделенный галочкой сервер, будет использоватся программой</string>
+             <string>The program will use the selected server</string>
             </property>
             <property name="text">
-             <string>Используется</string>
+             <string>Use</string>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">CheckGroup</string>
@@ -89,31 +95,27 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Сервер 2:</string>
+             <string>Server 2:</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QLineEdit" name="server2">
             <property name="toolTip">
-             <string>Адрес сервера #2</string>
+             <string>Server address #2</string>
             </property>
             <property name="whatsThis">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Введите адрес сервера Установки /Обновления X-CSL-Package...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string/>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
            <widget class="QCheckBox" name="checkBox_2">
             <property name="toolTip">
-             <string>Выделенный галочкой сервер, будет использоватся программой</string>
+             <string>The program will use the selected server</string>
             </property>
             <property name="text">
-             <string>Используется</string>
+             <string>Use</string>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">CheckGroup</string>
@@ -123,31 +125,27 @@ p, li { white-space: pre-wrap; }
           <item row="2" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Сервер 3:</string>
+             <string>Server 3:</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QLineEdit" name="server3">
             <property name="toolTip">
-             <string>Адрес сервера #3</string>
+             <string>Server address #3</string>
             </property>
             <property name="whatsThis">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Введите адрес сервера Установки /Обновления X-CSL-Package...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string/>
             </property>
            </widget>
           </item>
           <item row="2" column="2">
            <widget class="QCheckBox" name="checkBox_3">
             <property name="toolTip">
-             <string>Выделенный галочкой сервер, будет использоватся программой</string>
+             <string>The program will use the selected server</string>
             </property>
             <property name="text">
-             <string>Используется</string>
+             <string>Use</string>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">CheckGroup</string>
@@ -157,31 +155,27 @@ p, li { white-space: pre-wrap; }
           <item row="3" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Сервер 4:</string>
+             <string>Server 4:</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
            <widget class="QLineEdit" name="server4">
             <property name="toolTip">
-             <string>Адрес сервера #4</string>
+             <string>Server address #4</string>
             </property>
             <property name="whatsThis">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Введите адрес сервера Установки /Обновления X-CSL-Package...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string/>
             </property>
            </widget>
           </item>
           <item row="3" column="2">
            <widget class="QCheckBox" name="checkBox_4">
             <property name="toolTip">
-             <string>Выделенный галочкой сервер, будет использоватся программой</string>
+             <string>The program will use the selected server</string>
             </property>
             <property name="text">
-             <string>Используется</string>
+             <string>Use</string>
             </property>
             <attribute name="buttonGroup">
              <string notr="true">CheckGroup</string>
@@ -204,7 +198,7 @@ p, li { white-space: pre-wrap; }
        </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
-         <string>Языки</string>
+         <string>Lang</string>
         </attribute>
         <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
@@ -257,17 +251,17 @@ p, li { white-space: pre-wrap; }
      <item row="1" column="1">
       <widget class="QPushButton" name="CancelButton">
        <property name="toolTip">
-        <string>Нажмите для отмены введеных изменений</string>
+        <string>Click to cancel changes</string>
        </property>
        <property name="text">
-        <string>Отмена</string>
+        <string>Cancel</string>
        </property>
       </widget>
      </item>
      <item row="1" column="2">
       <widget class="QPushButton" name="OkButton">
        <property name="toolTip">
-        <string>Нажмите для подтверждения введеных изменений</string>
+        <string>Click to save changes</string>
        </property>
        <property name="text">
         <string>OK</string>
@@ -281,7 +275,7 @@ p, li { white-space: pre-wrap; }
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="LangGroup"/>
   <buttongroup name="CheckGroup"/>
+  <buttongroup name="LangGroup"/>
  </buttongroups>
 </ui>
