@@ -25,7 +25,7 @@ void IndexStep::StartIndex() {
 	InitProgBar(0, 1, 0, 1);
 	mIndexFileUrl = settings.value("curServer").toString() + settings.value("IndexFile").toString();
 	mDelIndexFileUrl = settings.value("curServer").toString() + settings.value("IndexForDelFile").toString();
-	SetMessage(tr("Downloading the indexes files from server \"%1\" ...").arg(QUrl(mIndexFileUrl).host()));
+	SetMessage(tr("Downloading the index files from the server \"%1\" ...").arg(QUrl(mIndexFileUrl).host()));
 
 	mIndexBytesDownloaded = 0;
 	mTotalIndexBytes = 0;
@@ -69,18 +69,18 @@ void IndexStep::EndIndex(int Next) {
 		QString strSizeNeed(cstrSizeNeed), strSizeAll(cstrSizeAll);
 		//1048576
 		if (mSizeOfNeedUpdate != 0) {
-			SetMessage(tr("Для полного обновления вам необходимо загрузить %1 MB из %2 MB").arg(strSizeNeed, strSizeAll));
-			SetMessage(tr("Выделите необходимые пакеты X-CSL моделей в списке и нажмите \"Обновить\"."));
+            SetMessage(tr("To make all the packages up-to-date you have to download %1 MB of %2 MB").arg(strSizeNeed, strSizeAll));
+            SetMessage(tr("Select the packages you want to update and click \"Update\"."));
 		}
 		else {
-			SetMessage(tr("Поздравляем!, У вас имеется полная последняя версия пакетов X-CSL моделей."));
+            SetMessage(tr("Congratulations! All the packages are fully up-to-date."));
 		}
 		mPackInfo->GetInfoToTable();
 		MWUI->NextButton->setEnabled(true);
 		MWUI->PrevButton->setEnabled(true);
 	}
 	else {
-		SetMessage(tr("Невозможно выполнить индексацию!"));
+		SetMessage(tr("Cannot get indexing successfully done!"));
 		MWUI->PrevButton->setEnabled(true);
 	}
 	emit cancelAll();
@@ -90,7 +90,7 @@ void IndexStep::ParseIndexFiles() {
 	QString FileForDelPath = getIndexForDelFilePath();
 	QFile fileForDel(FileForDelPath);
 	if (!fileForDel.open(QIODevice::ReadOnly)) {
-		SetMessage(tr("Ошибка: %1").arg(fileForDel.errorString()));
+		SetMessage(tr("Error: %1").arg(fileForDel.errorString()));
 		EndIndex(false);
 		return;
 	}
@@ -113,16 +113,16 @@ void IndexStep::ParseIndexFiles() {
 	QString FilePath = getIndexFilePath();
 	QFile file(FilePath);
 	if (!file.open(QIODevice::ReadOnly)) {
-		SetMessage(tr("Ошибка: %1").arg(file.errorString()));
+		SetMessage(tr("Error: %1").arg(file.errorString()));
 		EndIndex(false);
 		return;
 	}
 	if (file.size() < 1) {
-		SetMessage(tr("Ошибка: Индексный файл имеет нулевой размер! %1").arg(file.size()));
+		SetMessage(tr("Error: The index file has zero size!"));
 		EndIndex(false);
 		return;
 	}
-	//SetMessage(tr("Индексируем CSL модели..."));
+	//SetMessage(tr("Indexing..."));
 	// QTextStream in(&file);
 	int count = 0;
 	int ver_file_stat = true;
@@ -134,7 +134,7 @@ void IndexStep::ParseIndexFiles() {
 		QString type = line.left(1);
 		if (ver_file_stat) {
 			if (type != "0") {
-				SetMessage(tr("Ошибка: Индексный файл имеет не верный формат!"));
+				SetMessage(tr("Error: The index file has wrong format!"));
 				file.close();
 				EndIndex(false);
 				return;
@@ -149,7 +149,7 @@ void IndexStep::ParseIndexFiles() {
 			sprintf(str, "%i", count);
 			MWUI->tableWidget->setItem(count, 0, new QTableWidgetItem(str));
 			MWUI->tableWidget->setItem(count, 1, new QTableWidgetItem(list[1]));
-			MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Подождите...")));
+			MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Please wait...")));
 			QString msg = tr("%3 (%4)").arg(list[4], list[5]);
 			MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(msg));
 			//sizeOfServer += list[2].toInt();
@@ -163,25 +163,25 @@ void IndexStep::ParseIndexFiles() {
 			QTableWidgetItem *Item = new QTableWidgetItem();
 			switch (status) {
 				case 0:
-					Item->setText(tr("Установлено"));
+					Item->setText(tr("Is up-to-date"));
 					Item->setTextColor(Qt::darkGreen);
 					MWUI->tableWidget->setItem(count, 5, Item);
-					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Установлено")));
+					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("up-to-date")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 				case 1:
-					Item->setText(tr("Требует обновления"));
+					Item->setText(tr("Is Not up-to-date"));
 					Item->setTextColor(Qt::red);
 					MWUI->tableWidget->setItem(count, 5, Item);
-					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Требует обновления")));
+					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Is Not up-to-date")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 				case -1:
-					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Не установлено")));
+					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Is Not installed")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 				default:
-					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Не выяснено")));
+					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Unknown state")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 			}
@@ -198,7 +198,7 @@ int IndexStep::CheckCslPack(int pos, int ID) {
 	QString FilePath = getIndexFilePath();
 	QFile file(FilePath);
 	if (!file.open(QIODevice::ReadOnly)) {
-		SetMessage(tr("Ошибка: %1").arg(file.errorString()));
+		SetMessage(tr("Error: %1").arg(file.errorString()));
 		return _CLIENT_FILE_STATUS_LOST;
 	}
 	QTextStream in(&file);
@@ -341,7 +341,7 @@ void IndexStep::httpRequestFinished(QNetworkReply *inReply) {
 		QString httpStatus = inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 		QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
 
-		SetMessage(tr("Ошибка : %1.").arg(httpStatus + " - " + httpStatusMessage));
+		SetMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
 		EndIndex(false);
 		return;
 	}
@@ -372,7 +372,7 @@ bool IndexStep::createIndexFile(QString inFileName, QFile **inIndexFile) {
 	*inIndexFile = new QFile(inFileName);
 	QFile *file = *inIndexFile;
 	if (!file->open(QIODevice::WriteOnly)) {
-		SetMessage(tr("Ошибка: Не могу записать файл на ваш компьютер - %1 : %2.").arg(inFileName).arg(file->errorString()));
+        SetMessage(tr("Error: Cannot write file: <%1>; Reason: %2").arg(inFileName).arg(file->errorString()));
 		delete *inIndexFile;
 		*inIndexFile = nullptr;
 		return false;
