@@ -2,29 +2,33 @@
 #define TYPES_H
 
 #include <QtGui>
-
-#include "../version.h"
+#include "Info.h"
 
 #define VERSION_MAJOR    1
-#define VERSION_MINOR    1
+#define VERSION_MINOR    2
 #define VERSION_PATCH    0
 
-//static QString VerProg = "0.1.1.4.beta";
+static QString VerProg = QString(STS_XCSL_VERSION_STRING) + "+" STS_XCSL_REVISION;
 
-static QString VerProg = 
-	QString::number(VERSION_MAJOR)
-	+ "." +
-	QString::number(VERSION_MINOR)
-	+ "." +
-	QString::number(VERSION_PATCH)
-	+ " (" STS_REVISION_GLOBAL ")"
-;
+// some constants
+#define ORGANISATION STS_XCSL_ORGANIZATION_NAME
+#define PROGRAM_NAME STS_XCSL_PROJECT_SHORT_NAME
 
-// types of programm
+// types of program
+enum eFileState {
+    CLIENT_FILE_STATUS_NONE	     = -999,
+    CLIENT_FILE_STATUS_LOST	     = -1,
+    CLIENT_FILE_STATUS_CHANGE    = 1,
+    CLIENT_FILE_STATUS_OK	     = 0
+};
 
-#define _CLIENT_FILE_STATUS_LOST	-1;
-#define _CLIENT_FILE_STATUS_CHANGE	1;
-#define _CLIENT_FILE_STATUS_OK		0;
+enum ePackageState {
+    CLIENT_PACKAGE_STATUS_NONE	 = -999,
+    CLIENT_PACKAGE_STATUS_LOST	 = -1,
+    CLIENT_PACKAGE_STATUS_CHANGE = 1,
+    CLIENT_PACKAGE_STATUS_OK	 = 0
+};
+
 
 
 struct FileInfoStruct
@@ -39,5 +43,9 @@ struct FileInfoStruct
     QString FileAllStr;
     int Flag;
 };
+
+#ifndef MY_MAX_PATH
+#define MY_MAX_PATH 1024
+#endif
 
 #endif // TYPES_H

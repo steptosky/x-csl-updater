@@ -1,11 +1,8 @@
 <RCC>
-  <qresource>
-    <file>xcsl_logo_64.png</file>
-    <file>x-air-team-logo.png</file>
-    <file>xcsl_logo.png</file>
-    <file>sts_logo.png</file>
-  </qresource>
-  <qresource prefix="lang" >
-    <file>english.qm</file>
-  </qresource>
+    <qresource prefix="/">
+        <file>xcsl_logo_64.png</file>
+        <file>x-air-team-logo.png</file>
+        <file>xcsl_logo.png</file>
+        <file>sts_logo.png</file>
+    </qresource>
 </RCC>

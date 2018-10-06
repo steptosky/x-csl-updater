@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>info</class>
- <widget class="QDialog" name="info">
+ <class>PackageAdditionalInfo</class>
+ <widget class="QDialog" name="PackageAdditionalInfo">
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
@@ -28,13 +28,16 @@
   <property name="windowTitle">
    <string>X-CSL-Updater :: Info</string>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Информация о выбранном пакете &lt;strong&gt;X-CSL&lt;/strong&gt;:</string>
+        <string>Info about the selected X-CSL Package:</string>
        </property>
       </widget>
      </item>
@@ -47,15 +50,10 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>Информация о выбранном пакете X-CSL</string>
+        <string>Info about the selected X-CSL Package</string>
        </property>
        <property name="whatsThis">
-        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Из этого информационного окна вы можете узнать больше о выбранном пакете &lt;span style=&quot; font-weight:600;&quot;&gt;X-CSL&lt;/span&gt;.&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Более подробно узнать о пакетах X-CSL для X-Plane можно узнать на сайте &lt;span style=&quot; font-weight:600;&quot;&gt;X-CSL Package&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string/>
        </property>
        <property name="textInteractionFlags">
         <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -84,10 +82,10 @@ p, li { white-space: pre-wrap; }
      <item row="2" column="1">
       <widget class="QPushButton" name="pushButton">
        <property name="toolTip">
-        <string>Нажмите для закрытия окна</string>
+        <string>Click to close the window</string>
        </property>
        <property name="whatsThis">
-        <string>Нажмите для закрытия окна</string>
+        <string/>
        </property>
        <property name="text">
         <string>OK</string>
@@ -103,7 +101,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>pushButton</sender>
    <signal>pressed()</signal>
-   <receiver>info</receiver>
+   <receiver>PackageAdditionalInfo</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

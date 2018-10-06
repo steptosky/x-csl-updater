@@ -12,19 +12,15 @@ class BaseSteps : public QWidget
 public:
 	QWidget *MW;
 	Ui::MainWindow *MWUI;
-	QString separator;
-	QString FolderName;
-	/*QHttp *http;
-	QFile *file;
-	int httpGetId;
-	bool httpRequestAborted;*/
-	struct FilesTypes
+	QString mSeparator;
+	QString mCslFolderName;
+	struct PackageEntry
 	{
 		int ID;
-		QStringList List;
-		int State;
+		QStringList data;
+		eFileState state;
 	};
-	QVector<FilesTypes> FilesList;
+	QVector<PackageEntry> mEntryList;
 
 	BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI);
 	~BaseSteps();
@@ -32,19 +28,10 @@ public:
 	void InitProgBar(int start, int end, int current = 0, int step = 1);
 	void StepProgBar();
 	void SetValProgBar(int value);
-	//void CopyRemoteFile(QString From, QString To);
-
-	/*private slots:
-		void httpRequestFinished(int requestId, bool error);
-		void readResponseHeader(const QHttpResponseHeader &responseHeader);
-		void updateDataReadProgress(int bytesRead, int totalBytes);*/
-
 
 private:
 	int step;
 	int current;
-	/*int DownSize;
-	int TotalDownSize;*/
 };
 
 #endif // BASE_STEPS_H

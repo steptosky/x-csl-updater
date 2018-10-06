@@ -6,9 +6,9 @@
 #include "types.h"
 #include "about.h"
 #include "settings.h"
-#include "index.h"
-#include "update.h"
-#include "info.h"
+#include "IndexStep.h"
+#include "UpdateStep.h"
+#include "PackageAdditionalInfo.h"
 
 namespace Ui
 {
@@ -34,20 +34,20 @@ private slots:
     void AboutSlot();
     // Setting
     void SettingSlot();
-    // Выбор папки
+    // Р’С‹Р±РѕСЂ РїР°РїРєРё
     void SetFolder();
     void SetCustomFolder();
     void UpdateSlot();
     void IndexSlot();
-    // Контекст меню для списка
+    // РљРѕРЅС‚РµРєСЃС‚ РјРµРЅСЋ РґР»СЏ СЃРїРёСЃРєР°
     void ListContextMenu(const QPoint & pos);
     void ListClear();
     void ListSelAll();
-    // Контекст меню для таблицы
+    // РљРѕРЅС‚РµРєСЃС‚ РјРµРЅСЋ РґР»СЏ С‚Р°Р±Р»РёС†С‹
     void TableContextMenu(const QPoint & pos);
     void TableSelAll();
     void TableInfo();
-    // Общее контекст меню, если понадобиццо
+    // РћР±С‰РµРµ РєРѕРЅС‚РµРєСЃС‚ РјРµРЅСЋ, РµСЃР»Рё РїРѕРЅР°РґРѕР±РёС†С†Рѕ
     void contextMenuEvent(QContextMenuEvent * event);
     /*void SetMsgSlot(QString Msg);
     void InitProgBarSlot(int start, int end, int current = 0, int step = 1);
@@ -56,21 +56,21 @@ private slots:
     //void IndexFinish();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *mUi;
     About *AboutWin;
     Settings *SettingsWin;
-    Index *Indx;
-    Update *Updt;
-    info *Inf;
+    IndexStep *Indx;
+    UpdateStep *Updt;
+    PackageAdditionalInfo *Inf;
 
-    // контекст меню Списка
+    // РєРѕРЅС‚РµРєСЃС‚ РјРµРЅСЋ РЎРїРёСЃРєР°
     QAction *ListClearAct;
     QAction *ListSelAllAct;
-    // контекст меню Таблицы
+    // РєРѕРЅС‚РµРєСЃС‚ РјРµРЅСЋ РўР°Р±Р»РёС†С‹
     QAction *TableSelAllAct;
     QAction *TableInfoAct;
 
-    QString removeCslSpecifiedPath(const QString &inPath);
+    QString removeCslSpecifiedPathIfNeeded(const QString &inPath);
 };
 
 #endif // MAINWINDOW_H

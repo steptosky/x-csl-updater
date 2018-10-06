@@ -2,7 +2,7 @@
 #define ABOUT_H
 
 #include "ui_about.h"
-#include <QtGui/QDialog>
+#include <QtWidgets/QDialog>
 #include "types.h"
 
 namespace Ui {
