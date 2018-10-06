@@ -242,13 +242,13 @@ eFileState IndexStep::CheckFile(QStringList List, int ID) {
 	QString FilePath = mCslFolderName + separator + List[1];
 	QFileInfo fileInfo(FilePath);
 	mSizeOfServer += List[2].toInt();
-	// файл существует?
+	// does file exist?
 	if (!fileInfo.isFile()) {
 		FilesInfo.state = _CLIENT_FILE_STATUS_LOST;
 		mEntryList.push_back(FilesInfo);
 		return _CLIENT_FILE_STATUS_LOST;
 	}
-	// размер файла совпадает?
+	// is the size is the same?
 	int size;
 	size = List[2].toInt();
 	if (size != (int)fileInfo.size()) {
@@ -282,7 +282,7 @@ eFileState IndexStep::CheckFile(QStringList List, int ID) {
 		QApplication::processEvents();
 	}
 
-	// Дата и время файла совпадает?
+	// dtae & time checking
 	/*QString date_end_time;
 	date_end_time = file.lastModified().toString("dd.MM.yyyy hh:mm:ss");
 	if (date_end_time != List[4]+" "+List[5])

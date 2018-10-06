@@ -10,60 +10,48 @@ MainWindow::MainWindow(QWidget *parent)
 	// setup UI
 	mUi->setupUi(this);
 
-	// установка нужного кодека
+	// set codec
 //     QTextCodec *codec = QTextCodec::codecForName("CP1251");
 // 	QTextCodec::setCodecForTr(codec);
 
-	// сепаратор
+	// separator
 	this->separator = "/"/*(QString)QDir::separator()*/;
 
-	// цепляем настройки из сохраненых
+	// load settings
 	QSettings settings(ORGANISATION, PROGRAM_NAME);
 	move(settings.value("pos", QPoint(200, 200)).toPoint());
 
 #ifdef Q_OS_WIN32
-	QString default_path =
-		tr("C:") + this->separator +
-		tr("X-Plane") + this->separator +
-		tr("Resources") + this->separator +
-		tr("plugins") + this->separator +
-		tr("X-IvAp Resources") + this->separator +
-		tr("CSL");
-#elif defined Q_OS_LINUX
-	QString default_path =
-		QDir::homePath()+this->separator+
-		tr("X-Plane")+this->separator+
-		tr("Resources")+this->separator+
-		tr("plugins")+this->separator+
-		tr("X-IvAp Resources")+this->separator+
-		tr("CSL");
+	const QString pathPrefix = tr("C:");
 #else
-	QString default_path =
-		QDir::homePath()+this->separator+
-		tr("X-Plane")+this->separator+
-		tr("Resources")+this->separator+
-		tr("plugins")+this->separator+
-		tr("X-IvAp Resources")+this->separator+
-		tr("CSL");
+    const QString pathPrefix = QDir::homePath();
 #endif
+
+    const QString default_path =
+        pathPrefix + this->separator +
+        tr("X-Plane") + this->separator +
+        tr("Resources") + this->separator +
+        tr("plugins") + this->separator +
+        tr("X-IvAp Resources") + this->separator +
+        tr("CSL");
 
 	this->FolderName = settings.value("FolderName", default_path).toString();
 
-	// контекст меню ЛИСТА
-	this->ListClearAct = new QAction(tr("Очистить"), this);
+	// List context menu
+	this->ListClearAct = new QAction(tr("Clear"), this);
 	connect(this->ListClearAct, &QAction::triggered, this, &MainWindow::ListClear);
-	this->ListSelAllAct = new QAction(tr("Выделить Все"), this);
+	this->ListSelAllAct = new QAction(tr("Select All"), this);
 	this->ListSelAllAct->setShortcut(tr("Ctrl+A"));
 	connect(this->ListSelAllAct, &QAction::triggered, this, &MainWindow::ListSelAll);
 
-	// контекст меню Таблицы
-	this->TableSelAllAct = new QAction(tr("Выделить Все"), this);
+	// table context menu
+	this->TableSelAllAct = new QAction(tr("Select All"), this);
 	this->TableSelAllAct->setShortcut(tr("Ctrl+A"));
 	connect(this->TableSelAllAct, &QAction::triggered, this, &MainWindow::TableSelAll);
-	this->TableInfoAct = new QAction(tr("Информация"), this);
+	this->TableInfoAct = new QAction(tr("Info"), this);
 	connect(this->TableInfoAct, &QAction::triggered, this, &MainWindow::TableInfo);
 
-	// ширина колонок таблицы
+	// table colons widths
 	this->mUi->tableWidget->setColumnWidth(0, 30);//ID
 	this->mUi->tableWidget->setColumnWidth(1, 150);//Title
 	this->mUi->tableWidget->setColumnWidth(2, 230);//Info
@@ -73,29 +61,29 @@ MainWindow::MainWindow(QWidget *parent)
 	this->mUi->tableWidget->setColumnWidth(6, 20);//code
 	this->mUi->tableWidget->setColumnHidden(6, true);
 
-	// всяко разно пишем в окне и другое
+	// 
 	this->mUi->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
 	this->mUi->progressBar->setValue(0);
 	this->mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + VerProg);
 
-	// Начало
+	// 
 	/*QLocale Loc;
 	QString local(Loc.name());
 	this->ui->listWidget->addItem(local);*/
-	this->mUi->listWidget->addItem(tr("Укажите путь к файлу X-Plane.exe и нажмите \"Индексировать\""));
-	this->mUi->listWidget->addItem(tr("для индексирования и определения файлов, нуждающихся в обновлении."));
+    this->mUi->listWidget->addItem(tr("Specify the X-Plane executable file location and click \"Index\""));
+    this->mUi->listWidget->addItem(tr("to determine files need to be updated."));
 	this->mUi->listWidget->scrollToBottom();
 
-	// инициализация переменных
+	// Vars init
 
-	// инициализация обьектов
+	// Objs Init
 	this->AboutWin = new About(this);
 	this->SettingsWin = new Settings(this);
 	this->Inf = new PackageAdditionalInfo(this, this->mUi);
 	this->Indx = new IndexStep(this, this->mUi, this->Inf);
 	this->Updt = new UpdateStep(this, this->mUi);
 
-	// коннекты
+	// connects
 	connect(this->mUi->actionAbout, &QAction::triggered, this, &MainWindow::AboutSlot);
 	connect(this->mUi->actionAbout_Qt, &QAction::triggered, qApp, &QApplication::aboutQt);
 	connect(this->mUi->actionSetFolder, &QAction::triggered, this, &MainWindow::SetFolder);
@@ -204,17 +192,17 @@ void MainWindow::SetFolder()
 
 #ifdef Q_OS_WIN32
 	FName = QFileDialog::getOpenFileName(this,
-		tr("Укажите путь к исполняемому файлу X-Plane"),
+		tr("Specify the X-Plane executable file location"),
 		_FName,
 		"X-Plane*.exe (X-Plane*.exe)");
 #elif defined Q_OS_LINUX
 	FName = QFileDialog::getOpenFileName(this,
-		tr("Укажите путь к исполняемому файлу X-Plane"),
+		tr("Specify the X-Plane executable file location"),
 		_FName,
 		"X-Plane* (X-Plane*)");
 #else
 	FName = QFileDialog::getOpenFileName(this,
-		tr("Укажите путь к исполняемому файлу X-Plane"),
+		tr("Specify the X-Plane executable file location"),
 		_FName,
 		"X-Plane*.app (X-Plane*.app)");
 #endif
@@ -234,7 +222,7 @@ void MainWindow::SetFolder()
 		}
 		else
 		{
-			this->mUi->listWidget->addItem(tr("Ошибка: В выбранной версии X-Plane не установлен плагин X-IvAp!"));
+			this->mUi->listWidget->addItem(tr("Error: The X-IvAp plugin is not installed in the selected X-Plane instalation!"));
 			this->mUi->listWidget->scrollToBottom();
 		}
 	}
@@ -243,9 +231,9 @@ void MainWindow::SetFolder()
 
 void MainWindow::SetCustomFolder()
 {
-	QMessageBox::warning(this, PROGRAM_NAME, tr("Внимание! Данная функция предназначена для профессионального использования. Возможно программа станет неработоспособной!"), QMessageBox::Ok);
+    QMessageBox::warning(this, PROGRAM_NAME, tr("Error! This function is designed for advanced users. Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
 	this->FolderName = QFileDialog::getExistingDirectory(this,
-		tr("X-CSL-Updater :: Выберите папку X-Plane"), this->FolderName, QFileDialog::ShowDirsOnly);
+		tr("X-CSL-Updater :: Specify target folder"), this->FolderName, QFileDialog::ShowDirsOnly);
 
 	if (!this->FolderName.isEmpty())
 	{
