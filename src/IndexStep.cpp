@@ -157,31 +157,33 @@ void IndexStep::ParseIndexFiles() {
 			char sizeMBstr[MY_MAX_PATH];
 			sprintf(sizeMBstr, "%10.2f", sizeMB);
 			MWUI->tableWidget->setItem(count, 4, new QTableWidgetItem(sizeMBstr));
-			int status = CheckCslPack(file.pos(), count);
+            ePackageState status = CheckCslPack(file.pos(), count);
 			char StrStatus[MY_MAX_PATH];
 			sprintf(StrStatus, "%i", status);
 			QTableWidgetItem *Item = new QTableWidgetItem();
 			switch (status) {
-				case 0:
-					Item->setText(tr("Is up-to-date"));
+				case _CLIENT_PACKAGE_STATUS_OK:
+					Item->setText(tr("Up-to-date"));
 					Item->setTextColor(Qt::darkGreen);
 					MWUI->tableWidget->setItem(count, 5, Item);
-					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("up-to-date")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
-				case 1:
-					Item->setText(tr("Is Not up-to-date"));
+				case _CLIENT_PACKAGE_STATUS_CHANGE:
+					Item->setText(tr("Out-of-date"));
 					Item->setTextColor(Qt::red);
 					MWUI->tableWidget->setItem(count, 5, Item);
-					//MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Is Not up-to-date")));
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
-				case -1:
-					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Is Not installed")));
+				case _CLIENT_PACKAGE_STATUS_LOST:
+                    Item->setText(tr("Not installed"));
+                    Item->setTextColor(Qt::darkRed);
+					MWUI->tableWidget->setItem(count, 5, Item);
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 				default:
-					MWUI->tableWidget->setItem(count, 5, new QTableWidgetItem(tr("Unknown state")));
+                    Item->setText(tr("Unknown state"));
+                    Item->setTextColor(Qt::darkGray);
+					MWUI->tableWidget->setItem(count, 5, Item);
 					MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
 					break;
 			}
@@ -194,16 +196,17 @@ void IndexStep::ParseIndexFiles() {
 	EndIndex();
 }
 
-int IndexStep::CheckCslPack(int pos, int ID) {
+ePackageState IndexStep::CheckCslPack(int pos, int ID) {
 	QString FilePath = getIndexFilePath();
 	QFile file(FilePath);
 	if (!file.open(QIODevice::ReadOnly)) {
 		SetMessage(tr("Error: %1").arg(file.errorString()));
-		return _CLIENT_FILE_STATUS_LOST;
+		return _CLIENT_PACKAGE_STATUS_LOST;
 	}
 	QTextStream in(&file);
-	in.seek(pos);
-	int status = 0;
+	in.seek(pos);    
+    bool wereLostFiles = false;
+    bool wereChangedFiles = false;
 	while (!in.atEnd()) {
 		QString line = in.readLine();
 		QString type = line.left(1);
@@ -212,15 +215,26 @@ int IndexStep::CheckCslPack(int pos, int ID) {
 		if (list[0] == "11") break;
 		if (list[0] == "10") {
 			int st = CheckFile(list, ID);
-			if (st != 0) status = 1;
+            if (st == _CLIENT_FILE_STATUS_CHANGE) {
+                wereChangedFiles = true;
+            }
+            if (st == _CLIENT_FILE_STATUS_LOST) {
+                wereLostFiles = true;
+            }
 		}
 	}
-
 	file.close();
+    ePackageState status = _CLIENT_PACKAGE_STATUS_OK;
+    if (wereLostFiles) {
+        status = _CLIENT_PACKAGE_STATUS_LOST;
+    }
+    if (wereChangedFiles) {
+        status = _CLIENT_PACKAGE_STATUS_CHANGE;
+    }
 	return status;
 }
 
-int IndexStep::CheckFile(QStringList List, int ID) {
+eFileState IndexStep::CheckFile(QStringList List, int ID) {
 	PackageEntry FilesInfo;
 	FilesInfo.ID = ID;
 	FilesInfo.data = List;

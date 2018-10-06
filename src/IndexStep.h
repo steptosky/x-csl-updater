@@ -24,8 +24,8 @@ private slots:
 
 private:
 	void ParseIndexFiles();
-	int CheckCslPack(int pos, int ID);
-	int CheckFile(QStringList list, int ID);
+    ePackageState CheckCslPack(int pos, int ID);
+    eFileState CheckFile(QStringList list, int ID);
 	void EndIndex(int Next = true);
 	QString getIndexFilePath();
 	QString getIndexForDelFilePath();

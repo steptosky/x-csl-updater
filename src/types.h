@@ -15,9 +15,18 @@ static QString VerProg = QString(STS_XCSL_VERSION_STRING) + "+" STS_XCSL_REVISIO
 #define PROGRAM_NAME STS_XCSL_PROJECT_SHORT_NAME
 
 // types of program
-#define _CLIENT_FILE_STATUS_LOST	-1;
-#define _CLIENT_FILE_STATUS_CHANGE	1;
-#define _CLIENT_FILE_STATUS_OK		0;
+enum eFileState {
+    _CLIENT_FILE_STATUS_LOST	     = -1,
+    _CLIENT_FILE_STATUS_CHANGE        = 1,
+    _CLIENT_FILE_STATUS_OK	          = 0
+};
+
+enum ePackageState {
+    _CLIENT_PACKAGE_STATUS_LOST	     = -1,
+    _CLIENT_PACKAGE_STATUS_CHANGE     = 1,
+    _CLIENT_PACKAGE_STATUS_OK	      = 0
+};
+
 
 
 struct FileInfoStruct
