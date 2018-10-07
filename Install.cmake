@@ -24,6 +24,14 @@ if (MSVC)
         PATTERN "${PROJECT}.exe"
         PATTERN "*.dll"
     )
+elseif (APPLE)
+    install (
+        DIRECTORY 
+        ${CMAKE_SOURCE_DIR}/bin/
+        DESTINATION ${PROJECT}
+        FILES_MATCHING
+        PATTERN "${PROJECT}.app"
+    )
 else ()
     install (
         DIRECTORY 

@@ -8,7 +8,7 @@
 #define VERSION_MINOR    2
 #define VERSION_PATCH    0
 
-static QString VerProg = QString(STS_XCSL_VERSION_STRING) + "+" STS_XCSL_REVISION;
+static QString VerProg = QString(STS_XCSL_VERSION_STRING) + "+" + STS_XCSL_REVISION;
 
 // some constants
 #define ORGANISATION STS_XCSL_ORGANIZATION_NAME
