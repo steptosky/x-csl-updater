@@ -32,3 +32,5 @@ Project_vs2015x64/
 src\Info.h
 bin/Debug/
 bin/Release/
+build/
+Package/

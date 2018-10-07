@@ -1,6 +1,5 @@
 @echo off
 
-rem set QT_PATH="C:/Qt/Qt/5.6/msvc2015_64"
 set QT_PATH="C:/Qt/5.11.2/msvc2015_64"
 
 set SLN_VERSION="Visual Studio 14 Win64"

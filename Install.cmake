@@ -19,6 +19,9 @@ install (
 	DIRECTORY 
 	${CMAKE_SOURCE_DIR}/bin/release/
 	DESTINATION ${PROJECT}
+    FILES_MATCHING 
+    PATTERN "*.exe"
+    PATTERN "*.dll"
 )
 
 install(FILES ${QT_LIBS} DESTINATION ${PROJECT})
