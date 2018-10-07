@@ -21,6 +21,7 @@ file(GLOB_RECURSE CM_FILES
 #    "*.qm"
 #    "*.ts"
     "*.qrc"
+    "*.rc"
 )
 
 foreach(FILE ${CM_FILES}) 	

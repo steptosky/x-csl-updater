@@ -34,3 +34,4 @@ bin/Debug/
 bin/Release/
 build/
 Package/
+src\x-csl-updater-win32.aps
