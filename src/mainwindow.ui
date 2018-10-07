@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>810</width>
-    <height>733</height>
+    <width>870</width>
+    <height>730</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,8 +21,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>810</width>
-    <height>605</height>
+    <width>870</width>
+    <height>730</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -118,6 +118,21 @@
          <string/>
         </property>
         <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <property name="spacing">
+          <number>3</number>
+         </property>
          <item row="0" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout">
            <property name="spacing">
@@ -183,7 +198,10 @@
           </layout>
          </item>
          <item row="1" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout">
+          <layout class="QVBoxLayout" name="verticalLayout2">
+           <property name="spacing">
+            <number>6</number>
+           </property>
            <item>
             <widget class="QListWidget" name="listWidget">
              <property name="minimumSize">
@@ -217,6 +235,12 @@
            </item>
            <item>
             <widget class="QProgressBar" name="progressBar">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>25</height>
+              </size>
+             </property>
              <property name="contextMenuPolicy">
               <enum>Qt::NoContextMenu</enum>
              </property>
@@ -458,8 +482,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>810</width>
-     <height>21</height>
+     <width>870</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
