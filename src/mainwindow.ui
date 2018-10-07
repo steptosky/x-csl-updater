@@ -177,7 +177,7 @@
             <widget class="QPushButton" name="ButtonSetFolder">
              <property name="minimumSize">
               <size>
-               <width>85</width>
+               <width>0</width>
                <height>0</height>
               </size>
              </property>
@@ -424,6 +424,9 @@
           <height>0</height>
          </size>
         </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::NoContextMenu</enum>
+        </property>
         <property name="toolTip">
          <string>Cancel the current operation</string>
         </property>
@@ -439,7 +442,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>85</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
