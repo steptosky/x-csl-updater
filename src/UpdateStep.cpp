@@ -65,10 +65,13 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 	if (inPackageEntry.ID == 100) {// files for root recourses folder
 		QDir dir(mCslFolderName);
 		dir.cdUp();
-		QString corrFolderName = dir.path();
+		const QString corrFolderName = dir.path();
 		fileName = corrFolderName + mSeparator + inPackageEntry.data[1];
 	}
-	if (QFile::exists(fileName) && inPackageEntry.ID != 100) { // we don't want to remove root resource files
+    if (QFile::exists(fileName) && inPackageEntry.ID == 100) {
+        QFile::copy(fileName, fileName + ".backup");
+    }
+	if (QFile::exists(fileName)) {
 		QFile::remove(fileName);
 	}
 	delete mDownloadingFile;
@@ -210,6 +213,16 @@ void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
 		if (inReply->error() == QNetworkReply::NoError) {
 			mDownloadingFile->write(inReply->readAll());
 			mDownloadingFile->close();
+            // remove backup file if it's a root resource file ID==100
+            if(mEntryList[mFileCounter].ID == 100) {
+                QDir dir(mCslFolderName);
+                dir.cdUp();
+                const QString corrFolderName = dir.path();
+                const QString fileName = corrFolderName + mSeparator + mEntryList[mFileCounter].data[1] + ".backup";
+                if (QFile::exists(fileName)) {
+                    QFile::remove(fileName);
+                }
+            }
 		}
 		else {
 			// error details
@@ -220,6 +233,14 @@ void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
 			mDownloadingFile->close();
 			mDownloadingFile->remove();
 			SetMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
+            // revert file if it's a root resource file ID==100
+            if(mEntryList[mFileCounter].ID == 100) {
+                QDir dir(mCslFolderName);
+                dir.cdUp();
+                const QString corrFolderName = dir.path();
+                const QString fileName = corrFolderName + mSeparator + mEntryList[mFileCounter].data[1];
+                QFile::copy(fileName + ".backup", fileName);
+            }
 		}
 		// start for next file
 		delete mDownloadingFile;
