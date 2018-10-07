@@ -1,3 +1,12 @@
+XX.10.2018
+X-CSL-Updater 1.2.0
+- moved to new Qt 5.11.2;
+- added Doc8643.txt and related.txt file into update list;
+- fixed bug with displaying target path when custom target path is in use
+- added saving and restoring window size
+- removed Russian language (we hope temporary)
+- added new package state (not installed) and changed package status display text
+
 01.12.2014
 X-CSL-Updater 1.1.0
 - changed version format;
