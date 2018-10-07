@@ -14,6 +14,6 @@ cmake -G "Unix Makefiles" ../ -DCMAKE_PREFIX_PATH=$QT_PATH -DCMAKE_BUILD_TYPE=Re
 cmake --build . --clean-first --config Release
 
 # install
-cmake --build . --target INSTALL --config Release
+cmake --build . --target install --config Release
 
 cd ../

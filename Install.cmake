@@ -9,20 +9,32 @@ install (CODE "message(\"[INSTALL] Start install process...\")")
 # -----------------------------------------------------------------------#
 # cleanup
 if (CLEANUP_INSTALL_FIRST)
-	install (CODE "FILE(REMOVE_RECURSE ${CMAKE_INSTALL_PREFIX}/${PROJECT})")
+    install (CODE "FILE(REMOVE_RECURSE ${CMAKE_INSTALL_PREFIX}/${PROJECT})")
 endif()
 
 # -----------------------------------------------------------------------#
 # binary parts
 
-install (
-	DIRECTORY 
-	${CMAKE_SOURCE_DIR}/bin/release/
-	DESTINATION ${PROJECT}
-    FILES_MATCHING 
-    PATTERN "*.exe"
-    PATTERN "*.dll"
-)
+if (MSVC)
+    install (
+        DIRECTORY 
+        ${CMAKE_SOURCE_DIR}/bin/release/
+        DESTINATION ${PROJECT}
+        FILES_MATCHING
+        PATTERN "${PROJECT}.exe"
+        PATTERN "*.dll"
+    )
+else ()
+    install (
+        DIRECTORY 
+        ${CMAKE_SOURCE_DIR}/bin/
+        DESTINATION ${PROJECT}
+        USE_SOURCE_PERMISSIONS
+        FILES_MATCHING
+        PATTERN "${PROJECT}*"
+        PATTERN "*.so.*"
+    )
+endif()
 
 install(FILES ${QT_LIBS} DESTINATION ${PROJECT})
 
