@@ -118,17 +118,8 @@
          <string/>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <property name="leftMargin">
+         <property name="margin">
           <number>6</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>6</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
          </property>
          <property name="spacing">
           <number>3</number>
@@ -238,7 +229,7 @@
              <property name="minimumSize">
               <size>
                <width>0</width>
-               <height>25</height>
+               <height>21</height>
               </size>
              </property>
              <property name="contextMenuPolicy">
@@ -483,7 +474,7 @@
      <x>0</x>
      <y>0</y>
      <width>870</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
