@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget * parent)
     // load settings
     QSettings settings(ORGANISATION, PROGRAM_NAME);
     move(settings.value("pos", QPoint(200, 200)).toPoint());
-    resize(settings.value("size", QSize(870, 730)).toSize());
+    resize(settings.value("size", QSize(850, 730)).toSize());
 
 #ifdef Q_OS_WIN32
     const QString pathPrefix = tr("C:");
