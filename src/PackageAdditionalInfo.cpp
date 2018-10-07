@@ -92,7 +92,7 @@ void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 
 		// error details
 		QString errorUrl = inReply->request().url().toString();
-		QString httpStatus = inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+		QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
 		QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
 		// TODO: we need to write the error info into somewhere...
 	}

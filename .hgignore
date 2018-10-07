@@ -1,6 +1,7 @@
 syntax: glob
 *.DS_Store
 TEST/
+TEST_PACKAGE/
 release/
 debug/
 for_builds_0.1.1.4.beta.ize
@@ -30,8 +31,8 @@ mtl.dat
 *.pro.user
 Project_vs2015x64/
 src\Info.h
-bin/Debug/
-bin/Release/
+bin/
 build/
 Package/
 src\x-csl-updater-win32.aps
+src/Info.h

@@ -98,7 +98,7 @@ void IndexStep::ParseIndexFiles() {
 
 		QString line = fileForDel.readLine();
 		QString type = line.left(1);
-		if (type == "#" || type == "0" || type == false) continue;
+		if (type == "#" || type == "0" || type.isEmpty()) continue;
 		QStringList list = line.split("%", QString::SkipEmptyParts);
 		if (list.size() >= 2) {
 			PackageEntry fileInfo;
@@ -141,7 +141,7 @@ void IndexStep::ParseIndexFiles() {
 			}
 			ver_file_stat = false;
 		}
-		if (type == "#" || type == "0" || type == false) continue;
+		if (type == "#" || type == "0" || type.isEmpty()) continue;
 		QStringList list = line.split("%", QString::SkipEmptyParts);
 		if (list.size() >= 6 && list[0] == "11") {
 			MWUI->tableWidget->setRowCount(count + 1);
@@ -210,7 +210,7 @@ ePackageState IndexStep::CheckCslPack(int pos, int ID) {
 	while (!in.atEnd()) {
 		QString line = in.readLine();
 		QString type = line.left(1);
-		if (type == "#" || type == "0" || type == false) continue;
+		if (type == "#" || type == "0" || type.isEmpty()) continue;
 		QStringList list = line.split("%", QString::SkipEmptyParts);
 		if (list[0] == "11") break;
 		if (list[0] == "10") {
