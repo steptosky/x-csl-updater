@@ -1,6 +1,6 @@
 #!/bin/bash
 
-QT_PATH="/usr/lib/x86_64-linux-gnu/cmake/Qt5"
+QT_PATH="/Volumes/El Capitan/Users/den_rain/Qt-last/5.11.2/clang_64/"
 PROJ_DIR=build
 
 if [ ! -d "$PROJ_DIR" ]; then
@@ -8,7 +8,7 @@ if [ ! -d "$PROJ_DIR" ]; then
 fi
 cd $PROJ_DIR
 # configure
-cmake -G "Unix Makefiles" ../ -DCMAKE_PREFIX_PATH=$QT_PATH -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../Package
+cmake -G "Unix Makefiles" ../ -DCMAKE_PREFIX_PATH="$QT_PATH" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../Package
 
 # build
 cmake --build . --clean-first --config Release
