@@ -16,6 +16,7 @@ endif()
 # binary parts
 
 if (MSVC)
+
     install(
         DIRECTORY 
         ${CMAKE_SOURCE_DIR}/bin/release/
@@ -25,15 +26,18 @@ if (MSVC)
     )
     #install(FILES ${QT_LIBS} DESTINATION ${PROJECT})
     install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-windeployqt.cmake")
+
 elseif (APPLE)
+
+    install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-macdeployqt.cmake")
     install(
-        DIRECTORY 
-        ${CMAKE_SOURCE_DIR}/bin/
+        TARGETS 
+        ${TARGET_NAME}
         DESTINATION ${PROJECT}
-        FILES_MATCHING
-        PATTERN "${PROJECT}.app"
-    )
+    )  
+
 else ()
+
     install(
         DIRECTORY 
         ${CMAKE_SOURCE_DIR}/bin/
@@ -43,6 +47,7 @@ else ()
         PATTERN "${PROJECT}*"
         PATTERN "*.so.*"
     )
+    
 endif()
 
 

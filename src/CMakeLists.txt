@@ -42,15 +42,16 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL AppleClang)
 
 	message ("Building <${PROJECT}> using settings for <${CMAKE_CXX_COMPILER_ID}> compiler")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -std=c++11")
-	
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -std=c++11") 
+
 else ()
 
 	message ("Building <${PROJECT}> using settings for <${CMAKE_CXX_COMPILER_ID}> compiler")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -std=c++11")
 	set (CMAKE_SHARED_LINKER_FLAGS
     		"${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'$ORIGIN/'"
-	)	
+	)
+
 endif ()
 
 # -----------------------------------------------------------------------#

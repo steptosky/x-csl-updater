@@ -1,6 +1,6 @@
 #!/bin/bash
 
-QT_PATH="/Volumes/El Capitan/Users/den_rain/Qt-last/5.11.2/clang_64/"
+export QT_PATH="/Volumes/El Capitan/Users/den_rain/Qt-last/5.11.2/clang_64/"
 PROJ_DIR=build
 
 if [ ! -d "$PROJ_DIR" ]; then
@@ -14,6 +14,6 @@ cmake -G "Unix Makefiles" ../ -DCMAKE_PREFIX_PATH="$QT_PATH" -DCMAKE_BUILD_TYPE=
 cmake --build . --clean-first --config Release
 
 # install
-# cmake --build . --target install --config Release
+cmake --build . --target install --config Release
 
 cd ../
