@@ -31,9 +31,10 @@ elseif (APPLE)
 
     install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-macdeployqt.cmake")
     install(
-        TARGETS 
-        ${TARGET_NAME}
+        DIRECTORY
+        ${CMAKE_SOURCE_DIR}/bin/${PROJECT}.app
         DESTINATION ${PROJECT}
+        USE_SOURCE_PERMISSIONS
     )  
 
 else ()

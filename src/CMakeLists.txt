@@ -21,7 +21,7 @@ file(GLOB_RECURSE CM_FILES
 #    "*.qm"
 #    "*.ts"
     "*.qrc"
-    "*.rc"
+    "*.rc"    
 )
 
 foreach(FILE ${CM_FILES}) 	
@@ -42,7 +42,12 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL AppleClang)
 
 	message ("Building <${PROJECT}> using settings for <${CMAKE_CXX_COMPILER_ID}> compiler")
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -std=c++11") 
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas -std=c++11")
+
+    set(MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT})
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.steptosky.X-CSL-Updater")
+    set(MACOSX_BUNDLE_INFO_STRING "A Software for the X-CSL-Package project.")
+    set(MACOSX_BUNDLE_ICON_FILE "xcsl.icns")
 
 else ()
 
@@ -66,7 +71,7 @@ find_package(Qt5Network)
 #find_package(Qt5LinguistTools)
 
 # Tell CMake to create the ${PROJECT} executable
-add_executable(${TARGET_NAME} WIN32 MACOSX_BUNDLE ${CM_FILES})
+add_executable(${TARGET_NAME} WIN32 MACOSX_BUNDLE ${CM_FILES} "xcsl.icns")
 
 # -----------------------------------------------------------------------#
 # Global Libraries linkage 
@@ -74,6 +79,12 @@ add_executable(${TARGET_NAME} WIN32 MACOSX_BUNDLE ${CM_FILES})
 target_link_libraries (${TARGET_NAME} Qt5::Widgets)
 target_link_libraries (${TARGET_NAME} Qt5::Network)
 
+if (APPLE)
+    set_target_properties(${TARGET_NAME}
+        PROPERTIES
+        RESOURCE "xcsl.icns"
+    )
+endif()
 
 # Setup output folders for specified project
 set_target_properties(${TARGET_NAME}
