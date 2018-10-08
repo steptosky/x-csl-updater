@@ -4,28 +4,29 @@
 option(CLEANUP_INSTALL_FIRST "Will cleanup the install folder before install." OFF)
 
 # -----------------------------------------------------------------------#
-install (CODE "message(\"[INSTALL] Start install process...\")")
+install(CODE "message(\"[INSTALL] Start install process...\")")
 
 # -----------------------------------------------------------------------#
 # cleanup
 if (CLEANUP_INSTALL_FIRST)
-    install (CODE "FILE(REMOVE_RECURSE ${CMAKE_INSTALL_PREFIX}/${PROJECT})")
+    install(CODE "FILE(REMOVE_RECURSE ${CMAKE_INSTALL_PREFIX}/${PROJECT})")
 endif()
 
 # -----------------------------------------------------------------------#
 # binary parts
 
 if (MSVC)
-    install (
+    install(
         DIRECTORY 
         ${CMAKE_SOURCE_DIR}/bin/release/
         DESTINATION ${PROJECT}
         FILES_MATCHING
         PATTERN "${PROJECT}.exe"
-        PATTERN "*.dll"
     )
+    #install(FILES ${QT_LIBS} DESTINATION ${PROJECT})
+    install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-windeployqt.cmake")
 elseif (APPLE)
-    install (
+    install(
         DIRECTORY 
         ${CMAKE_SOURCE_DIR}/bin/
         DESTINATION ${PROJECT}
@@ -33,7 +34,7 @@ elseif (APPLE)
         PATTERN "${PROJECT}.app"
     )
 else ()
-    install (
+    install(
         DIRECTORY 
         ${CMAKE_SOURCE_DIR}/bin/
         DESTINATION ${PROJECT}
@@ -44,15 +45,15 @@ else ()
     )
 endif()
 
-install(FILES ${QT_LIBS} DESTINATION ${PROJECT})
+
 
 # -----------------------------------------------------------------------#
 # additional parts
 
-install (
+install(
 	DIRECTORY 
 	${CMAKE_SOURCE_DIR}/docs/
-	DESTINATION ${PROJECT}/docs/
+	DESTINATION ${PROJECT}
 	FILES_MATCHING PATTERN "*.txt"
 )
 

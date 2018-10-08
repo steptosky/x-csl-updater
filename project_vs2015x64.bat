@@ -8,7 +8,7 @@ set PROJ_DIR=Project_vs2015x64
 
 if not exist %PROJ_DIR% mkdir %PROJ_DIR%
 cd %PROJ_DIR%
-cmake -G %SLN_VERSION% ../ -DCMAKE_PREFIX_PATH=%QT_PATH% -DCMAKE_INSTALL_PREFIX=../package
+cmake -G %SLN_VERSION% ../ -DCMAKE_PREFIX_PATH=%QT_PATH% -DCMAKE_INSTALL_PREFIX=../Package
 cd ../
 
 pause
