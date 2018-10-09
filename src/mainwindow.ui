@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>850</width>
-    <height>731</height>
+    <height>615</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,7 +22,7 @@
   <property name="minimumSize">
    <size>
     <width>850</width>
-    <height>730</height>
+    <height>615</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -118,16 +118,7 @@
          <string/>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <property name="leftMargin">
-          <number>6</number>
-         </property>
-         <property name="topMargin">
-          <number>6</number>
-         </property>
-         <property name="rightMargin">
-          <number>6</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>6</number>
          </property>
          <property name="spacing">
@@ -264,7 +255,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>493</height>
+        <height>377</height>
        </size>
       </property>
       <property name="contextMenuPolicy">
@@ -274,6 +265,9 @@
        <string>X-CSL-Package list available on the server:</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="margin">
+        <number>6</number>
+       </property>
        <item row="0" column="0">
         <widget class="QTableWidget" name="tableWidget">
          <property name="minimumSize">
@@ -504,7 +498,7 @@
      <x>0</x>
      <y>0</y>
      <width>850</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
