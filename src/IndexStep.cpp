@@ -204,7 +204,8 @@ ePackageState IndexStep::CheckCslPack(int pos, int ID) {
 		return CLIENT_PACKAGE_STATUS_LOST;
 	}
 	QTextStream in(&file);
-	in.seek(pos);    
+	in.seek(pos);
+    bool wereOkFiles = false;
     bool wereLostFiles = false;
     bool wereChangedFiles = false;
 	while (!in.atEnd()) {
@@ -215,21 +216,30 @@ ePackageState IndexStep::CheckCslPack(int pos, int ID) {
 		if (list[0] == "11") break;
 		if (list[0] == "10") {
 			int st = CheckFile(list, ID);
-            if (st == CLIENT_FILE_STATUS_CHANGE) {
+            if (st == CLIENT_FILE_STATUS_OK) {
+                wereOkFiles = true;
+            }
+            else if (st == CLIENT_FILE_STATUS_CHANGE) {
                 wereChangedFiles = true;
             }
-            if (st == CLIENT_FILE_STATUS_LOST) {
+            else if (st == CLIENT_FILE_STATUS_LOST) {
                 wereLostFiles = true;
             }
 		}
 	}
 	file.close();
-    ePackageState status = CLIENT_PACKAGE_STATUS_OK;
-    if (wereLostFiles && !wereChangedFiles) {
+    ePackageState status = CLIENT_PACKAGE_STATUS_LOST;
+    if (wereOkFiles && !wereLostFiles && !wereChangedFiles) {
+        status = CLIENT_PACKAGE_STATUS_OK;
+    }
+    else if (wereLostFiles && !wereOkFiles && !wereChangedFiles) {
         status = CLIENT_PACKAGE_STATUS_LOST;
     }
-    if (wereChangedFiles) {
+    else if (wereChangedFiles || wereOkFiles || wereLostFiles) {
         status = CLIENT_PACKAGE_STATUS_CHANGE;
+    }
+    else {
+        status = CLIENT_PACKAGE_STATUS_NONE;
     }
 	return status;
 }
