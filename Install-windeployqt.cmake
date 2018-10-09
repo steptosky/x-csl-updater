@@ -28,10 +28,10 @@ if (NOT ${windeployqt_result} EQUAL 0)
     message(FATAL_ERROR "windeployqt is failed!")
 endif()
 
-file(REMOVE_RECURSE
-    ${WORKDIR}/Qt5Svg.dll
-    ${WORKDIR}/bearer
-    ${WORKDIR}/iconengines
-    ${WORKDIR}/imageformats
-    ${WORKDIR}/styles
-)
+#file(REMOVE_RECURSE
+#    ${WORKDIR}/Qt5Svg.dll
+#    ${WORKDIR}/bearer
+#    ${WORKDIR}/iconengines
+#    ${WORKDIR}/imageformats
+#    ${WORKDIR}/styles
+#)
