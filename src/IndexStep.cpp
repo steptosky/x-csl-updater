@@ -225,7 +225,7 @@ ePackageState IndexStep::CheckCslPack(int pos, int ID) {
 	}
 	file.close();
     ePackageState status = CLIENT_PACKAGE_STATUS_OK;
-    if (wereLostFiles) {
+    if (wereLostFiles && !wereChangedFiles) {
         status = CLIENT_PACKAGE_STATUS_LOST;
     }
     if (wereChangedFiles) {
