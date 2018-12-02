@@ -1,269 +1,228 @@
 #include "mainwindow.h"
 #include <QAction>
+#include <QtWidgets>
 
-MainWindow::MainWindow(QWidget *parent)
-	: QMainWindow(parent), ui(new Ui::MainWindow)
-{
-	// setup UI
-	ui->setupUi(this);
+MainWindow::MainWindow(QWidget * parent)
+    : QMainWindow(parent),
+      mUi(new Ui::MainWindow) {
+    // setup UI
+    mUi->setupUi(this);
 
-	// установка нужного кодека
-    QTextCodec *codec = QTextCodec::codecForName("CP1251");
-	QTextCodec::setCodecForTr(codec);
+    // separator
+    this->separator = "/"/*(QString)QDir::separator()*/;
 
-	// сепаратор
-	this->separator = "/"/*(QString)QDir::separator()*/;
-
-	// цепляем настройки из сохраненых
-	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-	move(settings.value("pos", QPoint(200, 200)).toPoint());
+    // load settings
+    QSettings settings(ORGANISATION, PROGRAM_NAME);
+    move(settings.value("pos", QPoint(200, 200)).toPoint());
+    resize(settings.value("size", QSize(850, 615)).toSize());
 
 #ifdef Q_OS_WIN32
-	QString default_path =
-		tr("C:") + this->separator +
-		tr("X-Plane") + this->separator +
-		tr("Resources") + this->separator +
-		tr("plugins") + this->separator +
-		tr("X-IvAp Resources") + this->separator +
-		tr("CSL");
-#elif defined Q_OS_LINUX
-	QString default_path =
-		QDir::homePath()+this->separator+
-		tr("X-Plane")+this->separator+
-		tr("Resources")+this->separator+
-		tr("plugins")+this->separator+
-		tr("X-IvAp Resources")+this->separator+
-		tr("CSL");
+    const QString pathPrefix = tr("C:");
 #else
-	QString default_path =
-		QDir::homePath()+this->separator+
-		tr("X-Plane")+this->separator+
-		tr("Resources")+this->separator+
-		tr("plugins")+this->separator+
-		tr("X-IvAp Resources")+this->separator+
-		tr("CSL");
+    const QString pathPrefix = QDir::homePath();
 #endif
 
-	this->FolderName = settings.value("FolderName", default_path).toString();
+    const QString default_path =
+            pathPrefix + this->separator +
+            tr("X-Plane") + this->separator +
+            tr("Resources") + this->separator +
+            tr("plugins") + this->separator +
+            tr("X-IvAp Resources") + this->separator +
+            tr("CSL");
 
-	// контекст меню ЛИСТА
-	this->ListClearAct = new QAction(tr("Очистить"), this);
-	connect(this->ListClearAct, SIGNAL(activated()), this, SLOT(ListClear()));
-	this->ListSelAllAct = new QAction(tr("Выделить Все"), this);
-	this->ListSelAllAct->setShortcut(tr("Ctrl+A"));
-	connect(this->ListSelAllAct, SIGNAL(activated()), this, SLOT(ListSelAll()));
+    this->FolderName = settings.value("FolderName", default_path).toString();
 
-	// контекст меню Таблицы
-	this->TableSelAllAct = new QAction(tr("Выделить Все"), this);
-	this->TableSelAllAct->setShortcut(tr("Ctrl+A"));
-	connect(this->TableSelAllAct, SIGNAL(activated()), this, SLOT(TableSelAll()));
-	this->TableInfoAct = new QAction(tr("Информация"), this);
-	connect(this->TableInfoAct, SIGNAL(activated()), this, SLOT(TableInfo()));
+    // List context menu
+    this->ListClearAct = new QAction(tr("Clear"), this);
+    connect(this->ListClearAct, &QAction::triggered, this, &MainWindow::ListClear);
+    this->ListSelAllAct = new QAction(tr("Select All"), this);
+    this->ListSelAllAct->setShortcut(tr("Ctrl+A"));
+    connect(this->ListSelAllAct, &QAction::triggered, this, &MainWindow::ListSelAll);
 
-	// ширина колонок таблицы
-	this->ui->tableWidget->setColumnWidth(0, 30);//ID
-	this->ui->tableWidget->setColumnWidth(1, 150);//Title
-	this->ui->tableWidget->setColumnWidth(2, 230);//Info
-	this->ui->tableWidget->setColumnWidth(3, 130);//Ver
-	this->ui->tableWidget->setColumnWidth(4, 80);//sizeMB
-	this->ui->tableWidget->setColumnWidth(5, 120);//status
-	this->ui->tableWidget->setColumnWidth(6, 20);//code
-	this->ui->tableWidget->setColumnHidden(6, true);
+    // table context menu
+    this->TableSelAllAct = new QAction(tr("Select All"), this);
+    this->TableSelAllAct->setShortcut(tr("Ctrl+A"));
+    connect(this->TableSelAllAct, &QAction::triggered, this, &MainWindow::TableSelAll);
+    this->TableInfoAct = new QAction(tr("Info"), this);
+    connect(this->TableInfoAct, &QAction::triggered, this, &MainWindow::TableInfo);
 
-	// всяко разно пишем в окне и другое
-	this->ui->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
-	this->ui->progressBar->setValue(0);
-	this->ui->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + VerProg);
+    // table colons widths
+    this->mUi->tableWidget->setColumnWidth(0, 30);  //ID
+    this->mUi->tableWidget->setColumnWidth(1, 150); //Title
+    this->mUi->tableWidget->setColumnWidth(2, 230); //Info
+    this->mUi->tableWidget->setColumnWidth(3, 130); //Ver
+    this->mUi->tableWidget->setColumnWidth(4, 80);  //sizeMB
+    this->mUi->tableWidget->setColumnWidth(5, 120); //status
+    this->mUi->tableWidget->setColumnWidth(6, 20);  //code
+    this->mUi->tableWidget->setColumnHidden(6, true);
 
-	// Начало
-	/*QLocale Loc;
-	QString local(Loc.name());
-	this->ui->listWidget->addItem(local);*/
-	this->ui->listWidget->addItem(tr("Укажите путь к файлу X-Plane.exe и нажмите \"Индексировать\""));
-	this->ui->listWidget->addItem(tr("для индексирования и определения файлов, нуждающихся в обновлении."));
-	this->ui->listWidget->scrollToBottom();
+    // 
+    this->mUi->curPathLabel->setText(removeCslSpecifiedPathIfNeeded(this->FolderName));
+    this->mUi->progressBar->setValue(0);
+    this->mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + VerProg);
 
-	// инициализация переменных
+    // 
+    /*QLocale Loc;
+    QString local(Loc.name());
+    this->ui->listWidget->addItem(local);*/
+    this->mUi->listWidget->addItem(tr("Specify the X-Plane executable file location and click \"Index\""));
+    this->mUi->listWidget->addItem(tr("to determine files need to be updated."));
+    this->mUi->listWidget->scrollToBottom();
 
-	// инициализация обьектов
-	this->AboutWin = new About(this);
-	this->SettingsWin = new Settings(this);
-	this->Inf = new info(this, this->ui);
-	this->Indx = new Index(this, this->ui, this->Inf);
-	this->Updt = new Update(this, this->ui);
+    // Vars init
 
-	// коннекты
-	connect(this->ui->actionAbout, SIGNAL(activated()), this, SLOT(AboutSlot()));
-	connect(this->ui->actionAbout_Qt, SIGNAL(activated()), qApp, SLOT(aboutQt()));
-	connect(this->ui->actionSetFolder, SIGNAL(activated()), this, SLOT(SetFolder()));
-	connect(this->ui->actionSettings, SIGNAL(activated()), this, SLOT(SettingSlot()));
-	connect(this->ui->listWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(ListContextMenu(const QPoint &)));
-	connect(this->ui->tableWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(TableContextMenu(const QPoint &)));
-	connect(this->ui->SelAllButton, SIGNAL(pressed()), this, SLOT(TableSelAll()));
-	connect(this->ui->NextButton, SIGNAL(pressed()), this, SLOT(UpdateSlot()));
-	connect(this->ui->PrevButton, SIGNAL(pressed()), this, SLOT(IndexSlot()));
-	connect(this->ui->ButtonSetFolder, SIGNAL(clicked()), this, SLOT(SetFolder()));
-	connect(this->ui->actionSet_Custom_Path, SIGNAL(activated()), this, SLOT(SetCustomFolder()));
+    // Objs Init
+    this->AboutWin = new About(this);
+    this->SettingsWin = new Settings(this);
+    this->Inf = new PackageAdditionalInfo(this, this->mUi);
+    this->Indx = new IndexStep(this, this->mUi, this->Inf);
+    this->Updt = new UpdateStep(this, this->mUi);
+
+    // connects
+    connect(this->mUi->actionAbout, &QAction::triggered, this, &MainWindow::AboutSlot);
+    connect(this->mUi->actionAbout_Qt, &QAction::triggered, qApp, &QApplication::aboutQt);
+    connect(this->mUi->actionSetFolder, &QAction::triggered, this, &MainWindow::SetFolder);
+    connect(this->mUi->actionSettings, &QAction::triggered, this, &MainWindow::SettingSlot);
+    connect(this->mUi->listWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::ListContextMenu);
+    connect(this->mUi->tableWidget, &QTableWidget::customContextMenuRequested, this, &MainWindow::TableContextMenu);
+    connect(this->mUi->SelAllButton, &QPushButton::pressed, this, &MainWindow::TableSelAll);
+    connect(this->mUi->NextButton, &QPushButton::pressed, this, &MainWindow::UpdateSlot);
+    connect(this->mUi->PrevButton, &QPushButton::pressed, this, &MainWindow::IndexSlot);
+    connect(this->mUi->ButtonSetFolder, &QPushButton::pressed, this, &MainWindow::SetFolder);
+    connect(this->mUi->actionSet_Custom_Path, &QAction::triggered, this, &MainWindow::SetCustomFolder);
 }
 
-MainWindow::~MainWindow()
-{
-	QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-	settings.setValue("pos", pos());
-	delete Indx;
-	delete Updt;
-	delete Inf;
-	delete ui;
+MainWindow::~MainWindow() {
+    QSettings settings(ORGANISATION, PROGRAM_NAME);
+    settings.setValue("pos", pos());
+    settings.setValue("size", size());
+    delete Indx;
+    delete Updt;
+    delete Inf;
+    delete mUi;
 }
 
-void MainWindow::ListClear()
-{
-	this->ui->listWidget->clear();
+void MainWindow::ListClear() {
+    this->mUi->listWidget->clear();
 }
 
-void MainWindow::ListSelAll()
-{
-	this->ui->listWidget->selectAll();
+void MainWindow::ListSelAll() {
+    this->mUi->listWidget->selectAll();
 }
 
-void MainWindow::TableSelAll()
-{
-	this->ui->tableWidget->selectAll();
-	this->ui->tableWidget->setFocus();
+void MainWindow::TableSelAll() {
+    this->mUi->tableWidget->selectAll();
+    this->mUi->tableWidget->setFocus();
 }
 
-void MainWindow::AboutSlot()
-{
-	this->AboutWin->show();
+void MainWindow::AboutSlot() {
+    this->AboutWin->show();
 }
 
-void MainWindow::SettingSlot()
-{
-	this->SettingsWin->LoadSettings();
-	this->SettingsWin->show();
+void MainWindow::SettingSlot() {
+    this->SettingsWin->LoadSettings();
+    this->SettingsWin->show();
 }
 
-void MainWindow::ListContextMenu(const QPoint & pos)
-{
-	QMenu menu(this);
-	menu.addAction(this->ListClearAct);
-	menu.addAction(this->ListSelAllAct);
-	menu.exec(this->ui->listWidget->mapToGlobal(pos));
+void MainWindow::ListContextMenu(const QPoint & pos) {
+    QMenu menu(this);
+    menu.addAction(this->ListClearAct);
+    menu.addAction(this->ListSelAllAct);
+    menu.exec(this->mUi->listWidget->mapToGlobal(pos));
 }
 
-void MainWindow::TableContextMenu(const QPoint & pos)
-{
-	QMenu menu(this);
-	if (this->ui->tableWidget->rowCount() < 1)
-	{
-		this->TableInfoAct->setDisabled(true);
-	}
-	else
-	{
-		this->TableInfoAct->setEnabled(true);
-	}
-	menu.addAction(this->TableInfoAct);
-	menu.addAction(this->TableSelAllAct);
-	menu.exec(this->ui->tableWidget->mapToGlobal(pos));
+void MainWindow::TableContextMenu(const QPoint & pos) {
+    QMenu menu(this);
+    if (this->mUi->tableWidget->rowCount() < 1) {
+        this->TableInfoAct->setDisabled(true);
+    }
+    else {
+        this->TableInfoAct->setEnabled(true);
+    }
+    menu.addAction(this->TableInfoAct);
+    menu.addAction(this->TableSelAllAct);
+    menu.exec(this->mUi->tableWidget->mapToGlobal(pos));
 }
 
-void MainWindow::contextMenuEvent(QContextMenuEvent * event)
-{
-	/*QMenu menu(this);
-	 menu.addAction(this->ui->actionAbout);
-	 menu.addAction(this->ui->actionAbout_Qt);
-	 menu.exec(event->globalPos());*/
+void MainWindow::contextMenuEvent(QContextMenuEvent *) {
+    /*QMenu menu(this);
+     menu.addAction(this->ui->actionAbout);
+     menu.addAction(this->ui->actionAbout_Qt);
+     menu.exec(event->globalPos());*/
 }
 
-QString MainWindow::removeCslSpecifiedPath(const QString &inPath)
-{
-	return inPath.left(inPath.length() - 38);
+QString MainWindow::removeCslSpecifiedPathIfNeeded(const QString & inPath) {
+    static QString xIvApSpecificPath = "Resources/plugins/X-IvAp Resources/CSL";
+    if (inPath.endsWith(xIvApSpecificPath)) {
+        return inPath.left(inPath.length() - xIvApSpecificPath.length());
+    }
+    return inPath;
 }
 
-void MainWindow::TableInfo()
-{
-	this->Inf->OpenInfoWin();
+void MainWindow::TableInfo() {
+    this->Inf->OpenInfoWin();
 }
 
-
-void MainWindow::SetFolder()
-{
-	QString _FName;
-	if (this->FolderName.endsWith("Resources/plugins/X-IvAp Resources/CSL"))
-	{
-		_FName = removeCslSpecifiedPath(this->FolderName);
-	}
-	else
-	{
-		_FName = this->FolderName;
-	}
-	QString FName;
+void MainWindow::SetFolder() {
+    QString _FName = removeCslSpecifiedPathIfNeeded(this->FolderName);
+    QString FName;
 
 #ifdef Q_OS_WIN32
-	FName = QFileDialog::getOpenFileName(this,
-		tr("Укажите путь к исполняемому файлу X-Plane"),
-		_FName,
-		"X-Plane*.exe (X-Plane*.exe)");
+    FName = QFileDialog::getOpenFileName(this,
+                                         tr("Specify the X-Plane executable file location"),
+                                         _FName,
+                                         "X-Plane*.exe (X-Plane*.exe)");
 #elif defined Q_OS_LINUX
 	FName = QFileDialog::getOpenFileName(this,
-		tr("Укажите путь к исполняемому файлу X-Plane"),
+		tr("Specify the X-Plane executable file location"),
 		_FName,
 		"X-Plane* (X-Plane*)");
 #else
 	FName = QFileDialog::getOpenFileName(this,
-		tr("Укажите путь к исполняемому файлу X-Plane"),
+		tr("Specify the X-Plane executable file location"),
 		_FName,
 		"X-Plane*.app (X-Plane*.app)");
 #endif
 
-	if (!FName.isEmpty())
-	{
-		int pos = FName.lastIndexOf("/");
-		FName = FName.left(pos + 1);
-		FName = FName + tr("Resources/plugins/X-IvAp Resources/CSL");
-		QDir dir(FName);
-		if (dir.exists())
-		{
-			this->FolderName = FName;
-			QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-			settings.setValue("FolderName", this->FolderName);
-			this->ui->curPathLabel->setText(removeCslSpecifiedPath(this->FolderName));
-		}
-		else
-		{
-			this->ui->listWidget->addItem(tr("Ошибка: В выбранной версии X-Plane не установлен плагин X-IvAp!"));
-			this->ui->listWidget->scrollToBottom();
-		}
-	}
-	return;
+    if (!FName.isEmpty()) {
+        int pos = FName.lastIndexOf("/");
+        FName = FName.left(pos + 1);
+        FName = FName + tr("Resources/plugins/X-IvAp Resources/CSL");
+        QDir dir(FName);
+        if (dir.exists()) {
+            this->FolderName = FName;
+            QSettings settings(ORGANISATION, PROGRAM_NAME);
+            settings.setValue("FolderName", this->FolderName);
+            this->mUi->curPathLabel->setText(removeCslSpecifiedPathIfNeeded(this->FolderName));
+        }
+        else {
+            this->mUi->listWidget->addItem(tr("Error: The X-IvAp plugin is not installed in the selected X-Plane instalation!"));
+            this->mUi->listWidget->scrollToBottom();
+        }
+    }
+    return;
 }
 
-void MainWindow::SetCustomFolder()
-{
-	QMessageBox::warning(this, "X-CSL-Updater", tr("Внимание! Данная функция предназначена для профессионального использования. Возможно программа станет неработоспособной!"), QMessageBox::Ok);
-	this->FolderName = QFileDialog::getExistingDirectory(this,
-		tr("X-CSL-Updater :: Выберите папку X-Plane"), this->FolderName, QFileDialog::ShowDirsOnly);
+void MainWindow::SetCustomFolder() {
+    QMessageBox::warning(this, PROGRAM_NAME, tr("Warning! This function is designed for advanced users. Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
+    this->FolderName = QFileDialog::getExistingDirectory(this,
+                                                         tr("X-CSL-Updater :: Specify target folder"), this->FolderName, QFileDialog::ShowDirsOnly);
 
-	if (!this->FolderName.isEmpty())
-	{
-		QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-		settings.setValue("FolderName", this->FolderName);
-		this->ui->curPathLabel->setText(this->FolderName);
-		//this->ui->cur_ver_client->setText(this->ChVer->GetCurVerClient(this->FolderName));
-	}
-	return;
+    if (!this->FolderName.isEmpty()) {
+        QSettings settings(ORGANISATION, PROGRAM_NAME);
+        settings.setValue("FolderName", this->FolderName);
+        this->mUi->curPathLabel->setText(this->FolderName);
+    }
 }
 
-void MainWindow::UpdateSlot()
-{
-	this->ui->PrevButton->setDisabled(true);
-	this->ui->NextButton->setDisabled(true);
-	this->Updt->StartUpdate(this->Indx->FilesList, this->Indx);	
+void MainWindow::UpdateSlot() {
+    this->mUi->PrevButton->setDisabled(true);
+    this->mUi->NextButton->setDisabled(true);
+    this->Updt->StartUpdate(this->Indx->mEntryList, this->Indx);
 }
 
-void MainWindow::IndexSlot()
-{
-	this->ui->PrevButton->setDisabled(true);
-	this->ui->NextButton->setDisabled(true);
-	this->Indx->StartIndex();	
+void MainWindow::IndexSlot() {
+    this->mUi->PrevButton->setDisabled(true);
+    this->mUi->NextButton->setDisabled(true);
+    this->Indx->StartIndex();
 }

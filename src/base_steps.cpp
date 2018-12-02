@@ -4,9 +4,9 @@ BaseSteps::BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI): QWidget(0)
 {
     this->MW = _MW;
     this->MWUI = _MWUI;
-    this->separator = "/"/*(QString)QDir::separator()*/;
-    QSettings settings("VA X-Air Team && StepToSky Team", "X-CSL-Updater");
-    this->FolderName = settings.value("FolderName").toString();
+    this->mSeparator = "/"/*(QString)QDir::separator()*/;
+    QSettings settings(ORGANISATION, PROGRAM_NAME);
+    this->mCslFolderName = settings.value("FolderName").toString();
 }
 
 BaseSteps::~BaseSteps()
@@ -20,14 +20,14 @@ void BaseSteps::SetMessage(QString Msg)
     this->MWUI->listWidget->scrollToBottom();
 }
 
-void BaseSteps::InitProgBar(int start, int end, int current, int step)
+void BaseSteps::InitProgBar(int inStart, int inEnd, int inCurrent, int inStep)
 {
     //this->MWUI->progressBar->setMaximum();
     //this->MWUI->progressBar->setMinimum();
-    this->step = step;
-    this->current = current;
-    this->MWUI->progressBar->setRange(start, end);
-    this->MWUI->progressBar->setValue(current);
+    this->step = inStep;
+    this->current = inCurrent;
+    this->MWUI->progressBar->setRange(inStart, inEnd);
+    this->MWUI->progressBar->setValue(inCurrent);
 }
 
 void BaseSteps::StepProgBar()
