@@ -1,4 +1,3 @@
-
 set(WORKDIR ${CMAKE_SOURCE_DIR}/../bin)
 string(REPLACE "\"" "" STRIPPED_QT_PATH "$ENV{QT_PATH}")
 message(STATUS "deployQT path: ${STRIPPED_QT_PATH}/bin/macdeployqt")
@@ -7,7 +6,6 @@ message(STATUS "workdir: ${WORKDIR}")
 execute_process(
     COMMAND ${STRIPPED_QT_PATH}/bin/macdeployqt
     X-CSL-Updater.app
-    #-dmg
     WORKING_DIRECTORY ${WORKDIR}
     RESULT_VARIABLE deployqt_result
     OUTPUT_VARIABLE deployqt_output

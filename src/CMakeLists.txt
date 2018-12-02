@@ -48,6 +48,9 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL AppleClang)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "com.steptosky.X-CSL-Updater")
     set(MACOSX_BUNDLE_INFO_STRING "A Software for the X-CSL-Package project.")
     set(MACOSX_BUNDLE_ICON_FILE "xcsl.icns")
+    set (CMAKE_SHARED_LINKER_FLAGS
+            "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,'@executable_path/../Frameworks/'"
+    )
 
 else ()
 

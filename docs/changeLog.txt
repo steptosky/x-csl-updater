@@ -1,4 +1,4 @@
-XX.10.2018
+02.12.2018
 X-CSL-Updater 1.2.0
 - moved to new Qt 5.11.2;
 - added Doc8643.txt and related.txt file into update list;
