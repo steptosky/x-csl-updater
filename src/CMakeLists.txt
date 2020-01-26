@@ -94,15 +94,15 @@ set_target_properties(${TARGET_NAME}
 )
 
 # Copy Qt libs
-if (NOT APPLE)
-    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD 
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different 
-        $<TARGET_FILE:Qt5::Core> $<TARGET_FILE_DIR:${PROJECT}>
-        $<TARGET_FILE:Qt5::Network> $<TARGET_FILE_DIR:${PROJECT}>
-        $<TARGET_FILE:Qt5::Gui> $<TARGET_FILE_DIR:${PROJECT}>
-        $<TARGET_FILE:Qt5::Widgets> $<TARGET_FILE_DIR:${PROJECT}>
-    )
-endif()
+# if (NOT APPLE)
+#     add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#         $<TARGET_FILE:Qt5::Core> $<TARGET_FILE_DIR:${PROJECT}>
+#         $<TARGET_FILE:Qt5::Network> $<TARGET_FILE_DIR:${PROJECT}>
+#         $<TARGET_FILE:Qt5::Gui> $<TARGET_FILE_DIR:${PROJECT}>
+#         $<TARGET_FILE:Qt5::Widgets> $<TARGET_FILE_DIR:${PROJECT}>
+#     )
+# endif()
 
 # Install script
 include(${CMAKE_SOURCE_DIR}/Install.cmake)
