@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget * parent)
     this->separator = "/"/*(QString)QDir::separator()*/;
 
     // load settings
-    QSettings settings(ORGANISATION, PROGRAM_NAME);
+    QSettings settings(gSettingsFileName, QSettings::IniFormat);
     move(settings.value("pos", QPoint(200, 200)).toPoint());
     resize(settings.value("size", QSize(850, 615)).toSize());
 
@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget * parent)
     // 
     this->mUi->curPathLabel->setText(removeCslSpecifiedPathIfNeeded(this->FolderName));
     this->mUi->progressBar->setValue(0);
-    this->mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + VerProg);
+    this->mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + gProgramVersion);
 
     // 
     /*QLocale Loc;
@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget * parent)
 }
 
 MainWindow::~MainWindow() {
-    QSettings settings(ORGANISATION, PROGRAM_NAME);
+    QSettings settings(gSettingsFileName, QSettings::IniFormat);
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     delete Indx;
@@ -191,7 +191,7 @@ void MainWindow::SetFolder() {
         QDir dir(FName);
         if (dir.exists()) {
             this->FolderName = FName;
-            QSettings settings(ORGANISATION, PROGRAM_NAME);
+            QSettings settings(gSettingsFileName, QSettings::IniFormat);
             settings.setValue("FolderName", this->FolderName);
             this->mUi->curPathLabel->setText(removeCslSpecifiedPathIfNeeded(this->FolderName));
         }
@@ -209,7 +209,7 @@ void MainWindow::SetCustomFolder() {
                                                          tr("X-CSL-Updater :: Specify target folder"), this->FolderName, QFileDialog::ShowDirsOnly);
 
     if (!this->FolderName.isEmpty()) {
-        QSettings settings(ORGANISATION, PROGRAM_NAME);
+        QSettings settings(gSettingsFileName, QSettings::IniFormat);
         settings.setValue("FolderName", this->FolderName);
         this->mUi->curPathLabel->setText(this->FolderName);
     }

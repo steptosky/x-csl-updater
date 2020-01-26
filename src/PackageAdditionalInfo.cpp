@@ -31,7 +31,7 @@ void PackageAdditionalInfo::OpenInfoWin() {
 }
 
 void PackageAdditionalInfo::GetInfoToTable() {
-	QSettings settings(ORGANISATION, PROGRAM_NAME);
+	QSettings settings(gSettingsFileName, QSettings::IniFormat);
 	mCslFolder = settings.value("FolderName").toString();
 	mServer = settings.value("curServer").toString();
 	mPackInfo.clear();

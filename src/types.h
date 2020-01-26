@@ -4,15 +4,13 @@
 #include <QtGui>
 #include "Info.h"
 
-#define VERSION_MAJOR    1
-#define VERSION_MINOR    2
-#define VERSION_PATCH    0
-
-static QString VerProg = QString(STS_XCSL_VERSION_STRING) + "+" + STS_XCSL_REVISION;
+static QString gProgramVersion = QString(STS_XCSL_VERSION_STRING) + "+" + STS_XCSL_REVISION;
 
 // some constants
-#define ORGANISATION STS_XCSL_ORGANIZATION_NAME
+#define ORGANIZATION STS_XCSL_ORGANIZATION_NAME
 #define PROGRAM_NAME STS_XCSL_PROJECT_SHORT_NAME
+
+static QString gSettingsFileName = "settings.ini";
 
 // types of program
 enum eFileState {
@@ -29,8 +27,6 @@ enum ePackageState {
     CLIENT_PACKAGE_STATUS_OK	 = 0
 };
 
-
-
 struct FileInfoStruct
 {
     int Type;
@@ -45,7 +41,7 @@ struct FileInfoStruct
 };
 
 #ifndef MY_MAX_PATH
-#define MY_MAX_PATH 1024
+#define MY_MAX_PATH 2048
 #endif
 
 #endif // TYPES_H

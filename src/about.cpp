@@ -6,7 +6,7 @@ About::About(QWidget *parent) :
 {
     m_ui->setupUi(this);
 	m_ui->versionLabel->setText(QString(STS_XCSL_PROJECT_NAME) + " Ver.: ");
-    m_ui->version->setText(VerProg);
+    m_ui->version->setText(gProgramVersion);
 	
 }
 

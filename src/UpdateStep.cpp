@@ -99,7 +99,7 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 
 void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inIndexStep) {
 	MWUI->CancelButton->setEnabled(true);
-	QSettings settings(ORGANISATION, PROGRAM_NAME);
+	QSettings settings(gSettingsFileName, QSettings::IniFormat);
 	mCslFolderName = settings.value("FolderName").toString();
 	mEntryList.clear();
 	mSelectedListForDelete.clear();

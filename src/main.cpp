@@ -3,7 +3,7 @@
 
 int main(int argc, char * argv[]) {
     QApplication a(argc, argv);
-    // QSettings settings(ORGANISATION, PROGRAM_NAME);
+    // QSettings settings(gSettingsFileName, QSettings::IniFormat);
     // QString lang;
     // if (settings.value("first", "no").toString() == "no") {
     //     QLocale Loc;

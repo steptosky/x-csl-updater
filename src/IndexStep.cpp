@@ -15,7 +15,7 @@ IndexStep::~IndexStep() {
 
 void IndexStep::StartIndex() {
 	mPackInfo->requestStopAction();
-	QSettings settings(ORGANISATION, PROGRAM_NAME);
+	QSettings settings(gSettingsFileName, QSettings::IniFormat);
 	mCslFolderName = settings.value("FolderName").toString();
 	mSizeOfClient = 0;
 	mSizeOfNeedUpdate = 0;
