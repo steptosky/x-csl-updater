@@ -63,10 +63,7 @@ else ()
 endif ()
 
 # -----------------------------------------------------------------------#
-# global definitions 
-
-#add_definitions (-DXPLM200 -DXPLM210)
-
+# global definitions
 
 # Find the Qt libraries
 find_package(Qt5Widgets)
