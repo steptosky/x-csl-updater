@@ -3,7 +3,7 @@
 
 #include <QtGui>
 #include "ui_mainwindow.h"
-#include "types.h"
+#include "Definitions.h"
 #include <QtNetwork>
 
 class BaseSteps : public QWidget

@@ -1,6 +1,6 @@
 ﻿#include "settings.h"
 #include "ui_settings.h"
-#include "types.h"
+#include "Definitions.h"
 
 Settings::Settings(QWidget * parent)
     :

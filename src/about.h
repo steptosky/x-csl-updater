@@ -3,7 +3,7 @@
 
 #include "ui_about.h"
 #include <QtWidgets/QDialog>
-#include "types.h"
+#include "Definitions.h"
 
 namespace Ui {
     class About;

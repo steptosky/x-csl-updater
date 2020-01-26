@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget * parent)
     /*QLocale Loc;
     QString local(Loc.name());
     this->ui->listWidget->addItem(local);*/
-    this->mUi->listWidget->addItem(tr("Specify the X-Plane executable file location and click \"Index\""));
+    this->mUi->listWidget->addItem(tr("Specify the X-Plane executable file location and then click \"Index\""));
     this->mUi->listWidget->addItem(tr("to determine files need to be updated."));
     this->mUi->listWidget->scrollToBottom();
 

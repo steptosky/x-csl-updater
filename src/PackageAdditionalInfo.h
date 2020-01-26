@@ -4,7 +4,7 @@
 #include <QtGui>
 #include "ui_PackageAdditionalInfo.h"
 #include "ui_mainwindow.h"
-#include "types.h"
+#include "Definitions.h"
 #include <QtNetwork>
 
 namespace Ui {

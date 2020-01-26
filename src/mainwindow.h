@@ -3,7 +3,7 @@
 
 #include "ui_mainwindow.h"
 #include <QtGui>
-#include "types.h"
+#include "Definitions.h"
 #include "about.h"
 #include "settings.h"
 #include "IndexStep.h"
