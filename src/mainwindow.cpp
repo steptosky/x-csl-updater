@@ -8,29 +8,18 @@ MainWindow::MainWindow(QWidget * parent)
     // setup UI
     mUi->setupUi(this);
 
-    // separator
-    this->separator = "/"/*(QString)QDir::separator()*/;
-
     // load settings
     QSettings settings(gSettingsFileName, QSettings::IniFormat);
     move(settings.value("pos", QPoint(200, 200)).toPoint());
     resize(settings.value("size", QSize(850, 615)).toSize());
 
-#ifdef Q_OS_WIN32
-    const QString pathPrefix = tr("C:");
-#else
-    const QString pathPrefix = QDir::homePath();
-#endif
-
-    const QString default_path =
-            pathPrefix + this->separator +
-            tr("X-Plane") + this->separator +
-            tr("Resources") + this->separator +
-            tr("plugins") + this->separator +
-            tr("X-IvAp Resources") + this->separator +
-            tr("CSL");
-
-    this->FolderName = settings.value("FolderName", default_path).toString();
+    // x-plane dir stuff
+    mXplaneDir = settings.value("mXplaneDir", "").toString();
+    if (!mXplaneDir.exists()) {
+        if (!SetupXplaneDir()) {
+            QTimer::singleShot(0, qApp, &QApplication::quit);
+        }
+    }    
 
     // List context menu
     this->ListClearAct = new QAction(tr("Clear"), this);
@@ -57,7 +46,7 @@ MainWindow::MainWindow(QWidget * parent)
     this->mUi->tableWidget->setColumnHidden(6, true);
 
     // 
-    this->mUi->curPathLabel->setText(removeCslSpecifiedPathIfNeeded(this->FolderName));
+    this->mUi->curPathLabel->setText(mXplaneDir.path());
     this->mUi->progressBar->setValue(0);
     this->mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + gProgramVersion);
 
@@ -81,14 +70,14 @@ MainWindow::MainWindow(QWidget * parent)
     // connects
     connect(this->mUi->actionAbout, &QAction::triggered, this, &MainWindow::AboutSlot);
     connect(this->mUi->actionAbout_Qt, &QAction::triggered, qApp, &QApplication::aboutQt);
-    connect(this->mUi->actionSetFolder, &QAction::triggered, this, &MainWindow::SetFolder);
+    connect(this->mUi->actionSetFolder, &QAction::triggered, this, &MainWindow::SetupXplaneDir);
     connect(this->mUi->actionSettings, &QAction::triggered, this, &MainWindow::SettingSlot);
     connect(this->mUi->listWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::ListContextMenu);
     connect(this->mUi->tableWidget, &QTableWidget::customContextMenuRequested, this, &MainWindow::TableContextMenu);
     connect(this->mUi->SelAllButton, &QPushButton::pressed, this, &MainWindow::TableSelAll);
     connect(this->mUi->NextButton, &QPushButton::pressed, this, &MainWindow::UpdateSlot);
     connect(this->mUi->PrevButton, &QPushButton::pressed, this, &MainWindow::IndexSlot);
-    connect(this->mUi->ButtonSetFolder, &QPushButton::pressed, this, &MainWindow::SetFolder);
+    connect(this->mUi->ButtonSetFolder, &QPushButton::pressed, this, &MainWindow::SetupXplaneDir);
     connect(this->mUi->actionSet_Custom_Path, &QAction::triggered, this, &MainWindow::SetCustomFolder);
 }
 
@@ -163,56 +152,50 @@ void MainWindow::TableInfo() {
     this->Inf->OpenInfoWin();
 }
 
-void MainWindow::SetFolder() {
-    QString _FName = removeCslSpecifiedPathIfNeeded(this->FolderName);
-    QString FName;
+bool MainWindow::SetupXplaneDir() {
+    QString const startDir = mXplaneDir.path();
 
 #ifdef Q_OS_WIN32
-    FName = QFileDialog::getOpenFileName(this,
-                                         tr("Specify the X-Plane executable file location"),
-                                         _FName,
+     QString const newDir = QFileDialog::getOpenFileName(this,
+                                         tr("Specify the X-Plane executable file location:"),
+                                         startDir,
                                          "X-Plane*.exe (X-Plane*.exe)");
 #elif defined Q_OS_LINUX
-	FName = QFileDialog::getOpenFileName(this,
-		tr("Specify the X-Plane executable file location"),
-		_FName,
+	 QString const newDir = QFileDialog::getOpenFileName(this,
+		tr("Specify the X-Plane executable file location:"),
+		startDir,
 		"X-Plane* (X-Plane*)");
 #else
-	FName = QFileDialog::getOpenFileName(this,
-		tr("Specify the X-Plane executable file location"),
-		_FName,
+	 QString const newDir = QFileDialog::getOpenFileName(this,
+		tr("Specify the X-Plane executable file location:"),
+		startDir,
 		"X-Plane*.app (X-Plane*.app)");
 #endif
 
-    if (!FName.isEmpty()) {
-        int pos = FName.lastIndexOf("/");
-        FName = FName.left(pos + 1);
-        FName = FName + tr("Resources/plugins/X-IvAp Resources/CSL");
-        QDir dir(FName);
-        if (dir.exists()) {
-            this->FolderName = FName;
-            QSettings settings(gSettingsFileName, QSettings::IniFormat);
-            settings.setValue("FolderName", this->FolderName);
-            this->mUi->curPathLabel->setText(removeCslSpecifiedPathIfNeeded(this->FolderName));
-        }
-        else {
-            this->mUi->listWidget->addItem(tr("Error: The X-IvAp plugin is not installed in the selected X-Plane instalation!"));
-            this->mUi->listWidget->scrollToBottom();
-        }
+    QFileInfo const fileInfo(newDir);
+    QDir const simPluginsDir(fileInfo.dir().path() + "/" + gSimPluginsDir.path());
+    if (fileInfo.exists() && simPluginsDir.exists()) {
+        mXplaneDir = fileInfo.dir();
+        QSettings settings(gSettingsFileName, QSettings::IniFormat);
+        settings.setValue("mXplaneDir", mXplaneDir.path());
+        mUi->curPathLabel->setText(removeCslSpecifiedPathIfNeeded(mXplaneDir.path()));
+        return true;
     }
-    return;
+    this->mUi->listWidget->addItem(tr("Error: The selected X-Plane executable path are not valid!"));
+    this->mUi->listWidget->scrollToBottom();
+    return false;
 }
 
 void MainWindow::SetCustomFolder() {
     QMessageBox::warning(this, PROGRAM_NAME, tr("Warning! This function is designed for advanced users. Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
-    this->FolderName = QFileDialog::getExistingDirectory(this,
-                                                         tr("X-CSL-Updater :: Specify target folder"), this->FolderName, QFileDialog::ShowDirsOnly);
-
-    if (!this->FolderName.isEmpty()) {
-        QSettings settings(gSettingsFileName, QSettings::IniFormat);
-        settings.setValue("FolderName", this->FolderName);
-        this->mUi->curPathLabel->setText(this->FolderName);
-    }
+    // this->mXplaneDir = QFileDialog::getExistingDirectory(this,
+    //                                                      tr("X-CSL-Updater :: Specify target folder"), this->mXplaneDir, QFileDialog::ShowDirsOnly);
+    //
+    // if (!this->mXplaneDir.isEmpty()) {
+    //     QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    //     settings.setValue("mXplaneDir", this->mXplaneDir);
+    //     this->mUi->curPathLabel->setText(this->mXplaneDir);
+    // }
 }
 
 void MainWindow::UpdateSlot() {

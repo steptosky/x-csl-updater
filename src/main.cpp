@@ -24,7 +24,8 @@ int main(int argc, char * argv[]) {
     // translator.load(lang);
     // a.installTranslator(&translator);
     //settings.setValue("first", "yes");
+
     MainWindow w;
     w.show();
-    return a.exec();
+    return a.exec();    
 }

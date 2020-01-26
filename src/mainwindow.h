@@ -24,18 +24,17 @@ public:
     ~MainWindow();
     QString separator;
     QAction *newAct;
-    QString FolderName;
+    QDir mXplaneDir;
 
 public slots:
-
+    // Выбор папки
+    bool SetupXplaneDir();
 
 private slots:
     // About
     void AboutSlot();
     // Setting
     void SettingSlot();
-    // Выбор папки
-    void SetFolder();
     void SetCustomFolder();
     void UpdateSlot();
     void IndexSlot();

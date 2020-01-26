@@ -11,9 +11,10 @@ static const QString gProgramVersion = QString(STS_XCSL_VERSION_STRING) + "+" + 
 
 static const QString gSettingsFileName = "settings.ini";
 
-static const QDir gXIvApResDir("Resources/plugins/X-IvAp Resources");
+static const QDir gSimPluginsDir("Resources/plugins");
+static const QDir gXIvApResDir(gSimPluginsDir.path() + "/X-IvAp Resources");
 static const QDir gXIvApCslDir(gXIvApResDir.path() + "/CSL");
-static const QDir gAltitudeResDir("Resources/plugins/IVAO_CSL");
+static const QDir gAltitudeResDir(gSimPluginsDir.path() + "/IVAO_CSL");
 static const QDir gAltitudeCslDir(gXIvApResDir.path() + "/CSL");
 
 enum eFileState {
