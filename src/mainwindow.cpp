@@ -13,13 +13,14 @@ MainWindow::MainWindow(QWidget * parent)
     move(settings.value("pos", QPoint(200, 200)).toPoint());
     resize(settings.value("size", QSize(850, 615)).toSize());
 
-    // x-plane dir stuff
+    // check target paths stuff
     mXplaneDir = settings.value("mXplaneDir", "").toString();
-    if (!mXplaneDir.exists()) {
+    if (!isSimDirValid(mXplaneDir)) {
         if (!SetupXplaneDir()) {
             QTimer::singleShot(0, qApp, &QApplication::quit);
         }
-    }    
+    }
+    setupTargetPath();
 
     // List context menu
     this->ListClearAct = new QAction(tr("Clear"), this);
@@ -46,7 +47,7 @@ MainWindow::MainWindow(QWidget * parent)
     this->mUi->tableWidget->setColumnHidden(6, true);
 
     // 
-    this->mUi->curPathLabel->setText(mXplaneDir.path());
+    this->mUi->curPathLabel->setText(mXplaneDir);
     this->mUi->progressBar->setValue(0);
     this->mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + gProgramVersion);
 
@@ -78,7 +79,7 @@ MainWindow::MainWindow(QWidget * parent)
     connect(this->mUi->NextButton, &QPushButton::pressed, this, &MainWindow::UpdateSlot);
     connect(this->mUi->PrevButton, &QPushButton::pressed, this, &MainWindow::IndexSlot);
     connect(this->mUi->ButtonSetFolder, &QPushButton::pressed, this, &MainWindow::SetupXplaneDir);
-    connect(this->mUi->actionSet_Custom_Path, &QAction::triggered, this, &MainWindow::SetCustomFolder);
+    connect(this->mUi->actionSet_Custom_Path, &QAction::triggered, this, &MainWindow::SetupCustomDir);
 }
 
 MainWindow::~MainWindow() {
@@ -140,12 +141,53 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *) {
      menu.exec(event->globalPos());*/
 }
 
-QString MainWindow::removeCslSpecifiedPathIfNeeded(const QString & inPath) {
-    static QString xIvApSpecificPath = "Resources/plugins/X-IvAp Resources/CSL";
-    if (inPath.endsWith(xIvApSpecificPath)) {
-        return inPath.left(inPath.length() - xIvApSpecificPath.length());
+bool MainWindow::isSimDirValid(const QString & dir) {
+    QString const simPluginsDir(dir + "/" + gSimPluginsDir);
+    if (QDir(dir).exists() && QDir(simPluginsDir).exists()) {
+        return true;
     }
-    return inPath;
+    return false;
+}
+
+bool MainWindow::setupTargetPath() {
+    // now we use only Altitude suffixes, but should think about support x-ivap later
+    mTargetDir = mXplaneDir + "/" + gAltitudeResDir;
+    mTargetCslDir = mXplaneDir + "/" + gAltitudeCslDir;
+    QDir const tgtDir(mTargetDir);
+    QDir const tgtCslDir(mTargetCslDir);
+    if (tgtDir.exists() && tgtCslDir.exists()) {
+        enableMainButtons();
+        return true;
+    }
+    if (!tgtDir.exists()) {
+        if (!tgtDir.mkpath(mTargetDir)) {
+            QMessageBox::critical(this, PROGRAM_NAME,tr("Error! Cannot create the common target path: ") +  mTargetDir, QMessageBox::Ok);
+        }
+    }
+    if (!tgtCslDir.exists()) {
+        if (!tgtCslDir.mkpath(mTargetCslDir)) {
+            QMessageBox::critical(this, PROGRAM_NAME,tr("Error! Cannot create the CSL Library target path: ") +  mTargetCslDir, QMessageBox::Ok);
+        }
+    }
+    if (tgtDir.exists() && tgtCslDir.exists()) {
+        enableMainButtons();
+        return true;
+    }
+
+    mTargetDir = "";
+    mTargetCslDir = "";
+    disableMainButtons();
+    return false;
+}
+
+void MainWindow::enableMainButtons() {
+    mUi->PrevButton->setEnabled(true);
+    mUi->NextButton->setEnabled(true);
+}
+
+void MainWindow::disableMainButtons() {
+    mUi->PrevButton->setEnabled(false);
+    mUi->NextButton->setEnabled(false);
 }
 
 void MainWindow::TableInfo() {
@@ -153,32 +195,31 @@ void MainWindow::TableInfo() {
 }
 
 bool MainWindow::SetupXplaneDir() {
-    QString const startDir = mXplaneDir.path();
+    QString const startDir = mXplaneDir;
 
 #ifdef Q_OS_WIN32
-     QString const newDir = QFileDialog::getOpenFileName(this,
+     QString const selectedSimFile = QFileDialog::getOpenFileName(this,
                                          tr("Specify the X-Plane executable file location:"),
                                          startDir,
                                          "X-Plane*.exe (X-Plane*.exe)");
 #elif defined Q_OS_LINUX
-	 QString const newDir = QFileDialog::getOpenFileName(this,
+	 QString const selectedSimFile = QFileDialog::getOpenFileName(this,
 		tr("Specify the X-Plane executable file location:"),
 		startDir,
 		"X-Plane* (X-Plane*)");
 #else
-	 QString const newDir = QFileDialog::getOpenFileName(this,
+	 QString const selectedSimFile = QFileDialog::getOpenFileName(this,
 		tr("Specify the X-Plane executable file location:"),
 		startDir,
 		"X-Plane*.app (X-Plane*.app)");
 #endif
 
-    QFileInfo const fileInfo(newDir);
-    QDir const simPluginsDir(fileInfo.dir().path() + "/" + gSimPluginsDir.path());
-    if (fileInfo.exists() && simPluginsDir.exists()) {
-        mXplaneDir = fileInfo.dir();
+    if (isSimDirValid(selectedSimFile)) {
+        mXplaneDir = QFileInfo(selectedSimFile).dir().path();
         QSettings settings(gSettingsFileName, QSettings::IniFormat);
-        settings.setValue("mXplaneDir", mXplaneDir.path());
-        mUi->curPathLabel->setText(removeCslSpecifiedPathIfNeeded(mXplaneDir.path()));
+        settings.setValue("mXplaneDir", mXplaneDir);
+        setupTargetPath();
+        mUi->curPathLabel->setText(mXplaneDir);
         return true;
     }
     this->mUi->listWidget->addItem(tr("Error: The selected X-Plane executable path are not valid!"));
@@ -186,8 +227,10 @@ bool MainWindow::SetupXplaneDir() {
     return false;
 }
 
-void MainWindow::SetCustomFolder() {
-    QMessageBox::warning(this, PROGRAM_NAME, tr("Warning! This function is designed for advanced users. Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
+void MainWindow::SetupCustomDir() {
+    QMessageBox::warning(this, PROGRAM_NAME, 
+        tr("Warning! This function is designed for advanced users." 
+                 "Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
     // this->mXplaneDir = QFileDialog::getExistingDirectory(this,
     //                                                      tr("X-CSL-Updater :: Specify target folder"), this->mXplaneDir, QFileDialog::ShowDirsOnly);
     //

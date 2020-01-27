@@ -10,13 +10,11 @@
 #include "UpdateStep.h"
 #include "PackageAdditionalInfo.h"
 
-namespace Ui
-{
+namespace Ui {
     class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow final : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -24,7 +22,9 @@ public:
     ~MainWindow();
     QString separator;
     QAction *newAct;
-    QDir mXplaneDir;
+    QString mXplaneDir;
+    QString mTargetDir;
+    QString mTargetCslDir;
 
 public slots:
     // Выбор папки
@@ -35,7 +35,7 @@ private slots:
     void AboutSlot();
     // Setting
     void SettingSlot();
-    void SetCustomFolder();
+    void SetupCustomDir();
     void UpdateSlot();
     void IndexSlot();
     // Контекст меню для списка
@@ -69,7 +69,11 @@ private:
     QAction *TableSelAllAct;
     QAction *TableInfoAct;
 
-    QString removeCslSpecifiedPathIfNeeded(const QString &inPath);
+    static bool isSimDirValid(const QString &dir);
+    bool setupTargetPath();
+
+    void enableMainButtons();
+    void disableMainButtons();
 };
 
 #endif // MAINWINDOW_H
