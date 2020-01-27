@@ -20,22 +20,22 @@ class MainWindow final : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    QString separator;
-    QAction *newAct;
+
     QString mXplaneDir;
     QString mTargetDir;
     QString mTargetCslDir;
 
 public slots:
     // Выбор папки
-    bool SetupXplaneDir();
+    void setupXplaneDirSlot();
 
 private slots:
+    void targetDirsSetupSlot();
     // About
     void AboutSlot();
     // Setting
     void SettingSlot();
-    void SetupCustomDir();
+    void SetupCustomDirSlot();
     void UpdateSlot();
     void IndexSlot();
     // Контекст меню для списка
@@ -69,11 +69,11 @@ private:
     QAction *TableSelAllAct;
     QAction *TableInfoAct;
 
+    //-------------------------------------------------------------------------
+    QString browseSimDirDialog(const QString &inStartPath);
+    bool setupNewSimDir(const QString &newSimDir);
     static bool isSimDirValid(const QString &dir);
-    bool setupTargetPath();
-
-    void enableMainButtons();
-    void disableMainButtons();
+    void setupTargetDirs();
 };
 
 #endif // MAINWINDOW_H
