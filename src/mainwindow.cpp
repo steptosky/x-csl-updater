@@ -14,56 +14,57 @@ MainWindow::MainWindow(QWidget * parent)
     resize(settings.value("size", QSize(850, 615)).toSize());
 
     // List context menu
-    this->ListClearAct = new QAction(tr("Clear"), this);
-    connect(this->ListClearAct, &QAction::triggered, this, &MainWindow::ListClear);
-    this->ListSelAllAct = new QAction(tr("Select All"), this);
-    this->ListSelAllAct->setShortcut(tr("Ctrl+A"));
-    connect(this->ListSelAllAct, &QAction::triggered, this, &MainWindow::ListSelAll);
+    mListClearAct = new QAction(tr("Clear"), this);
+    connect(mListClearAct, &QAction::triggered, this, &MainWindow::listClear);
+    mListSelAllAct = new QAction(tr("Select All"), this);
+    mListSelAllAct->setShortcut(tr("Ctrl+A"));
+    connect(mListSelAllAct, &QAction::triggered, this, &MainWindow::listSelAll);
 
     // table context menu
-    this->TableSelAllAct = new QAction(tr("Select All"), this);
-    this->TableSelAllAct->setShortcut(tr("Ctrl+A"));
-    connect(this->TableSelAllAct, &QAction::triggered, this, &MainWindow::TableSelAll);
-    this->TableInfoAct = new QAction(tr("Info"), this);
-    connect(this->TableInfoAct, &QAction::triggered, this, &MainWindow::TableInfo);
+    mTableSelAllAct = new QAction(tr("Select All"), this);
+    mTableSelAllAct->setShortcut(tr("Ctrl+A"));
+    connect(mTableSelAllAct, &QAction::triggered, this, &MainWindow::tableSelAll);
+    mTableInfoAct = new QAction(tr("Info"), this);
+    connect(mTableInfoAct, &QAction::triggered, this, &MainWindow::tableInfo);
 
     // table colons widths
-    this->mUi->tableWidget->setColumnWidth(0, 30);  //ID
-    this->mUi->tableWidget->setColumnWidth(1, 150); //Title
-    this->mUi->tableWidget->setColumnWidth(2, 230); //Info
-    this->mUi->tableWidget->setColumnWidth(3, 130); //Ver
-    this->mUi->tableWidget->setColumnWidth(4, 80);  //sizeMB
-    this->mUi->tableWidget->setColumnWidth(5, 120); //status
-    this->mUi->tableWidget->setColumnWidth(6, 20);  //code
-    this->mUi->tableWidget->setColumnHidden(6, true);
+    mUi->tableWidget->setColumnWidth(0, 30);  //ID
+    mUi->tableWidget->setColumnWidth(1, 150); //Title
+    mUi->tableWidget->setColumnWidth(2, 230); //Info
+    mUi->tableWidget->setColumnWidth(3, 130); //Ver
+    mUi->tableWidget->setColumnWidth(4, 80);  //sizeMB
+    mUi->tableWidget->setColumnWidth(5, 120); //status
+    mUi->tableWidget->setColumnWidth(6, 20);  //code
+    mUi->tableWidget->setColumnHidden(6, true);
 
     //
-    this->mUi->progressBar->setValue(0);
-    this->mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + gProgramVersion);
+    mUi->progressBar->setValue(0);
+    mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + gProgramVersion);
 
     // Objs Init
-    this->AboutWin = new About(this);
-    this->SettingsWin = new Settings(this);
-    this->Inf = new PackageAdditionalInfo(this, this->mUi);
-    this->Indx = new IndexStep(this, this->mUi, this->Inf);
-    this->Updt = new UpdateStep(this, this->mUi);
+    mAboutWin = new About(this);
+    mSettingsWin = new Settings(this);
+    mPackInfoWin = new PackageAdditionalInfo(this, mUi);
+    mIndexStep = new IndexStep(this, mUi, mPackInfoWin);
+    mUpdateStep = new UpdateStep(this, mUi);
 
     // connects
-    connect(this->mUi->actionAbout, &QAction::triggered, this, &MainWindow::AboutSlot);
-    connect(this->mUi->actionAbout_Qt, &QAction::triggered, qApp, &QApplication::aboutQt);
-    connect(this->mUi->actionSetFolder, &QAction::triggered, this, &MainWindow::setupXplaneDirSlot);
-    connect(this->mUi->actionSettings, &QAction::triggered, this, &MainWindow::SettingSlot);
-    connect(this->mUi->listWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::ListContextMenu);
-    connect(this->mUi->tableWidget, &QTableWidget::customContextMenuRequested, this, &MainWindow::TableContextMenu);
-    connect(this->mUi->SelAllButton, &QPushButton::pressed, this, &MainWindow::TableSelAll);
-    connect(this->mUi->NextButton, &QPushButton::pressed, this, &MainWindow::UpdateSlot);
-    connect(this->mUi->PrevButton, &QPushButton::pressed, this, &MainWindow::IndexSlot);
-    connect(this->mUi->ButtonSetFolder, &QPushButton::pressed, this, &MainWindow::setupXplaneDirSlot);
-    connect(this->mUi->actionSet_Custom_Path, &QAction::triggered, this, &MainWindow::SetupCustomDirSlot);
+    connect(mUi->actionAbout, &QAction::triggered, this, &MainWindow::aboutSlot);
+    connect(mUi->actionAbout_Qt, &QAction::triggered, qApp, &QApplication::aboutQt);
+    connect(mUi->actionSetFolder, &QAction::triggered, this, &MainWindow::selectSimDirSlot);
+    connect(mUi->actionSettings, &QAction::triggered, this, &MainWindow::settingSlot);
+    connect(mUi->listWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::listContextMenu);
+    connect(mUi->tableWidget, &QTableWidget::customContextMenuRequested, this, &MainWindow::tableContextMenu);
+    connect(mUi->SelAllButton, &QPushButton::pressed, this, &MainWindow::tableSelAll);
+    connect(mUi->NextButton, &QPushButton::pressed, this, &MainWindow::updateSlot);
+    connect(mUi->PrevButton, &QPushButton::pressed, this, &MainWindow::indexSlot);
+    connect(mUi->ButtonSetFolder, &QPushButton::pressed, this, &MainWindow::selectSimDirSlot);
+    connect(mUi->actionSet_Custom_Path, &QAction::triggered, this, &MainWindow::selectCustomDirSlot);
 
     //
     mUi->PrevButton->setDisabled(true);
     mUi->NextButton->setDisabled(true);
+    mUi->curPathLabel->setText("UNDEFINED...");
 
     //
     QTimer::singleShot(0, this, &MainWindow::targetDirsSetupSlot);
@@ -73,59 +74,52 @@ MainWindow::~MainWindow() {
     QSettings settings(gSettingsFileName, QSettings::IniFormat);
     settings.setValue("pos", pos());
     settings.setValue("size", size());
-    delete Indx;
-    delete Updt;
-    delete Inf;
+    delete mIndexStep;
+    delete mUpdateStep;
+    delete mPackInfoWin;
     delete mUi;
 }
 
-void MainWindow::ListClear() {
-    this->mUi->listWidget->clear();
+void MainWindow::listClear() {
+    mUi->listWidget->clear();
 }
 
-void MainWindow::ListSelAll() {
-    this->mUi->listWidget->selectAll();
+void MainWindow::listSelAll() {
+    mUi->listWidget->selectAll();
 }
 
-void MainWindow::TableSelAll() {
-    this->mUi->tableWidget->selectAll();
-    this->mUi->tableWidget->setFocus();
+void MainWindow::tableSelAll() {
+    mUi->tableWidget->selectAll();
+    mUi->tableWidget->setFocus();
 }
 
-void MainWindow::AboutSlot() {
-    this->AboutWin->show();
+void MainWindow::aboutSlot() {
+    mAboutWin->show();
 }
 
-void MainWindow::SettingSlot() {
-    this->SettingsWin->LoadSettings();
-    this->SettingsWin->show();
+void MainWindow::settingSlot() {
+    mSettingsWin->LoadSettings();
+    mSettingsWin->show();
 }
 
-void MainWindow::ListContextMenu(const QPoint & pos) {
+void MainWindow::listContextMenu(const QPoint & pos) {
     QMenu menu(this);
-    menu.addAction(this->ListClearAct);
-    menu.addAction(this->ListSelAllAct);
-    menu.exec(this->mUi->listWidget->mapToGlobal(pos));
+    menu.addAction(mListClearAct);
+    menu.addAction(mListSelAllAct);
+    menu.exec(mUi->listWidget->mapToGlobal(pos));
 }
 
-void MainWindow::TableContextMenu(const QPoint & pos) {
+void MainWindow::tableContextMenu(const QPoint & pos) {
     QMenu menu(this);
-    if (this->mUi->tableWidget->rowCount() < 1) {
-        this->TableInfoAct->setDisabled(true);
+    if (mUi->tableWidget->rowCount() < 1) {
+        mTableInfoAct->setDisabled(true);
     }
     else {
-        this->TableInfoAct->setEnabled(true);
+        mTableInfoAct->setEnabled(true);
     }
-    menu.addAction(this->TableInfoAct);
-    menu.addAction(this->TableSelAllAct);
-    menu.exec(this->mUi->tableWidget->mapToGlobal(pos));
-}
-
-void MainWindow::contextMenuEvent(QContextMenuEvent *) {
-    /*QMenu menu(this);
-     menu.addAction(this->ui->actionAbout);
-     menu.addAction(this->ui->actionAbout_Qt);
-     menu.exec(event->globalPos());*/
+    menu.addAction(mTableInfoAct);
+    menu.addAction(mTableSelAllAct);
+    menu.exec(mUi->tableWidget->mapToGlobal(pos));
 }
 
 QString MainWindow::browseSimDirDialog(const QString & inStartPath) {
@@ -202,26 +196,13 @@ void MainWindow::setupTargetDirs() {
     // return false;
     //
 
-    this->mUi->curPathLabel->setText(mXplaneDir);
+    mUi->curPathLabel->setText(mXplaneDir);
     mUi->PrevButton->setEnabled(true);
     mUi->listWidget->addItem(tr("Now click \"Index\" to determine files which need to be updated."));
 }
 
-void MainWindow::TableInfo() {
-    this->Inf->OpenInfoWin();
-}
-
-void MainWindow::setupXplaneDirSlot() {
-    QString const oldSimDir = mXplaneDir;
-    mXplaneDir = "";
-    while (!isSimDirValid(mXplaneDir)) {
-        QString const selectedSimFile = browseSimDirDialog(oldSimDir);
-        if (selectedSimFile.isEmpty()) {
-            mXplaneDir = oldSimDir;
-            return;
-        }
-        setupNewSimDir(QFileInfo(selectedSimFile).dir().path());
-    }
+void MainWindow::tableInfo() {
+    mPackInfoWin->OpenInfoWin();
 }
 
 void MainWindow::targetDirsSetupSlot() {
@@ -241,28 +222,44 @@ void MainWindow::targetDirsSetupSlot() {
     }
 }
 
-void MainWindow::SetupCustomDirSlot() {
+void MainWindow::selectSimDirSlot() {
+    QString const oldSimDir = mXplaneDir;
+    mXplaneDir = "";
+    while (!isSimDirValid(mXplaneDir)) {
+        QString const selectedSimFile = browseSimDirDialog(oldSimDir);
+        if (selectedSimFile.isEmpty()) {
+            mXplaneDir = oldSimDir;
+            return;
+        }
+        setupNewSimDir(QFileInfo(selectedSimFile).dir().path());
+    }
+    if (isSimDirValid(mXplaneDir) && oldSimDir != mXplaneDir) {
+        setupTargetDirs();
+    }
+}
+
+void MainWindow::selectCustomDirSlot() {
     QMessageBox::warning(this, PROGRAM_NAME,
                          tr("Warning! This function is designed for advanced users."
                             "Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
-    // this->mXplaneDir = QFileDialog::getExistingDirectory(this,
-    //                                                      tr("X-CSL-Updater :: Specify target folder"), this->mXplaneDir, QFileDialog::ShowDirsOnly);
+    // mXplaneDir = QFileDialog::getExistingDirectory(this,
+    //                                                      tr("X-CSL-Updater :: Specify target folder"), mXplaneDir, QFileDialog::ShowDirsOnly);
     //
-    // if (!this->mXplaneDir.isEmpty()) {
+    // if (!mXplaneDir.isEmpty()) {
     //     QSettings settings(gSettingsFileName, QSettings::IniFormat);
-    //     settings.setValue("mXplaneDir", this->mXplaneDir);
-    //     this->mUi->curPathLabel->setText(this->mXplaneDir);
+    //     settings.setValue("mXplaneDir", mXplaneDir);
+    //     mUi->curPathLabel->setText(mXplaneDir);
     // }
 }
 
-void MainWindow::UpdateSlot() {
-    this->mUi->PrevButton->setDisabled(true);
-    this->mUi->NextButton->setDisabled(true);
-    this->Updt->StartUpdate(this->Indx->mEntryList, this->Indx);
+void MainWindow::updateSlot() {
+    mUi->PrevButton->setDisabled(true);
+    mUi->NextButton->setDisabled(true);
+    mUpdateStep->StartUpdate(mIndexStep->mEntryList, mIndexStep);
 }
 
-void MainWindow::IndexSlot() {
-    this->mUi->PrevButton->setDisabled(true);
-    this->mUi->NextButton->setDisabled(true);
-    this->Indx->StartIndex();
+void MainWindow::indexSlot() {
+    mUi->PrevButton->setDisabled(true);
+    mUi->NextButton->setDisabled(true);
+    mIndexStep->StartIndex();
 }

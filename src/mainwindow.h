@@ -18,56 +18,51 @@ class MainWindow final : public QMainWindow {
 Q_OBJECT
 
 public:
-    MainWindow(QWidget * parent = 0);
+    MainWindow(QWidget * parent = nullptr);
     ~MainWindow();
 
-    QString mXplaneDir;
-    QString mTargetDir;
-    QString mTargetCslDir;
-
+    //-------------------------------------------------------------------------
 public slots:
-    // Выбор папки
-    void setupXplaneDirSlot();
 
+    //-------------------------------------------------------------------------
 private slots:
     void targetDirsSetupSlot();
     // About
-    void AboutSlot();
+    void aboutSlot();
     // Setting
-    void SettingSlot();
-    void SetupCustomDirSlot();
-    void UpdateSlot();
-    void IndexSlot();
-    // Контекст меню для списка
-    void ListContextMenu(const QPoint & pos);
-    void ListClear();
-    void ListSelAll();
-    // Контекст меню для таблицы
-    void TableContextMenu(const QPoint & pos);
-    void TableSelAll();
-    void TableInfo();
-    // Общее контекст меню, если понадобиццо
-    void contextMenuEvent(QContextMenuEvent * event);
-    /*void SetMsgSlot(QString Msg);
-    void InitProgBarSlot(int start, int end, int current = 0, int step = 1);
-    void StepProgBarSlot();
-    void SetValProgBarSlot(int value);*/
-    //void IndexFinish();
+    void settingSlot();
+    void selectSimDirSlot();
+    void selectCustomDirSlot();
+    void updateSlot();
+    void indexSlot();
+    // list context menu
+    void listContextMenu(const QPoint & pos);
+    void listClear();
+    void listSelAll();
+    // table context menu
+    void tableContextMenu(const QPoint & pos);
+    void tableSelAll();
+    void tableInfo();
 
+    //-------------------------------------------------------------------------
 private:
+    QString mXplaneDir;
+    QString mTargetDir;
+    QString mTargetCslDir;
+    //
     Ui::MainWindow * mUi;
-    About * AboutWin;
-    Settings * SettingsWin;
-    IndexStep * Indx;
-    UpdateStep * Updt;
-    PackageAdditionalInfo * Inf;
+    About * mAboutWin;
+    Settings * mSettingsWin;
+    IndexStep * mIndexStep;
+    UpdateStep * mUpdateStep;
+    PackageAdditionalInfo * mPackInfoWin;
 
-    // контекст меню Списка
-    QAction * ListClearAct;
-    QAction * ListSelAllAct;
-    // контекст меню Таблицы
-    QAction * TableSelAllAct;
-    QAction * TableInfoAct;
+    // list context menu
+    QAction * mListClearAct;
+    QAction * mListSelAllAct;
+    // table context menu
+    QAction * mTableSelAllAct;
+    QAction * mTableInfoAct;
 
     //-------------------------------------------------------------------------
     QString browseSimDirDialog(const QString & inStartPath);
