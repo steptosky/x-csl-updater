@@ -45,6 +45,7 @@ private slots:
 
     //-------------------------------------------------------------------------
 private:
+    bool mIsSimDirCustom = false;
     QString mSimDir;
     QString mTargetDir;
     QString mTargetCslDir;

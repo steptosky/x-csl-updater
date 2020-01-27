@@ -83,17 +83,17 @@ MainWindow::~MainWindow() {
 QString MainWindow::browseSimDirDialog(const QString & inStartPath) {
 #ifdef Q_OS_WIN32
     return QFileDialog::getOpenFileName(this,
-                                        tr("Specify the X-Plane executable file location"),
+                                        PROGRAM_NAME + tr(" :: Specify the X-Plane executable file location"),
                                         inStartPath,
                                         "X-Plane*.exe (X-Plane*.exe)");
 #elif defined Q_OS_LINUX
 	 return QFileDialog::getOpenFileName(this,
-		tr("Specify the X-Plane executable file location"),
+		PROGRAM_NAME + tr(" :: Specify the X-Plane executable file location"),
 		inStartPath,
 		"X-Plane* (X-Plane*)");
 #else
 	 return QFileDialog::getOpenFileName(this,
-		tr("Specify the X-Plane executable file location"),
+		PROGRAM_NAME + tr(" :: Specify the X-Plane executable file location"),
 		inStartPath,
 		"X-Plane*.app (X-Plane*.app)");
 #endif
@@ -101,9 +101,11 @@ QString MainWindow::browseSimDirDialog(const QString & inStartPath) {
 
 bool MainWindow::setupNewSimDir(const QString & newSimDir) {
     if (isSimDirValid(newSimDir)) {
+        mIsSimDirCustom = false;
         mSimDir = newSimDir;
         QSettings settings(gSettingsFileName, QSettings::IniFormat);
         settings.setValue("mSimDir", mSimDir);
+        settings.setValue("mIsSimDirCustom", mIsSimDirCustom);
         return true;
     }
     // if sim dir is not ok
@@ -124,8 +126,15 @@ bool MainWindow::isSimDirValid(const QString & dir) {
 
 void MainWindow::setupTargetDirs() {
     // now we use only Altitude suffixes, but should think about support x-ivap later
-    mTargetDir = mSimDir + "/" + gAltitudeResDir;
-    mTargetCslDir = mSimDir + "/" + gAltitudeCslDir;
+    if (!mIsSimDirCustom) {
+        mTargetDir = mSimDir + "/" + gAltitudeResDir;
+        mTargetCslDir = mSimDir + "/" + gAltitudeCslDir;
+    }
+    else {
+        mTargetDir = mSimDir;
+        mTargetCslDir = mSimDir + "/" + gAltitudeCslDir;
+    }
+
     //
     mUi->curPathLabel->setText(mSimDir);
     mUi->PrevButton->setEnabled(true);
@@ -138,17 +147,22 @@ void MainWindow::setupTargetDirs() {
 
 void MainWindow::initialTgtDirsSetupSlot() {
     QSettings const settings(gSettingsFileName, QSettings::IniFormat);
-    // setup and check target dirs stuff on startup
     mSimDir = settings.value("mSimDir", "").toString();
-    while (!isSimDirValid(mSimDir)) {
-        QString const selectedSimFile = browseSimDirDialog(mSimDir);
-        if (selectedSimFile.isEmpty()) {
-            QApplication::quit();
-            return;
+    mIsSimDirCustom = settings.value("mIsSimDirCustom", false).toBool();
+    if (!mIsSimDirCustom) {
+        while (!isSimDirValid(mSimDir)) {
+            QString const selectedSimFile = browseSimDirDialog(mSimDir);
+            if (selectedSimFile.isEmpty()) {
+                QApplication::quit();
+                return;
+            }
+            setupNewSimDir(QFileInfo(selectedSimFile).dir().path());
         }
-        setupNewSimDir(QFileInfo(selectedSimFile).dir().path());
+        if (isSimDirValid(mSimDir)) {
+            setupTargetDirs();
+        }
     }
-    if (isSimDirValid(mSimDir)) {
+    else {
         setupTargetDirs();
     }
 }
@@ -172,15 +186,19 @@ void MainWindow::selectSimDirSlot() {
 void MainWindow::selectCustomDirSlot() {
     QMessageBox::warning(this, PROGRAM_NAME,
                          tr("Warning! This function is designed for advanced users."
-                            "Please use it only if you are absolutely sure what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
-    // mSimDir = QFileDialog::getExistingDirectory(this,
-    //                                                      tr("X-CSL-Updater :: Specify target folder"), mSimDir, QFileDialog::ShowDirsOnly);
-    //
-    // if (!mSimDir.isEmpty()) {
-    //     QSettings settings(gSettingsFileName, QSettings::IniFormat);
-    //     settings.setValue("mSimDir", mSimDir);
-    //     mUi->curPathLabel->setText(mSimDir);
-    // }
+                            "\nPlease use it only if you are absolutely sure what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
+
+    QString const newDir = QFileDialog::getExistingDirectory(this,
+        PROGRAM_NAME + tr(" :: Specify a folder where the library will be installed"), mSimDir, QFileDialog::ShowDirsOnly);
+    
+    if (!newDir.isEmpty()) {
+        mIsSimDirCustom = true;
+        mSimDir = newDir;
+        QSettings settings(gSettingsFileName, QSettings::IniFormat);
+        settings.setValue("mSimDir", mSimDir);
+        settings.setValue("mIsSimDirCustom", mIsSimDirCustom);
+        mUi->curPathLabel->setText(mSimDir);
+    }
 }
 
 //-------------------------------------------------------------------------
