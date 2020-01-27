@@ -26,7 +26,7 @@ public slots:
 
     //-------------------------------------------------------------------------
 private slots:
-    void targetDirsSetupSlot();
+    void initialTgtDirsSetupSlot();
     void selectSimDirSlot();
     void selectCustomDirSlot();
     //
@@ -45,7 +45,7 @@ private slots:
 
     //-------------------------------------------------------------------------
 private:
-    QString mXplaneDir;
+    QString mSimDir;
     QString mTargetDir;
     QString mTargetCslDir;
     //

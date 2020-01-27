@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget * parent)
     mUi->curPathLabel->setText("UNDEFINED...");
 
     //
-    QTimer::singleShot(0, this, &MainWindow::targetDirsSetupSlot);
+    QTimer::singleShot(0, this, &MainWindow::initialTgtDirsSetupSlot);
 }
 
 MainWindow::~MainWindow() {
@@ -101,9 +101,9 @@ QString MainWindow::browseSimDirDialog(const QString & inStartPath) {
 
 bool MainWindow::setupNewSimDir(const QString & newSimDir) {
     if (isSimDirValid(newSimDir)) {
-        mXplaneDir = newSimDir;
+        mSimDir = newSimDir;
         QSettings settings(gSettingsFileName, QSettings::IniFormat);
-        settings.setValue("mXplaneDir", mXplaneDir);
+        settings.setValue("mSimDir", mSimDir);
         return true;
     }
     // if sim dir is not ok
@@ -124,10 +124,10 @@ bool MainWindow::isSimDirValid(const QString & dir) {
 
 void MainWindow::setupTargetDirs() {
     // now we use only Altitude suffixes, but should think about support x-ivap later
-    mTargetDir = mXplaneDir + "/" + gAltitudeResDir;
-    mTargetCslDir = mXplaneDir + "/" + gAltitudeCslDir;
+    mTargetDir = mSimDir + "/" + gAltitudeResDir;
+    mTargetCslDir = mSimDir + "/" + gAltitudeCslDir;
     //
-    mUi->curPathLabel->setText(mXplaneDir);
+    mUi->curPathLabel->setText(mSimDir);
     mUi->PrevButton->setEnabled(true);
     mUi->listWidget->addItem(tr("Now click \"Index\" to determine files which need to be updated."));
 }
@@ -136,35 +136,35 @@ void MainWindow::setupTargetDirs() {
 //////////////////////////////////////////* SLOTS */////////////////////////////////////////////
 /**************************************************************************************************/
 
-void MainWindow::targetDirsSetupSlot() {
+void MainWindow::initialTgtDirsSetupSlot() {
     QSettings const settings(gSettingsFileName, QSettings::IniFormat);
     // setup and check target dirs stuff on startup
-    mXplaneDir = settings.value("mXplaneDir", "").toString();
-    while (!isSimDirValid(mXplaneDir)) {
-        QString const selectedSimFile = browseSimDirDialog(mXplaneDir);
+    mSimDir = settings.value("mSimDir", "").toString();
+    while (!isSimDirValid(mSimDir)) {
+        QString const selectedSimFile = browseSimDirDialog(mSimDir);
         if (selectedSimFile.isEmpty()) {
             QApplication::quit();
             return;
         }
         setupNewSimDir(QFileInfo(selectedSimFile).dir().path());
     }
-    if (isSimDirValid(mXplaneDir)) {
+    if (isSimDirValid(mSimDir)) {
         setupTargetDirs();
     }
 }
 
 void MainWindow::selectSimDirSlot() {
-    QString const oldSimDir = mXplaneDir;
-    mXplaneDir = "";
-    while (!isSimDirValid(mXplaneDir)) {
+    QString const oldSimDir = mSimDir;
+    mSimDir = "";
+    while (!isSimDirValid(mSimDir)) {
         QString const selectedSimFile = browseSimDirDialog(oldSimDir);
         if (selectedSimFile.isEmpty()) {
-            mXplaneDir = oldSimDir;
+            mSimDir = oldSimDir;
             return;
         }
         setupNewSimDir(QFileInfo(selectedSimFile).dir().path());
     }
-    if (isSimDirValid(mXplaneDir) && oldSimDir != mXplaneDir) {
+    if (isSimDirValid(mSimDir) && oldSimDir != mSimDir) {
         setupTargetDirs();
     }
 }
@@ -172,17 +172,18 @@ void MainWindow::selectSimDirSlot() {
 void MainWindow::selectCustomDirSlot() {
     QMessageBox::warning(this, PROGRAM_NAME,
                          tr("Warning! This function is designed for advanced users."
-                            "Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
-    // mXplaneDir = QFileDialog::getExistingDirectory(this,
-    //                                                      tr("X-CSL-Updater :: Specify target folder"), mXplaneDir, QFileDialog::ShowDirsOnly);
+                            "Please use it only if you are absolutely sure what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
+    // mSimDir = QFileDialog::getExistingDirectory(this,
+    //                                                      tr("X-CSL-Updater :: Specify target folder"), mSimDir, QFileDialog::ShowDirsOnly);
     //
-    // if (!mXplaneDir.isEmpty()) {
+    // if (!mSimDir.isEmpty()) {
     //     QSettings settings(gSettingsFileName, QSettings::IniFormat);
-    //     settings.setValue("mXplaneDir", mXplaneDir);
-    //     mUi->curPathLabel->setText(mXplaneDir);
+    //     settings.setValue("mSimDir", mSimDir);
+    //     mUi->curPathLabel->setText(mSimDir);
     // }
 }
 
+//-------------------------------------------------------------------------
 void MainWindow::aboutSlot() const {
     mAboutWin->show();
 }
