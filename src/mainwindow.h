@@ -27,22 +27,21 @@ public slots:
     //-------------------------------------------------------------------------
 private slots:
     void targetDirsSetupSlot();
-    // About
-    void aboutSlot();
-    // Setting
-    void settingSlot();
     void selectSimDirSlot();
     void selectCustomDirSlot();
-    void updateSlot();
-    void indexSlot();
+    //
+    void aboutSlot() const;
+    void settingSlot() const;   
+    void updateSlot() const;
+    void indexSlot() const;
     // list context menu
     void listContextMenu(const QPoint & pos);
-    void listClear();
-    void listSelAll();
+    void listClear() const;
+    void listSelAll() const;
     // table context menu
     void tableContextMenu(const QPoint & pos);
-    void tableSelAll();
-    void tableInfo();
+    void tableSelAll() const;
+    void tableInfo() const;
 
     //-------------------------------------------------------------------------
 private:

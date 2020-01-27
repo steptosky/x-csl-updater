@@ -80,48 +80,6 @@ MainWindow::~MainWindow() {
     delete mUi;
 }
 
-void MainWindow::listClear() {
-    mUi->listWidget->clear();
-}
-
-void MainWindow::listSelAll() {
-    mUi->listWidget->selectAll();
-}
-
-void MainWindow::tableSelAll() {
-    mUi->tableWidget->selectAll();
-    mUi->tableWidget->setFocus();
-}
-
-void MainWindow::aboutSlot() {
-    mAboutWin->show();
-}
-
-void MainWindow::settingSlot() {
-    mSettingsWin->LoadSettings();
-    mSettingsWin->show();
-}
-
-void MainWindow::listContextMenu(const QPoint & pos) {
-    QMenu menu(this);
-    menu.addAction(mListClearAct);
-    menu.addAction(mListSelAllAct);
-    menu.exec(mUi->listWidget->mapToGlobal(pos));
-}
-
-void MainWindow::tableContextMenu(const QPoint & pos) {
-    QMenu menu(this);
-    if (mUi->tableWidget->rowCount() < 1) {
-        mTableInfoAct->setDisabled(true);
-    }
-    else {
-        mTableInfoAct->setEnabled(true);
-    }
-    menu.addAction(mTableInfoAct);
-    menu.addAction(mTableSelAllAct);
-    menu.exec(mUi->tableWidget->mapToGlobal(pos));
-}
-
 QString MainWindow::browseSimDirDialog(const QString & inStartPath) {
 #ifdef Q_OS_WIN32
     return QFileDialog::getOpenFileName(this,
@@ -168,42 +126,15 @@ void MainWindow::setupTargetDirs() {
     // now we use only Altitude suffixes, but should think about support x-ivap later
     mTargetDir = mXplaneDir + "/" + gAltitudeResDir;
     mTargetCslDir = mXplaneDir + "/" + gAltitudeCslDir;
-    // QDir const tgtDir(mTargetDir);
-    // QDir const tgtCslDir(mTargetCslDir);
-    // if (tgtDir.exists() && tgtCslDir.exists()) {
-    //      mUi->PrevButton->setEnabled(true);
-    //     return true;
-    // }
-    // if (!tgtDir.exists()) {
-    //     if (!tgtDir.mkpath(mTargetDir)) {
-    //         QMessageBox::critical(this, PROGRAM_NAME,tr("Error! Cannot create the common target path: ") +  mTargetDir, QMessageBox::Ok);
-    //     }
-    // }
-    // if (!tgtCslDir.exists()) {
-    //     if (!tgtCslDir.mkpath(mTargetCslDir)) {
-    //         QMessageBox::critical(this, PROGRAM_NAME,tr("Error! Cannot create the CSL Library target path: ") +  mTargetCslDir, QMessageBox::Ok);
-    //     }
-    // }
-    // if (tgtDir.exists() && tgtCslDir.exists()) {
-    //      mUi->PrevButton->setEnabled(true);
-    //     return true;
-    // }
     //
-    // mTargetDir = "";
-    // mTargetCslDir = "";
-    // mUi->PrevButton->setEnabled(false);
-    // mUi->NextButton->setEnabled(false);
-    // return false;
-    //
-
     mUi->curPathLabel->setText(mXplaneDir);
     mUi->PrevButton->setEnabled(true);
     mUi->listWidget->addItem(tr("Now click \"Index\" to determine files which need to be updated."));
 }
 
-void MainWindow::tableInfo() {
-    mPackInfoWin->OpenInfoWin();
-}
+/**************************************************************************************************/
+//////////////////////////////////////////* SLOTS */////////////////////////////////////////////
+/**************************************************************************************************/
 
 void MainWindow::targetDirsSetupSlot() {
     QSettings const settings(gSettingsFileName, QSettings::IniFormat);
@@ -252,14 +183,60 @@ void MainWindow::selectCustomDirSlot() {
     // }
 }
 
-void MainWindow::updateSlot() {
+void MainWindow::aboutSlot() const {
+    mAboutWin->show();
+}
+
+void MainWindow::settingSlot() const {
+    mSettingsWin->LoadSettings();
+    mSettingsWin->show();
+}
+
+void MainWindow::updateSlot() const {
     mUi->PrevButton->setDisabled(true);
     mUi->NextButton->setDisabled(true);
     mUpdateStep->StartUpdate(mIndexStep->mEntryList, mIndexStep);
 }
 
-void MainWindow::indexSlot() {
+void MainWindow::indexSlot() const {
     mUi->PrevButton->setDisabled(true);
     mUi->NextButton->setDisabled(true);
     mIndexStep->StartIndex();
+}
+
+void MainWindow::listContextMenu(const QPoint & pos) {
+    QMenu menu(this);
+    menu.addAction(mListClearAct);
+    menu.addAction(mListSelAllAct);
+    menu.exec(mUi->listWidget->mapToGlobal(pos));
+}
+
+void MainWindow::listClear() const {
+    mUi->listWidget->clear();
+}
+
+void MainWindow::listSelAll() const {
+    mUi->listWidget->selectAll();
+}
+
+void MainWindow::tableSelAll() const {
+    mUi->tableWidget->selectAll();
+    mUi->tableWidget->setFocus();
+}
+
+void MainWindow::tableContextMenu(const QPoint & pos) {
+    QMenu menu(this);
+    if (mUi->tableWidget->rowCount() < 1) {
+        mTableInfoAct->setDisabled(true);
+    }
+    else {
+        mTableInfoAct->setEnabled(true);
+    }
+    menu.addAction(mTableInfoAct);
+    menu.addAction(mTableSelAllAct);
+    menu.exec(mUi->tableWidget->mapToGlobal(pos));
+}
+
+void MainWindow::tableInfo() const {
+    mPackInfoWin->OpenInfoWin();
 }
