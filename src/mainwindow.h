@@ -11,14 +11,14 @@
 #include "PackageAdditionalInfo.h"
 
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
 class MainWindow final : public QMainWindow {
-    Q_OBJECT
+Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget * parent = 0);
     ~MainWindow();
 
     QString mXplaneDir;
@@ -55,24 +55,24 @@ private slots:
     //void IndexFinish();
 
 private:
-    Ui::MainWindow *mUi;
-    About *AboutWin;
-    Settings *SettingsWin;
-    IndexStep *Indx;
-    UpdateStep *Updt;
-    PackageAdditionalInfo *Inf;
+    Ui::MainWindow * mUi;
+    About * AboutWin;
+    Settings * SettingsWin;
+    IndexStep * Indx;
+    UpdateStep * Updt;
+    PackageAdditionalInfo * Inf;
 
     // контекст меню Списка
-    QAction *ListClearAct;
-    QAction *ListSelAllAct;
+    QAction * ListClearAct;
+    QAction * ListSelAllAct;
     // контекст меню Таблицы
-    QAction *TableSelAllAct;
-    QAction *TableInfoAct;
+    QAction * TableSelAllAct;
+    QAction * TableInfoAct;
 
     //-------------------------------------------------------------------------
-    QString browseSimDirDialog(const QString &inStartPath);
-    bool setupNewSimDir(const QString &newSimDir);
-    static bool isSimDirValid(const QString &dir);
+    QString browseSimDirDialog(const QString & inStartPath);
+    bool setupNewSimDir(const QString & newSimDir);
+    static bool isSimDirValid(const QString & dir);
     void setupTargetDirs();
 };
 

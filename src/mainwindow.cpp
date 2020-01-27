@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget * parent)
     move(settings.value("pos", QPoint(200, 200)).toPoint());
     resize(settings.value("size", QSize(850, 615)).toSize());
 
-
     // List context menu
     this->ListClearAct = new QAction(tr("Clear"), this);
     connect(this->ListClearAct, &QAction::triggered, this, &MainWindow::ListClear);
@@ -62,8 +61,7 @@ MainWindow::MainWindow(QWidget * parent)
     connect(this->mUi->ButtonSetFolder, &QPushButton::pressed, this, &MainWindow::setupXplaneDirSlot);
     connect(this->mUi->actionSet_Custom_Path, &QAction::triggered, this, &MainWindow::SetupCustomDirSlot);
 
-
-     //
+    //
     mUi->PrevButton->setDisabled(true);
     mUi->NextButton->setDisabled(true);
 
@@ -130,12 +128,12 @@ void MainWindow::contextMenuEvent(QContextMenuEvent *) {
      menu.exec(event->globalPos());*/
 }
 
-QString MainWindow::browseSimDirDialog(const QString &inStartPath) {
+QString MainWindow::browseSimDirDialog(const QString & inStartPath) {
 #ifdef Q_OS_WIN32
-     return QFileDialog::getOpenFileName(this,
-                                         tr("Specify the X-Plane executable file location"),
-                                         inStartPath,
-                                         "X-Plane*.exe (X-Plane*.exe)");
+    return QFileDialog::getOpenFileName(this,
+                                        tr("Specify the X-Plane executable file location"),
+                                        inStartPath,
+                                        "X-Plane*.exe (X-Plane*.exe)");
 #elif defined Q_OS_LINUX
 	 return QFileDialog::getOpenFileName(this,
 		tr("Specify the X-Plane executable file location"),
@@ -149,7 +147,7 @@ QString MainWindow::browseSimDirDialog(const QString &inStartPath) {
 #endif
 }
 
-bool MainWindow::setupNewSimDir(const QString &newSimDir) {
+bool MainWindow::setupNewSimDir(const QString & newSimDir) {
     if (isSimDirValid(newSimDir)) {
         mXplaneDir = newSimDir;
         QSettings settings(gSettingsFileName, QSettings::IniFormat);
@@ -158,9 +156,9 @@ bool MainWindow::setupNewSimDir(const QString &newSimDir) {
     }
     // if sim dir is not ok
     QMessageBox::critical(this, "ERROR!",
-        "The specified X-Plane executable file path is not valid!"
-        "\nOr X-Plane installation located at the specified path is not valid or broken."
-        "\nYou can try to reinstall or repair your X-Plane installation.", QMessageBox::Ok); 
+                          "The specified X-Plane executable file path is not valid!"
+                          "\nOr X-Plane installation located at the specified path is not valid or broken."
+                          "\nYou can try to reinstall or repair your X-Plane installation.", QMessageBox::Ok);
     return false;
 }
 
@@ -223,7 +221,7 @@ void MainWindow::setupXplaneDirSlot() {
             return;
         }
         setupNewSimDir(QFileInfo(selectedSimFile).dir().path());
-    }   
+    }
 }
 
 void MainWindow::targetDirsSetupSlot() {
@@ -244,9 +242,9 @@ void MainWindow::targetDirsSetupSlot() {
 }
 
 void MainWindow::SetupCustomDirSlot() {
-    QMessageBox::warning(this, PROGRAM_NAME, 
-        tr("Warning! This function is designed for advanced users." 
-                 "Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
+    QMessageBox::warning(this, PROGRAM_NAME,
+                         tr("Warning! This function is designed for advanced users."
+                            "Please use it only if you understand what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
     // this->mXplaneDir = QFileDialog::getExistingDirectory(this,
     //                                                      tr("X-CSL-Updater :: Specify target folder"), this->mXplaneDir, QFileDialog::ShowDirsOnly);
     //
