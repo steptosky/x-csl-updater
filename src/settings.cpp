@@ -12,7 +12,7 @@ Settings::Settings(QWidget * parent)
 
     this->LoadSettings();
 
-    connect(this->m_ui->CancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
+    connect(this->m_ui->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
     connect(this->m_ui->OkButton, SIGNAL(pressed()), this, SLOT(OkSlot()));
 }
 

@@ -55,15 +55,15 @@ MainWindow::MainWindow(QWidget * parent)
     connect(mUi->actionSettings, &QAction::triggered, this, &MainWindow::settingSlot);
     connect(mUi->listWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::listContextMenu);
     connect(mUi->tableWidget, &QTableWidget::customContextMenuRequested, this, &MainWindow::tableContextMenu);
-    connect(mUi->SelAllButton, &QPushButton::pressed, this, &MainWindow::tableSelAll);
-    connect(mUi->NextButton, &QPushButton::pressed, this, &MainWindow::updateSlot);
-    connect(mUi->PrevButton, &QPushButton::pressed, this, &MainWindow::indexSlot);
-    connect(mUi->ButtonSetFolder, &QPushButton::pressed, this, &MainWindow::selectSimDirSlot);
+    connect(mUi->selAllButton, &QPushButton::pressed, this, &MainWindow::tableSelAll);
+    connect(mUi->updateButton, &QPushButton::pressed, this, &MainWindow::updateSlot);
+    connect(mUi->indexButton, &QPushButton::pressed, this, &MainWindow::indexSlot);
+    connect(mUi->browseSimDirButton, &QPushButton::pressed, this, &MainWindow::selectSimDirSlot);
     connect(mUi->actionSet_Custom_Path, &QAction::triggered, this, &MainWindow::selectCustomDirSlot);
 
     //
-    mUi->PrevButton->setDisabled(true);
-    mUi->NextButton->setDisabled(true);
+    mUi->indexButton->setDisabled(true);
+    mUi->updateButton->setDisabled(true);
     mUi->curPathLabel->setText("UNDEFINED...");
 
     //
@@ -137,7 +137,7 @@ void MainWindow::setupTargetDirs() {
 
     //
     mUi->curPathLabel->setText(mSimDir);
-    mUi->PrevButton->setEnabled(true);
+    mUi->indexButton->setEnabled(true);
     mUi->listWidget->addItem(tr("Now click \"Index\" to determine files which need to be updated."));
 }
 
@@ -212,14 +212,14 @@ void MainWindow::settingSlot() const {
 }
 
 void MainWindow::updateSlot() const {
-    mUi->PrevButton->setDisabled(true);
-    mUi->NextButton->setDisabled(true);
+    mUi->indexButton->setDisabled(true);
+    mUi->updateButton->setDisabled(true);
     mUpdateStep->StartUpdate(mIndexStep->mEntryList, mIndexStep);
 }
 
 void MainWindow::indexSlot() const {
-    mUi->PrevButton->setDisabled(true);
-    mUi->NextButton->setDisabled(true);
+    mUi->indexButton->setDisabled(true);
+    mUi->updateButton->setDisabled(true);
     mIndexStep->StartIndex();
 }
 

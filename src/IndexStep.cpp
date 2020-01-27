@@ -76,12 +76,12 @@ void IndexStep::EndIndex(int Next) {
             SetMessage(tr("Congratulations! All the packages are fully up-to-date."));
 		}
 		mPackInfo->GetInfoToTable();
-		MWUI->NextButton->setEnabled(true);
-		MWUI->PrevButton->setEnabled(true);
+		MWUI->updateButton->setEnabled(true);
+		MWUI->indexButton->setEnabled(true);
 	}
 	else {
 		SetMessage(tr("Cannot get indexing successfully done!"));
-		MWUI->PrevButton->setEnabled(true);
+		MWUI->indexButton->setEnabled(true);
 	}
 	emit cancelAll();
 }

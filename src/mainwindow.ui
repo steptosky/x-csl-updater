@@ -118,7 +118,16 @@
          <string/>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
           <number>6</number>
          </property>
          <property name="spacing">
@@ -129,14 +138,23 @@
            <property name="spacing">
             <number>6</number>
            </property>
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
            <property name="topMargin">
             <number>0</number>
            </property>
            <item>
             <widget class="QLabel" name="label_5">
+             <property name="minimumSize">
+              <size>
+               <width>70</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
-               <width>100</width>
+               <width>0</width>
                <height>15</height>
               </size>
              </property>
@@ -144,12 +162,18 @@
               <enum>Qt::NoContextMenu</enum>
              </property>
              <property name="text">
-              <string>Target path:</string>
+              <string>X-Plane dir:</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QLabel" name="curPathLabel">
+             <property name="minimumSize">
+              <size>
+               <width>300</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -160,15 +184,15 @@
               <enum>Qt::NoContextMenu</enum>
              </property>
              <property name="text">
-              <string>TextLabel</string>
+              <string>UNDEFINED...</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="ButtonSetFolder">
+            <widget class="QPushButton" name="browseSimDirButton">
              <property name="minimumSize">
               <size>
-               <width>0</width>
+               <width>80</width>
                <height>0</height>
               </size>
              </property>
@@ -265,7 +289,16 @@
        <string>X-CSL-Package list available on the server:</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>6</number>
+       </property>
+       <property name="bottomMargin">
         <number>6</number>
        </property>
        <item row="0" column="0">
@@ -376,7 +409,7 @@
     <item row="2" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QPushButton" name="SelAllButton">
+       <widget class="QPushButton" name="selAllButton">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -408,7 +441,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="CancelButton">
+       <widget class="QPushButton" name="cancelButton">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -430,7 +463,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="PrevButton">
+       <widget class="QPushButton" name="indexButton">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -461,7 +494,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="NextButton">
+       <widget class="QPushButton" name="updateButton">
         <property name="enabled">
          <bool>false</bool>
         </property>

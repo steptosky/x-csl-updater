@@ -3,7 +3,7 @@
 UpdateStep::UpdateStep(QWidget *_MW, Ui::MainWindow *_MWUI) : BaseSteps(_MW, _MWUI) {
 	mNetMng = new QNetworkAccessManager(this);
 	connect(mNetMng, &QNetworkAccessManager::finished, this, &UpdateStep::httpRequestFinished);
-	connect(MWUI->CancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
+	connect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
 
 }
 
@@ -16,9 +16,9 @@ void UpdateStep::CancelSlot() {
 	SetMessage(tr("The operation has been canceled by user!"));
 	emit cancelDownloading();
 
-	MWUI->CancelButton->setEnabled(false);
-	MWUI->PrevButton->setEnabled(false);
-	MWUI->NextButton->setEnabled(false);
+	MWUI->cancelButton->setEnabled(false);
+	MWUI->indexButton->setEnabled(false);
+	MWUI->updateButton->setEnabled(false);
 	mIndexStep->StartIndex();
 }
 
@@ -98,7 +98,7 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 }
 
 void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inIndexStep) {
-	MWUI->CancelButton->setEnabled(true);
+	MWUI->cancelButton->setEnabled(true);
 	QSettings settings(gSettingsFileName, QSettings::IniFormat);
 	mCslFolderName = settings.value("FolderName").toString();
 	mEntryList.clear();
@@ -176,9 +176,9 @@ void UpdateStep::EndUpdate() {
 	else {
 		SetMessage(tr("Updating process is successfully done!"));
 	}	
-	MWUI->CancelButton->setEnabled(false);
-	MWUI->PrevButton->setEnabled(false);
-	MWUI->NextButton->setEnabled(false);
+	MWUI->cancelButton->setEnabled(false);
+	MWUI->indexButton->setEnabled(false);
+	MWUI->updateButton->setEnabled(false);
 	mIndexStep->StartIndex();
 }
 
