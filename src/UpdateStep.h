@@ -9,7 +9,7 @@ class UpdateStep : public BaseSteps {
 	Q_OBJECT
 
 public:
-	UpdateStep(QWidget *_MW, Ui::MainWindow *_MWUI);
+    UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI, const QString & targetDir, const QString & targetCslDir);
 	~UpdateStep();
 	void StartUpdate(QVector<PackageEntry> FilesList, IndexStep *Indx);
 

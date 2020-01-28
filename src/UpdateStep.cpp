@@ -1,6 +1,9 @@
 #include "UpdateStep.h"
 
-UpdateStep::UpdateStep(QWidget *_MW, Ui::MainWindow *_MWUI) : BaseSteps(_MW, _MWUI) {
+UpdateStep::UpdateStep(QWidget *_MW, Ui::MainWindow *_MWUI, 
+	const QString & targetDir, const QString & targetCslDir)
+: BaseSteps(_MW, _MWUI,targetDir, targetCslDir) {
+
 	mNetMng = new QNetworkAccessManager(this);
 	connect(mNetMng, &QNetworkAccessManager::finished, this, &UpdateStep::httpRequestFinished);
 	connect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
@@ -44,7 +47,7 @@ bool UpdateStep::removeDir(const QString & dirName) {
 }
 
 bool UpdateStep::removePath(QString path) {
-	QString correctedPath = QDir::toNativeSeparators(mCslFolderName + "/" + path).trimmed();
+	QString correctedPath = QDir::toNativeSeparators(mTargetCslDir + "/" + path).trimmed();
 	//qDebug() << correctedPath;
 	QFileInfo fileInfo(correctedPath);
 	QDir dir(correctedPath);
@@ -61,9 +64,9 @@ bool UpdateStep::removePath(QString path) {
 }
 
 bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
-	QString fileName = mCslFolderName + "/" + inPackageEntry.data[1];
+	QString fileName = mTargetCslDir + "/" + inPackageEntry.data[1];
 	if (inPackageEntry.ID == 100) {// files for root recourses folder
-		QDir dir(mCslFolderName);
+		QDir dir(mTargetCslDir);
 		dir.cdUp();
 		const QString corrFolderName = dir.path();
 		fileName = corrFolderName + "/" + inPackageEntry.data[1];
@@ -100,7 +103,6 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inIndexStep) {
 	MWUI->cancelButton->setEnabled(true);
 	QSettings settings(gSettingsFileName, QSettings::IniFormat);
-	mCslFolderName = settings.value("FolderName").toString();
 	mEntryList.clear();
 	mSelectedListForDelete.clear();
 	mIndexStep = inIndexStep;
@@ -127,7 +129,7 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inInde
 	}
 	InitProgBar(0, 1, 0, 1);
 	// added task for download several resource files
-	if (mCslFolderName.contains("X-IvAp Resources")) {
+	if (mTargetCslDir.contains("X-IvAp Resources")) {
 		PackageEntry entry;
         // mtl.dat
 		entry.ID = 100;// files for root recourses folder
@@ -215,7 +217,7 @@ void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
 			mDownloadingFile->close();
             // remove backup file if it's a root resource file ID==100
             if(mEntryList[mFileCounter].ID == 100) {
-                QDir dir(mCslFolderName);
+                QDir dir(mTargetCslDir);
                 dir.cdUp();
                 const QString corrFolderName = dir.path();
                 const QString fileName = corrFolderName + "/" + mEntryList[mFileCounter].data[1] + ".backup";
@@ -235,7 +237,7 @@ void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
 			SetMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
             // revert file if it's a root resource file ID==100
             if(mEntryList[mFileCounter].ID == 100) {
-                QDir dir(mCslFolderName);
+                QDir dir(mTargetCslDir);
                 dir.cdUp();
                 const QString corrFolderName = dir.path();
                 const QString fileName = corrFolderName + "/" + mEntryList[mFileCounter].data[1];

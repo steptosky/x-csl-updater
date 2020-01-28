@@ -1,7 +1,11 @@
 #include "IndexStep.h"
 #include <QDebug>
 
-IndexStep::IndexStep(QWidget *_MW, Ui::MainWindow *_MWUI, PackageAdditionalInfo *_Inf) : BaseSteps(_MW, _MWUI) {
+IndexStep::IndexStep(QWidget *_MW, Ui::MainWindow *_MWUI, 
+	PackageAdditionalInfo *_Inf, 
+	const QString & targetDir, const QString & targetCslDir)
+: BaseSteps(_MW, _MWUI, targetDir, targetCslDir) {
+
 	mPackInfo = _Inf;
 	mNetMng = new QNetworkAccessManager(this);
 	connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::httpRequestFinished);
@@ -16,7 +20,6 @@ IndexStep::~IndexStep() {
 void IndexStep::StartIndex() {
 	mPackInfo->requestStopAction();
 	QSettings settings(gSettingsFileName, QSettings::IniFormat);
-	mCslFolderName = settings.value("FolderName").toString();
 	mSizeOfClient = 0;
 	mSizeOfNeedUpdate = 0;
 	mSizeOfServer = 0;
@@ -249,7 +252,7 @@ eFileState IndexStep::CheckFile(QStringList List, int ID) {
 	FilesInfo.ID = ID;
 	FilesInfo.data = List;
 	QString separator = (QString)QDir::separator();
-	QString FilePath = mCslFolderName + separator + List[1];
+	QString FilePath = mTargetCslDir + separator + List[1];
 	QFileInfo fileInfo(FilePath);
 	mSizeOfServer += List[2].toInt();
 	// does file exist?

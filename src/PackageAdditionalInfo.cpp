@@ -32,6 +32,7 @@ void PackageAdditionalInfo::OpenInfoWin() {
 
 void PackageAdditionalInfo::GetInfoToTable() {
 	QSettings settings(gSettingsFileName, QSettings::IniFormat);
+	//TODO: rework for new targets dir
 	mCslFolder = settings.value("FolderName").toString();
 	mServer = settings.value("curServer").toString();
 	mPackInfo.clear();

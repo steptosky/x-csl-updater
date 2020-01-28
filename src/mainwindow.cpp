@@ -55,8 +55,8 @@ MainWindow::MainWindow(QWidget * parent)
     mAboutWin = new About(this);
     mSettingsWin = new Settings(this);
     mPackInfoWin = new PackageAdditionalInfo(this, mUi);
-    mIndexStep = new IndexStep(this, mUi, mPackInfoWin);
-    mUpdateStep = new UpdateStep(this, mUi);
+    mIndexStep = new IndexStep(this, mUi, mPackInfoWin, mTargetDir, mTargetCslDir);
+    mUpdateStep = new UpdateStep(this, mUi, mTargetDir, mTargetCslDir);
 
     // connects
     connect(mUi->actionAbout, &QAction::triggered, this, &MainWindow::aboutSlot);

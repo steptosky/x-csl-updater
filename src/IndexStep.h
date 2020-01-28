@@ -10,7 +10,7 @@ class IndexStep /*: public QThread*/ : public BaseSteps {
 public:
 	QVector<PackageEntry> mFileListForDel;
 
-	IndexStep(QWidget *_MW, Ui::MainWindow *_MWUI, PackageAdditionalInfo *_Inf);
+    IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf, const QString & targetDir, const QString & targetCslDir);
 	~IndexStep();
 	void StartIndex();
 
