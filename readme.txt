@@ -8,7 +8,7 @@ index files format:
 x-csl-indexes.idx
 11 - folder (a csl package)
 10 - file
-15 - seems to be not used anymore on client side
+15 - seems to be not used anymore (or yet?) on client side
 
 x-csl-indexes-for-delete.idx
 id - not used

@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+  nginx:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: den_rain/x-csl-test-serv
+    volumes:
+      - ./volumes/logs:/var/log/nginx/
+      - ./www:/var/www/
+    restart: always
+    ports:
+      - 80:80

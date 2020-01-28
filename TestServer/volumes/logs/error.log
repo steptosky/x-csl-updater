@@ -1,0 +1,2 @@
+2020/01/28 20:17:17 [error] 7#7: *1 open() "/usr/share/nginx/html/favicon.ico" failed (2: No such file or directory), client: 172.18.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost"
+2020/01/28 20:19:02 [error] 7#7: *2 open() "/var/www/favicon.ico" failed (2: No such file or directory), client: 172.18.0.1, server: , request: "GET /favicon.ico HTTP/1.1", host: "localhost"
