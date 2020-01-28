@@ -9,15 +9,15 @@ MainWindow::MainWindow(QWidget * parent)
     QCoreApplication::setApplicationName(PROGRAM_NAME);
     QCoreApplication::setApplicationVersion(gProgramVersion);
 
+    // setup UI
+    mUi->setupUi(this);
+
     QSettings const settings(gSettingsFileName, QSettings::IniFormat);
     mSimDir = settings.value("mSimDir", "").toString();
     mIsSimDirCustom = settings.value("mIsSimDirCustom", false).toBool();
 
     //
-    parseCliArgs();
-
-    // setup UI
-    mUi->setupUi(this);
+    parseCliArgs();    
 
     // load settings
     move(settings.value("pos", QPoint(200, 200)).toPoint());
@@ -116,10 +116,12 @@ void MainWindow::parseCliArgs() {
     if (mCliParser.isSet(customDir)) {
         mSimDir = mCliParser.value(customDir);
         mIsSimDirCustom = true;
+        setupNewCustomDir(mSimDir);
     }
     else if (mCliParser.isSet(simDir)) {
         mSimDir = mCliParser.value(simDir);
         mIsSimDirCustom = false;
+        setupNewSimDir(mSimDir);
     }
 }
 
