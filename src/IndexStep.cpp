@@ -27,7 +27,6 @@ void IndexStep::StartIndex() {
     InitProgBar(0, 1, 0, 1);
     mIndexFileUrl = settings.value("curServer").toString() + getIndexFileName();
     mDelIndexFileUrl = settings.value("curServer").toString() + getIndexForDelFileName();
-    SetMessage(tr("Downloading the index files from the server \"%1\" ...").arg(QUrl(mIndexFileUrl).host()));
 
     mIndexBytesDownloaded = 0;
     mTotalIndexBytes = 0;
@@ -43,12 +42,14 @@ void IndexStep::StartIndex() {
 
     mFilesToDownload = 2;
     QNetworkRequest request;
+    SetMessage(tr("Downloading an index file from the server \"%1\" ...").arg(QUrl(mIndexFileUrl).fileName()));
     request.setUrl(mIndexFileUrl);
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mIndexFile));
     QNetworkReply * reply = mNetMng->get(request);
     connect(this, &IndexStep::cancelAll, reply, &QNetworkReply::abort);
     connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::indexDownloadProgress);
 
+    SetMessage(tr("Downloading an index file from the server \"%1\" ...").arg(QUrl(mDelIndexFileUrl).fileName()));
     request.setUrl(mDelIndexFileUrl);
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mDelIndexFile));
     reply = mNetMng->get(request);
@@ -59,15 +60,17 @@ void IndexStep::StartIndex() {
 
 void IndexStep::EndIndex(int Next) {
     if (Next) {
+        SetMessage(tr("Indexing local files is successfully done."));
+
         mSizeOfNeedUpdate = mSizeOfServer - mSizeOfClient;
         //TODO: разобраццо с лишними символами в мегабайтах
         float fsizeOfNeedUpdate, fsizeOfServer;
         fsizeOfNeedUpdate = (float)mSizeOfNeedUpdate / 1048576;
         fsizeOfServer = (float)mSizeOfServer / 1048576;
         char cstrSizeNeed[13];
-        sprintf(cstrSizeNeed, "%10.2f", fsizeOfNeedUpdate);
+        sprintf(cstrSizeNeed, "%7.2f", fsizeOfNeedUpdate);
         char cstrSizeAll[13];
-        sprintf(cstrSizeAll, "%10.2f", fsizeOfServer);
+        sprintf(cstrSizeAll, "%7.2f", fsizeOfServer);
         QString strSizeNeed(cstrSizeNeed), strSizeAll(cstrSizeAll);
         //1048576
         if (mSizeOfNeedUpdate != 0) {
@@ -89,6 +92,7 @@ void IndexStep::EndIndex(int Next) {
 }
 
 void IndexStep::ParseIndexFiles() {
+    SetMessage(tr("Indexing local files ..."));
     QString FileForDelPath = getIndexForDelFileName();
     QFile fileForDel(FileForDelPath);
     if (!fileForDel.open(QIODevice::ReadOnly)) {
@@ -125,8 +129,6 @@ void IndexStep::ParseIndexFiles() {
         EndIndex(false);
         return;
     }
-    //SetMessage(tr("Indexing..."));
-    // QTextStream in(&file);
     int count = 0;
     int ver_file_stat = true;
     MWUI->tableWidget->clearContents();
@@ -360,7 +362,7 @@ void IndexStep::delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
     MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
 }
 
-bool IndexStep::createIndexFile(QString inFileName, QFile ** inIndexFile) {
+bool IndexStep::createIndexFile(QString inFileName, QFile ** inIndexFile) const {
     if (QFile::exists(inFileName)) {
         QFile::remove(inFileName);
     }

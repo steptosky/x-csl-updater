@@ -27,9 +27,9 @@ private:
     ePackageState CheckCslPack(int pos, int ID);
     eFileState CheckFile(QStringList list, int ID);
     void EndIndex(int Next = true);
-static QString getIndexFileName();
-static QString getIndexForDelFileName();
-    bool createIndexFile(QString inFileName, QFile ** inIndexFile);
+    static QString getIndexFileName();
+    static QString getIndexForDelFileName();
+    bool createIndexFile(QString inFileName, QFile ** inIndexFile) const;
 
     PackageAdditionalInfo * mPackInfo;
     QNetworkAccessManager * mNetMng;

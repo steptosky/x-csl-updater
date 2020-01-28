@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget * parent)
     mIsSimDirCustom = settings.value("mIsSimDirCustom", false).toBool();
 
     //
-    parseCliArgs();    
+    parseCliArgs();
 
     // load settings
     move(settings.value("pos", QPoint(200, 200)).toPoint());
@@ -194,9 +194,6 @@ void MainWindow::setupTargetDirs() {
     mUi->curPathLabel->setText(mSimDir);
     mUi->indexButton->setEnabled(true);
     mUi->listWidget->addItem(tr("Now click \"Index\" to determine files which need to be updated."));
-    if (mIsIndexAutoStart) {
-        QTimer::singleShot(0, this, &MainWindow::indexSlot);
-    }
 }
 
 /**************************************************************************************************/
@@ -215,10 +212,16 @@ void MainWindow::initialTgtDirsSetupSlot() {
         }
         if (isSimDirValid(mSimDir)) {
             setupTargetDirs();
+            if (mIsIndexAutoStart) {
+                QTimer::singleShot(0, this, &MainWindow::indexSlot);
+            }
         }
     }
     else {
         setupTargetDirs();
+        if (mIsIndexAutoStart) {
+            QTimer::singleShot(0, this, &MainWindow::indexSlot);
+        }
     }
 }
 
