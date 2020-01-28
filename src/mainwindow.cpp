@@ -194,6 +194,9 @@ void MainWindow::setupTargetDirs() {
     mUi->curPathLabel->setText(mSimDir);
     mUi->indexButton->setEnabled(true);
     mUi->listWidget->addItem(tr("Now click \"Index\" to determine files which need to be updated."));
+    if (mIsIndexAutoStart) {
+        QTimer::singleShot(0, this, &MainWindow::indexSlot);
+    }
 }
 
 /**************************************************************************************************/
