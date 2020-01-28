@@ -6,34 +6,41 @@
 #include "Definitions.h"
 #include <QtNetwork>
 
-class BaseSteps : public QWidget
-{
-	Q_OBJECT
+class BaseSteps : public QWidget {
+Q_OBJECT
+
+    //-------------------------------------------------------------------------
 public:
-	QWidget *MW;
-	Ui::MainWindow *MWUI;
+    struct PackageEntry {
+        int ID;
+        QStringList data;
+        eFileState state;
+    };
 
-	QString mCslFolderName;
-    QString mTargetDir;
+    QVector<PackageEntry> mEntryList;
 
-    struct PackageEntry
-	{
-		int ID;
-		QStringList data;
-		eFileState state;
-	};
-	QVector<PackageEntry> mEntryList;
+    //-------------------------------------------------------------------------
+protected:
+    QWidget * MW;
+    Ui::MainWindow * MWUI;
 
-	BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI, const QString & targetDir, const QString & targetCslDir);
-	~BaseSteps();
-	void SetMessage(QString Msg);
-	void InitProgBar(int start, int end, int current = 0, int step = 1);
-	void StepProgBar();
-	void SetValProgBar(int value);
+    const QString & mTargetDir;
+    const QString & mTargetCslDir;
 
+    //-------------------------------------------------------------------------
+    BaseSteps(QWidget * _MW, Ui::MainWindow * _MWUI, const QString & targetDir, const QString & targetCslDir);
+    virtual ~BaseSteps();
+
+    //-------------------------------------------------------------------------
+    void SetMessage(QString msg) const;
+    void InitProgBar(int inStart, int inEnd, int inCurrent = 0, int inStep = 1);
+    void StepProgBar();
+    void SetValProgBar(int value) const;
+
+    //-------------------------------------------------------------------------
 private:
-	int step;
-	int current;
+    int mStep = 0;
+    int mCurrent = 0;
 };
 
 #endif // BASE_STEPS_H

@@ -1,47 +1,34 @@
 #include "base_steps.h"
 
-BaseSteps::BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI, const QString & targetDir, const QString & targetCslDir)
-: QWidget(0)
-{
+BaseSteps::BaseSteps(QWidget * _MW, Ui::MainWindow * _MWUI, const QString & targetDir, const QString & targetCslDir)
+    : QWidget(nullptr),
+      mTargetDir(targetDir),
+      mTargetCslDir(targetCslDir) {
+    //-------------------------------------------------------------------------
     this->MW = _MW;
     this->MWUI = _MWUI;
-    this->mCslFolderName = targetCslDir;
-    this->mTargetDir = targetDir;
 }
 
-BaseSteps::~BaseSteps()
-{
+BaseSteps::~BaseSteps() { }
 
-}
-
-void BaseSteps::SetMessage(QString Msg)
-{
-    this->MWUI->listWidget->addItem(Msg);
+void BaseSteps::SetMessage(QString msg) const {
+    this->MWUI->listWidget->addItem(msg);
     this->MWUI->listWidget->scrollToBottom();
 }
 
-void BaseSteps::InitProgBar(int inStart, int inEnd, int inCurrent, int inStep)
-{
-    //this->MWUI->progressBar->setMaximum();
-    //this->MWUI->progressBar->setMinimum();
+void BaseSteps::InitProgBar(int inStart, int inEnd, int inCurrent, int inStep) {
     this->step = inStep;
     this->current = inCurrent;
     this->MWUI->progressBar->setRange(inStart, inEnd);
     this->MWUI->progressBar->setValue(inCurrent);
 }
 
-void BaseSteps::StepProgBar()
-{
-    int result;
-    result = this->current + this->step;
+void BaseSteps::StepProgBar() {
+    int const result = this->current + this->step;
     this->MWUI->progressBar->setValue(result);
     this->current = result;
 }
 
-void BaseSteps::SetValProgBar(int value)
-{
+void BaseSteps::SetValProgBar(int value) const {
     this->MWUI->progressBar->setValue(value);
 }
-
-
-
