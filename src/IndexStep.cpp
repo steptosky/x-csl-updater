@@ -47,13 +47,13 @@ void IndexStep::StartIndex() {
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mIndexFile));
     QNetworkReply * reply = mNetMng->get(request);
     connect(this, &IndexStep::cancelAll, reply, &QNetworkReply::abort);
-    connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::indexDonwloadProgress);
+    connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::indexDownloadProgress);
 
     request.setUrl(mDelIndexFileUrl);
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mDelIndexFile));
     reply = mNetMng->get(request);
     connect(this, &IndexStep::cancelAll, reply, &QNetworkReply::abort);
-    connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::delIndexDonwloadProgress);
+    connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::delIndexDownloadProgress);
     //
 }
 
@@ -380,14 +380,14 @@ void IndexStep::httpRequestFinished(QNetworkReply * inReply) {
     }
 }
 
-void IndexStep::indexDonwloadProgress(qint64 bytesRead, qint64 totalBytes) {
+void IndexStep::indexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
     mTotalIndexBytes = totalBytes;
     mIndexBytesDownloaded = bytesRead;
     MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
     MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
 }
 
-void IndexStep::delIndexDonwloadProgress(qint64 bytesRead, qint64 totalBytes) {
+void IndexStep::delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
     mTotalDelIndexBytes = totalBytes;
     mDelIndexBytesDownloaded = bytesRead;
     MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);

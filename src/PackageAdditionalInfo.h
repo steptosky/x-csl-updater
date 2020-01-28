@@ -48,7 +48,6 @@ private:
 	QNetworkAccessManager *mNetMng;
 
 	QString mServer;
-	QString mCslFolder;
 
 };
 

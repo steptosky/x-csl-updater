@@ -32,8 +32,6 @@ void PackageAdditionalInfo::OpenInfoWin() {
 
 void PackageAdditionalInfo::GetInfoToTable() {
 	QSettings settings(gSettingsFileName, QSettings::IniFormat);
-	//TODO: rework for new targets dir
-	mCslFolder = settings.value("FolderName").toString();
 	mServer = settings.value("curServer").toString();
 	mPackInfo.clear();
 	for (int i = 0; i < mMainUi->tableWidget->rowCount(); i++) {
@@ -44,7 +42,6 @@ void PackageAdditionalInfo::GetInfoToTable() {
 void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) {
 	QString packPath = mMainUi->tableWidget->item(inRow, 1)->text();
 	QUrl url(mServer + packPath + tr("/x-csl-info.info"));
-	QString fileName = mCslFolder + "/" + packPath + tr("/x-csl-info.info");
 
 	QNetworkRequest request;
 	request.setUrl(url);

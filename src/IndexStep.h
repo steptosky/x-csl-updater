@@ -19,8 +19,8 @@ signals:
 
 private slots:
     void httpRequestFinished(QNetworkReply * inReply);
-    void indexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
-    void delIndexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
+    void indexDownloadProgress(qint64 bytesRead, qint64 totalBytes);
+    void delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes);
 
 private:
     void ParseIndexFiles();
