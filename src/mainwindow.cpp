@@ -5,11 +5,21 @@
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent),
       mUi(new Ui::MainWindow) {
+
+    QCoreApplication::setApplicationName(PROGRAM_NAME);
+    QCoreApplication::setApplicationVersion(gProgramVersion);
+
+    QSettings const settings(gSettingsFileName, QSettings::IniFormat);
+    mSimDir = settings.value("mSimDir", "").toString();
+    mIsSimDirCustom = settings.value("mIsSimDirCustom", false).toBool();
+
+    //
+    parseCliArgs();
+
     // setup UI
     mUi->setupUi(this);
 
     // load settings
-    QSettings settings(gSettingsFileName, QSettings::IniFormat);
     move(settings.value("pos", QPoint(200, 200)).toPoint());
     resize(settings.value("size", QSize(850, 615)).toSize());
 
@@ -80,6 +90,39 @@ MainWindow::~MainWindow() {
     delete mUi;
 }
 
+void MainWindow::parseCliArgs() {
+    mCliParser.setApplicationDescription(STS_XCSL_PROJECT_DESCRIPTION);
+    mCliParser.addHelpOption();
+    mCliParser.addVersionOption();
+    QCommandLineOption const simDir(QStringList() << "d" << "sim-dir",
+                                    "X-Plane root directory where the X-CSL library will be installed.",
+                                    "directory");
+    QCommandLineOption const indexAutoStart(QStringList() << "i" << "index-auto-start",
+                                            "If set indexing process will be started automatically.");
+    mCliParser.addOption(indexAutoStart);
+
+    mCliParser.addOption(simDir);
+    QCommandLineOption const customDir("custom-tgt-dir",
+                                       "Custom target directory where the X-CSL library will be installed."
+                                       "\nNo any target directory checks or auto target directory suffixes will be applied!"
+                                       "\nRecommended only for advanced users who are sure what they are doing!",
+                                       "directory");
+    mCliParser.addOption(customDir);
+
+    //parse
+    mCliParser.process(*qApp);
+
+    mIsIndexAutoStart = mCliParser.isSet(indexAutoStart);
+    if (mCliParser.isSet(customDir)) {
+        mSimDir = mCliParser.value(customDir);
+        mIsSimDirCustom = true;
+    }
+    else if (mCliParser.isSet(simDir)) {
+        mSimDir = mCliParser.value(simDir);
+        mIsSimDirCustom = false;
+    }
+}
+
 QString MainWindow::browseSimDirDialog(const QString & inStartPath) {
 #ifdef Q_OS_WIN32
     return QFileDialog::getOpenFileName(this,
@@ -116,6 +159,16 @@ bool MainWindow::setupNewSimDir(const QString & newSimDir) {
     return false;
 }
 
+bool MainWindow::setupNewCustomDir(const QString & newCustomDir) {
+    mIsSimDirCustom = true;
+    mSimDir = newCustomDir;
+    QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    settings.setValue("mSimDir", mSimDir);
+    settings.setValue("mIsSimDirCustom", mIsSimDirCustom);
+    mUi->curPathLabel->setText(mSimDir);
+    return true;
+}
+
 bool MainWindow::isSimDirValid(const QString & dir) {
     QString const simPluginsDir(dir + "/" + gSimPluginsDir);
     if (QDir(dir).exists() && QDir(simPluginsDir).exists()) {
@@ -146,9 +199,6 @@ void MainWindow::setupTargetDirs() {
 /**************************************************************************************************/
 
 void MainWindow::initialTgtDirsSetupSlot() {
-    QSettings const settings(gSettingsFileName, QSettings::IniFormat);
-    mSimDir = settings.value("mSimDir", "").toString();
-    mIsSimDirCustom = settings.value("mIsSimDirCustom", false).toBool();
     if (!mIsSimDirCustom) {
         while (!isSimDirValid(mSimDir)) {
             QString const selectedSimFile = browseSimDirDialog(mSimDir);
@@ -189,15 +239,10 @@ void MainWindow::selectCustomDirSlot() {
                             "\nPlease use it only if you are absolutely sure what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
 
     QString const newDir = QFileDialog::getExistingDirectory(this,
-        PROGRAM_NAME + tr(" :: Specify a folder where the library will be installed"), mSimDir, QFileDialog::ShowDirsOnly);
-    
+                                                             PROGRAM_NAME + tr(" :: Specify a folder where the library will be installed"), mSimDir, QFileDialog::ShowDirsOnly);
+
     if (!newDir.isEmpty()) {
-        mIsSimDirCustom = true;
-        mSimDir = newDir;
-        QSettings settings(gSettingsFileName, QSettings::IniFormat);
-        settings.setValue("mSimDir", mSimDir);
-        settings.setValue("mIsSimDirCustom", mIsSimDirCustom);
-        mUi->curPathLabel->setText(mSimDir);
+        setupNewCustomDir(newDir);
     }
 }
 

@@ -11,8 +11,8 @@ macro(loadDescription)
 	
 	set(ProjectName "X-CSL-Updater")
 	set(ProjectShortName "X-CSL-Updater")
-	set(ProjectDescription "A Software for the X-CSL-Package project.")
-	set(ProjectWebLink "www.csl.x-air.ru")
+	set(ProjectDescription "This X-CSL-Updater software is a part of X-CSL-Package project.")
+	set(ProjectWebLink "csl.x-air.ru")
 	
 	set(CopyRight "© 2009 - ${_curr_y_} StepToSky")
 	set(Author "StepToSky")
@@ -21,8 +21,6 @@ macro(loadDescription)
 	set(VersionMajorString "1")
 	set(VersionMinorString "2")
 	set(VersionPatchString "0")
-	
-	set(VcsType "hg")
 	
 	set(ReleaseTypeString "")
 	set(InfoFilePrefix "STS_XCSL_")

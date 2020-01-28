@@ -64,9 +64,16 @@ private:
     QAction * mTableSelAllAct;
     QAction * mTableInfoAct;
 
+    //
+    QCommandLineParser mCliParser;
+    bool mIsIndexAutoStart = false;
+
     //-------------------------------------------------------------------------
+    void parseCliArgs();
+
     QString browseSimDirDialog(const QString & inStartPath);
     bool setupNewSimDir(const QString & newSimDir);
+    bool setupNewCustomDir(const QString & newCustomDir);
     static bool isSimDirValid(const QString & dir);
     void setupTargetDirs();
 };
