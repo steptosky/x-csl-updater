@@ -6,48 +6,48 @@
 #include "PackageAdditionalInfo.h"
 
 class IndexStep /*: public QThread*/ : public BaseSteps {
-	Q_OBJECT
+Q_OBJECT
 public:
-	QVector<PackageEntry> mFileListForDel;
+    QVector<PackageEntry> mFileListForDel;
 
     IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf, const QString & targetDir, const QString & targetCslDir);
-	~IndexStep();
-	void StartIndex();
+    ~IndexStep();
+    void StartIndex();
 
 signals:
-	void cancelAll();
+    void cancelAll();
 
 private slots:
-	void httpRequestFinished(QNetworkReply *inReply);
-	void indexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
-	void delIndexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
+    void httpRequestFinished(QNetworkReply * inReply);
+    void indexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
+    void delIndexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
 
 private:
-	void ParseIndexFiles();
+    void ParseIndexFiles();
     ePackageState CheckCslPack(int pos, int ID);
     eFileState CheckFile(QStringList list, int ID);
-	void EndIndex(int Next = true);
-	QString getIndexFilePath();
-	QString getIndexForDelFilePath();
-	bool createIndexFile(QString inFileName, QFile **inIndexFile);
+    void EndIndex(int Next = true);
+    QString getIndexFilePath();
+    QString getIndexForDelFilePath();
+    bool createIndexFile(QString inFileName, QFile ** inIndexFile);
 
-	PackageAdditionalInfo *mPackInfo;
-	QNetworkAccessManager *mNetMng;
-	QFile *mIndexFile = nullptr;
-	QFile *mDelIndexFile = nullptr;
+    PackageAdditionalInfo * mPackInfo;
+    QNetworkAccessManager * mNetMng;
+    QFile * mIndexFile = nullptr;
+    QFile * mDelIndexFile = nullptr;
 
-	int mFilesToDownload = 2;
-	int mIndexBytesDownloaded;
-	int mTotalIndexBytes;
-	int mDelIndexBytesDownloaded;
-	int mTotalDelIndexBytes;
+    int mFilesToDownload = 2;
+    int mIndexBytesDownloaded;
+    int mTotalIndexBytes;
+    int mDelIndexBytesDownloaded;
+    int mTotalDelIndexBytes;
 
-	int mSizeOfServer;
-	int mSizeOfNeedUpdate;
-	int mSizeOfClient;
+    int mSizeOfServer;
+    int mSizeOfNeedUpdate;
+    int mSizeOfClient;
 
-	QString mIndexFileUrl;
-	QString mDelIndexFileUrl;
+    QString mIndexFileUrl;
+    QString mDelIndexFileUrl;
 };
 
 #endif // INDEX_H

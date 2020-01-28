@@ -17,16 +17,16 @@ void BaseSteps::SetMessage(QString msg) const {
 }
 
 void BaseSteps::InitProgBar(int inStart, int inEnd, int inCurrent, int inStep) {
-    this->step = inStep;
-    this->current = inCurrent;
+    this->mStep = inStep;
+    this->mCurrent = inCurrent;
     this->MWUI->progressBar->setRange(inStart, inEnd);
     this->MWUI->progressBar->setValue(inCurrent);
 }
 
 void BaseSteps::StepProgBar() {
-    int const result = this->current + this->step;
+    int const result = this->mCurrent + this->mStep;
     this->MWUI->progressBar->setValue(result);
-    this->current = result;
+    this->mCurrent = result;
 }
 
 void BaseSteps::SetValProgBar(int value) const {
