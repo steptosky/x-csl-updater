@@ -44,7 +44,7 @@ bool UpdateStep::removeDir(const QString & dirName) {
 }
 
 bool UpdateStep::removePath(QString path) {
-	QString correctedPath = QDir::toNativeSeparators(mCslFolderName + mSeparator + path).trimmed();
+	QString correctedPath = QDir::toNativeSeparators(mCslFolderName + "/" + path).trimmed();
 	//qDebug() << correctedPath;
 	QFileInfo fileInfo(correctedPath);
 	QDir dir(correctedPath);
@@ -61,12 +61,12 @@ bool UpdateStep::removePath(QString path) {
 }
 
 bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
-	QString fileName = mCslFolderName + mSeparator + inPackageEntry.data[1];
+	QString fileName = mCslFolderName + "/" + inPackageEntry.data[1];
 	if (inPackageEntry.ID == 100) {// files for root recourses folder
 		QDir dir(mCslFolderName);
 		dir.cdUp();
 		const QString corrFolderName = dir.path();
-		fileName = corrFolderName + mSeparator + inPackageEntry.data[1];
+		fileName = corrFolderName + "/" + inPackageEntry.data[1];
 	}
     if (QFile::exists(fileName) && inPackageEntry.ID == 100) {
         QFile::copy(fileName, fileName + ".backup");
@@ -218,7 +218,7 @@ void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
                 QDir dir(mCslFolderName);
                 dir.cdUp();
                 const QString corrFolderName = dir.path();
-                const QString fileName = corrFolderName + mSeparator + mEntryList[mFileCounter].data[1] + ".backup";
+                const QString fileName = corrFolderName + "/" + mEntryList[mFileCounter].data[1] + ".backup";
                 if (QFile::exists(fileName)) {
                     QFile::remove(fileName);
                 }
@@ -238,7 +238,7 @@ void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
                 QDir dir(mCslFolderName);
                 dir.cdUp();
                 const QString corrFolderName = dir.path();
-                const QString fileName = corrFolderName + mSeparator + mEntryList[mFileCounter].data[1];
+                const QString fileName = corrFolderName + "/" + mEntryList[mFileCounter].data[1];
                 QFile::copy(fileName + ".backup", fileName);
             }
 		}

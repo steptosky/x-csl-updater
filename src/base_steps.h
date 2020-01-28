@@ -12,9 +12,11 @@ class BaseSteps : public QWidget
 public:
 	QWidget *MW;
 	Ui::MainWindow *MWUI;
-	QString mSeparator;
+
 	QString mCslFolderName;
-	struct PackageEntry
+    QString mTargetDir;
+
+    struct PackageEntry
 	{
 		int ID;
 		QStringList data;
@@ -22,7 +24,7 @@ public:
 	};
 	QVector<PackageEntry> mEntryList;
 
-	BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI);
+	BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI, const QString & targetDir, const QString & targetCslDir);
 	~BaseSteps();
 	void SetMessage(QString Msg);
 	void InitProgBar(int start, int end, int current = 0, int step = 1);
