@@ -25,8 +25,8 @@ void IndexStep::StartIndex() {
     mEntryList.clear();
     mFileListForDel.clear();
     InitProgBar(0, 1, 0, 1);
-    mIndexFileUrl = settings.value("curServer").toString() + settings.value("IndexFile").toString();
-    mDelIndexFileUrl = settings.value("curServer").toString() + settings.value("IndexForDelFile").toString();
+    mIndexFileUrl = settings.value("curServer").toString() + getIndexFileName();
+    mDelIndexFileUrl = settings.value("curServer").toString() + getIndexForDelFileName();
     SetMessage(tr("Downloading the index files from the server \"%1\" ...").arg(QUrl(mIndexFileUrl).host()));
 
     mIndexBytesDownloaded = 0;
@@ -34,10 +34,10 @@ void IndexStep::StartIndex() {
     mDelIndexBytesDownloaded = 0;
     mTotalDelIndexBytes = 0;
 
-    if (!createIndexFile(getIndexFilePath(), &mIndexFile)) {
+    if (!createIndexFile(getIndexFileName(), &mIndexFile)) {
         return;
     }
-    if (!createIndexFile(getIndexForDelFilePath(), &mDelIndexFile)) {
+    if (!createIndexFile(getIndexForDelFileName(), &mDelIndexFile)) {
         return;
     }
 
@@ -89,7 +89,7 @@ void IndexStep::EndIndex(int Next) {
 }
 
 void IndexStep::ParseIndexFiles() {
-    QString FileForDelPath = getIndexForDelFilePath();
+    QString FileForDelPath = getIndexForDelFileName();
     QFile fileForDel(FileForDelPath);
     if (!fileForDel.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(fileForDel.errorString()));
@@ -113,7 +113,7 @@ void IndexStep::ParseIndexFiles() {
     }
     fileForDel.close();
 
-    QString FilePath = getIndexFilePath();
+    QString FilePath = getIndexFileName();
     QFile file(FilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
@@ -201,7 +201,7 @@ void IndexStep::ParseIndexFiles() {
 }
 
 ePackageState IndexStep::CheckCslPack(int pos, int ID) {
-    QString FilePath = getIndexFilePath();
+    QString FilePath = getIndexFileName();
     QFile file(FilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
@@ -314,46 +314,12 @@ eFileState IndexStep::CheckFile(QStringList List, int ID) {
     return CLIENT_FILE_STATUS_OK;
 }
 
-QString IndexStep::getIndexFilePath() {
-#ifdef Q_OS_WIN32
+QString IndexStep::getIndexFileName() {
     return "x-csl-indexes.idx";
-#else
-	QString path(
-		QDir::homePath()
-		+ mSeparator +
-		".config"
-		+ mSeparator +
-		PROGRAM_NAME
-		+ mSeparator
-	);
-
-	QDir pathDir(path);
-	if (!pathDir.exists()) pathDir.mkpath(path);
-
-	return path += "x-csl-indexes.idx";
-
-#endif
 }
 
-QString IndexStep::getIndexForDelFilePath() {
-#ifdef Q_OS_WIN32
+QString IndexStep::getIndexForDelFileName() {
     return "x-csl-indexes-for-delete.idx";
-#else
-	QString path(
-		QDir::homePath()
-		+ mSeparator +
-		".config"
-		+ mSeparator +
-		PROGRAM_NAME
-		+ mSeparator
-	);
-
-	QDir pathDir(path);
-	if (!pathDir.exists()) pathDir.mkpath(path);
-
-	return path += "x-csl-indexes-for-delete.idx";
-
-#endif
 }
 
 void IndexStep::httpRequestFinished(QNetworkReply * inReply) {

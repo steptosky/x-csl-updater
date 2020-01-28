@@ -59,8 +59,6 @@ void Settings::LoadSettings() {
             settings.setValue("curServer", settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
             break;
     }
-    settings.setValue("IndexFile", "x-csl-indexes.idx");
-    settings.setValue("IndexForDelFile", "x-csl-indexes-for-delete.idx");
     /*QString PathLang = QDir::currentPath()+tr("/english.qm");
     QFileInfo FInfo(PathLang);
     if (!FInfo.isFile())
@@ -103,8 +101,6 @@ void Settings::SaveSettings() {
     if (!_server.endsWith("/"))
         _server += "/";
     settings.setValue("Server4", _server);
-    settings.setValue("IndexFile", tr("x-csl-indexes.idx"));
-    settings.setValue("IndexForDelFile", "x-csl-indexes-for-delete.idx");
     if (this->m_ui->checkBox_1->isChecked()) {
         settings.setValue("serverActive", 1);
         settings.setValue("curServer", settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
