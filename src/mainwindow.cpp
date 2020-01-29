@@ -113,16 +113,19 @@ void MainWindow::parseCliArgs() {
                               "<html><body>An error has occured during parsing command line input.<br>" +
                               mCliParser.errorText() + "<br><pre>" + mCliParser.helpText() + "</pre></body></html>", QMessageBox::Ok);
         QApplication::exit(1);
+        return;
     }
     if (mCliParser.isSet(helpOpt)) {
         QMessageBox::information(this, PROGRAM_NAME + tr(" :: Command line usage:"),
                                  "<html><body><pre>" + mCliParser.helpText() + "</pre></body></html>", QMessageBox::Ok);
         QApplication::exit(1);
+        return;
     }
     if (mCliParser.isSet(verOpt)) {
         QMessageBox::information(this, PROGRAM_NAME,
                                  "Version: " + gProgramVersion, QMessageBox::Ok);
         QApplication::exit(1);
+        return;
     }
 #else
     // on unix systems it should normally work through terminal
@@ -145,17 +148,17 @@ void MainWindow::parseCliArgs() {
 QString MainWindow::browseSimDirDialog(const QString & inStartPath) {
 #ifdef Q_OS_WIN32
     return QFileDialog::getOpenFileName(this,
-                                        PROGRAM_NAME + tr(" :: Specify the X-Plane executable file location"),
+                                        PROGRAM_NAME + tr(" :: Specify the X-Plane executable file location ..."),
                                         inStartPath,
                                         "X-Plane*.exe (X-Plane*.exe)");
 #elif defined Q_OS_LINUX
 	 return QFileDialog::getOpenFileName(this,
-		PROGRAM_NAME + tr(" :: Specify the X-Plane executable file location"),
+		PROGRAM_NAME + tr(" :: Specify the X-Plane executable file location ..."),
 		inStartPath,
 		"X-Plane* (X-Plane*)");
 #else
 	 return QFileDialog::getOpenFileName(this,
-		PROGRAM_NAME + tr(" :: Specify the X-Plane executable file location"),
+		PROGRAM_NAME + tr(" :: Specify the X-Plane executable file location ..."),
 		inStartPath,
 		"X-Plane*.app (X-Plane*.app)");
 #endif
@@ -223,6 +226,9 @@ void MainWindow::init() {
     //
     if (!mIsSimDirCustom) {
         while (!isSimDirValid(mSimDir)) {
+            QMessageBox::warning(this, PROGRAM_NAME,
+                                 tr("Please specify the X-Plane executable file location!\n\n"
+                                    "Navigate to the folder where your X-Plane is installed and select the X-Plane executable file."), QMessageBox::Ok);
             QString const selectedSimFile = browseSimDirDialog(mSimDir);
             if (selectedSimFile.isEmpty()) {
                 QApplication::quit();
