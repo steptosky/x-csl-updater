@@ -16,9 +16,6 @@ MainWindow::MainWindow(QWidget * parent)
     mSimDir = settings.value("mSimDir", "").toString();
     mIsSimDirCustom = settings.value("mIsSimDirCustom", false).toBool();
 
-    //
-    parseCliArgs();
-
     // load settings
     move(settings.value("pos", QPoint(200, 200)).toPoint());
     resize(settings.value("size", QSize(850, 615)).toSize());
@@ -77,7 +74,7 @@ MainWindow::MainWindow(QWidget * parent)
     mUi->curPathLabel->setText("UNDEFINED...");
 
     //
-    QTimer::singleShot(0, this, &MainWindow::initialTgtDirsSetupSlot);
+    QTimer::singleShot(0, this, &MainWindow::init);
 }
 
 MainWindow::~MainWindow() {
@@ -92,11 +89,11 @@ MainWindow::~MainWindow() {
 
 void MainWindow::parseCliArgs() {
     mCliParser.setApplicationDescription(STS_XCSL_PROJECT_DESCRIPTION);
-    mCliParser.addHelpOption();
-    mCliParser.addVersionOption();
+    const auto helpOpt = mCliParser.addHelpOption();
+    const auto verOpt = mCliParser.addVersionOption();
     QCommandLineOption const simDir(QStringList() << "d" << "sim-dir",
                                     "X-Plane root directory where the X-CSL library will be installed.",
-                                    "directory");
+                                    "dir");
     QCommandLineOption const indexAutoStart(QStringList() << "i" << "index-auto-start",
                                             "If set indexing process will be started automatically.");
     mCliParser.addOption(indexAutoStart);
@@ -105,12 +102,32 @@ void MainWindow::parseCliArgs() {
     QCommandLineOption const customDir("custom-tgt-dir",
                                        "Custom target directory where the X-CSL library will be installed."
                                        "\nNo any target directory checks or auto target directory suffixes will be applied!"
-                                       "\nRecommended only for advanced users who are sure what they are doing!",
-                                       "directory");
+                                       "\nRecommended only for advanced users who are sure what they are doing!");
     mCliParser.addOption(customDir);
 
     //parse
+#ifdef  Q_OS_WIN32
+    bool res = mCliParser.parse(QApplication::arguments());
+    if (!res) {
+        QMessageBox::critical(this, PROGRAM_NAME + tr(" :: ERROR!"),
+                              "<html><body>An error has occured during parsing command line input.<br>" +
+                              mCliParser.errorText() + "<br><pre>" + mCliParser.helpText() + "</pre></body></html>", QMessageBox::Ok);
+        QApplication::exit(1);
+    }
+    if (mCliParser.isSet(helpOpt)) {
+        QMessageBox::information(this, PROGRAM_NAME + tr(" :: Command line usage:"),
+                                 "<html><body><pre>" + mCliParser.helpText() + "</pre></body></html>", QMessageBox::Ok);
+        QApplication::exit(1);
+    }
+    if (mCliParser.isSet(verOpt)) {
+        QMessageBox::information(this, PROGRAM_NAME,
+                                 "Version: " + gProgramVersion, QMessageBox::Ok);
+        QApplication::exit(1);
+    }
+#else
+    // on unix systems it should normally work through terminal
     mCliParser.process(*qApp);
+#endif
 
     mIsIndexAutoStart = mCliParser.isSet(indexAutoStart);
     if (mCliParser.isSet(customDir)) {
@@ -200,7 +217,10 @@ void MainWindow::setupTargetDirs() {
 //////////////////////////////////////////* SLOTS */////////////////////////////////////////////
 /**************************************************************************************************/
 
-void MainWindow::initialTgtDirsSetupSlot() {
+void MainWindow::init() {
+    //
+    parseCliArgs();
+    //
     if (!mIsSimDirCustom) {
         while (!isSimDirValid(mSimDir)) {
             QString const selectedSimFile = browseSimDirDialog(mSimDir);

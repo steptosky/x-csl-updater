@@ -26,7 +26,7 @@ public slots:
 
     //-------------------------------------------------------------------------
 private slots:
-    void initialTgtDirsSetupSlot();
+    void init();
     void selectSimDirSlot();
     void selectCustomDirSlot();
     //
