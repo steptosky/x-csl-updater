@@ -2,9 +2,8 @@
 #include <QDebug>
 #include "AltitudeDefs.h"
 
-IndexStep::IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf,
-                     const QString & targetDir, const QString & targetCslDir)
-    : BaseSteps(_MW, _MWUI, targetDir, targetCslDir) {
+IndexStep::IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf)
+    : BaseSteps(_MW, _MWUI, "", "") {
     //-------------------------------------------------------------------------
     mPackInfo = _Inf;
     mNetMng = new QNetworkAccessManager(this);
@@ -78,7 +77,7 @@ void IndexStep::StartIndex() {
     mDelIndexBytesDownloaded = 0;
     mTotalDelIndexBytes = 0;
 
-    // downloading config (stage 1)
+    // stage 1
     emit abortAllReplaysSig();
     scheduleDownloadingFile(altDefs->configFileUrl(), AltitudeDefs::configFileLocalPath());
     connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot, Qt::UniqueConnection);
@@ -95,6 +94,7 @@ void IndexStep::stage2() {
     //
     disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot);
     emit abortAllReplaysSig();
+    // stage 2
     mFilesToDownload = 4;
     scheduleDownloadingFile(altDefs->indexFileUrl(), AltitudeDefs::indexFileLocalPath());
     scheduleDownloadingFile(altDefs->indexForDelFileUrl(), AltitudeDefs::indexForDelFileLocalPath());
@@ -108,9 +108,8 @@ void IndexStep::stage3() {
 
     disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot);
     emit abortAllReplaysSig();
-
-    //
-    EndIndex();
+    // stage 3
+    ParseIndexFiles();
 }
 
 void IndexStep::EndIndex(int Next) {
@@ -151,9 +150,8 @@ void IndexStep::EndIndex(int Next) {
 }
 
 void IndexStep::ParseIndexFiles() {
-    AltitudeDefs * altDefs = AltitudeDefs::instance();
     SetMessage(tr("Indexing local files ..."));
-    QString FileForDelPath = altDefs->cslIndexForDelFileLocalPath();
+    const QString FileForDelPath = AltitudeDefs::cslIndexForDelFileLocalPath();
     QFile fileForDel(FileForDelPath);
     if (!fileForDel.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(fileForDel.errorString()));
@@ -177,7 +175,7 @@ void IndexStep::ParseIndexFiles() {
     }
     fileForDel.close();
 
-    QString FilePath = altDefs->cslIndexFileLocalPath();
+    const QString FilePath = AltitudeDefs::cslIndexFileLocalPath();
     QFile file(FilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
@@ -264,7 +262,7 @@ void IndexStep::ParseIndexFiles() {
 
 ePackageState IndexStep::CheckCslPack(int pos, int ID) {
     AltitudeDefs * altDefs = AltitudeDefs::instance();
-    QString FilePath = altDefs->cslIndexFileLocalPath();
+    const QString FilePath = altDefs->cslIndexFileLocalPath();
     QFile file(FilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
@@ -316,10 +314,9 @@ ePackageState IndexStep::CheckCslPack(int pos, int ID) {
 eFileState IndexStep::CheckFile(QStringList List, int ID) {
     PackageEntry FilesInfo;
     FilesInfo.ID = ID;
-    FilesInfo.data = List;
-    QString separator = (QString)QDir::separator();
-    QString FilePath = mTargetCslDir + separator + List[1];
-    QFileInfo fileInfo(FilePath);
+    FilesInfo.data = List;    
+    const QString FilePath = AltitudeDefs::instance()->cslFileLocalPath(List[1]);
+    const QFileInfo fileInfo(FilePath);
     mSizeOfServer += List[2].toInt();
     // does file exist?
     if (!fileInfo.isFile()) {
@@ -327,10 +324,8 @@ eFileState IndexStep::CheckFile(QStringList List, int ID) {
         mEntryList.push_back(FilesInfo);
         return CLIENT_FILE_STATUS_LOST;
     }
-    // is the size is the same?
-    int size;
-    size = List[2].toInt();
-    if (size != (int)fileInfo.size()) {
+    const int size = List[2].toInt();
+    if (size != static_cast<int>(fileInfo.size())) {
         FilesInfo.state = CLIENT_FILE_STATUS_CHANGE;
         mEntryList.push_back(FilesInfo);
         return CLIENT_FILE_STATUS_CHANGE;
@@ -420,8 +415,8 @@ void IndexStep::delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
 }
 
 void IndexStep::cancelSlot() {
-    SetMessage(tr("Indexing process has been canceled by user."));
-    emit abortAllReplaysSig();
+    SetMessage(tr("Indexing process has been canceled by user!"));
+    EndIndex(false);
 }
 
 void IndexStep::stage2Slot(QNetworkReply * inReply) {

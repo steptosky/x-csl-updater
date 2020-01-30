@@ -10,7 +10,7 @@ Q_OBJECT
 public:
     QVector<PackageEntry> mFileListForDel;
 
-    IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf, const QString & targetDir, const QString & targetCslDir);
+    IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf);
     ~IndexStep();
     void StartIndex();
 
