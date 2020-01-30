@@ -45,21 +45,12 @@ private:
     //-------------------------------------------------------------------------
     PackageAdditionalInfo * mPackInfo;
     QNetworkAccessManager * mNetMng;
-    QFile * mIndexFile = nullptr;
-    QFile * mDelIndexFile = nullptr;
 
-    int mFilesToDownload = 2;
-    int mIndexBytesDownloaded;
-    int mTotalIndexBytes;
-    int mDelIndexBytesDownloaded;
-    int mTotalDelIndexBytes;
+    int mFilesToDownload = 0;
 
     int mSizeOfServer;
     int mSizeOfNeedUpdate;
     int mSizeOfClient;
-
-    QString mIndexFileUrl;
-    QString mDelIndexFileUrl;
 };
 
 #endif // INDEX_H

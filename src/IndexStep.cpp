@@ -7,13 +7,10 @@ IndexStep::IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInf
     //-------------------------------------------------------------------------
     mPackInfo = _Inf;
     mNetMng = new QNetworkAccessManager(this);
-    //connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::httpRequestFinished);
 }
 
 IndexStep::~IndexStep() {
     delete mNetMng;
-    delete mIndexFile;
-    delete mDelIndexFile;
 }
 
 /**************************************************************************************************/
@@ -71,11 +68,6 @@ void IndexStep::startIndex() {
     mFileListForDel.clear();
 
     InitProgBar(0, 1, 0, 1);
-
-    mIndexBytesDownloaded = 0;
-    mTotalIndexBytes = 0;
-    mDelIndexBytesDownloaded = 0;
-    mTotalDelIndexBytes = 0;
 
     // stage 1
     emit abortAllReplaysSig();
@@ -401,17 +393,17 @@ void IndexStep::httpRequestFinished(QNetworkReply * inReply) {
 }
 
 void IndexStep::indexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
-    mTotalIndexBytes = totalBytes;
-    mIndexBytesDownloaded = bytesRead;
-    MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
-    MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
+    // mTotalIndexBytes = totalBytes;
+    // mIndexBytesDownloaded = bytesRead;
+    // MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
+    // MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
 }
 
 void IndexStep::delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
-    mTotalDelIndexBytes = totalBytes;
-    mDelIndexBytesDownloaded = bytesRead;
-    MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
-    MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
+    // mTotalDelIndexBytes = totalBytes;
+    // mDelIndexBytesDownloaded = bytesRead;
+    // MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
+    // MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
 }
 
 void IndexStep::cancelSlot() {
