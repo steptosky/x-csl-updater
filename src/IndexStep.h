@@ -14,23 +14,31 @@ public:
     ~IndexStep();
     void StartIndex();
 
+    //-------------------------------------------------------------------------
 signals:
-    void cancelAll();
+    void abortAllReplaysSig();
 
+    //-------------------------------------------------------------------------
 private slots:
     void httpRequestFinished(QNetworkReply * inReply);
     void indexDownloadProgress(qint64 bytesRead, qint64 totalBytes);
     void delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes);
+    void test();
 
+    //-------------------------------------------------------------------------
 private:
+    static QString getIndexFileName();
+    static QString getIndexForDelFileName();
+    static QString getLocalIndexFilePath();
+    static QString getLocalIndexForDelFilePath();
+    bool createIndexFile(QString inFileName, QFile ** inIndexFile) const;
+    //-------------------------------------------------------------------------
     void ParseIndexFiles();
     ePackageState CheckCslPack(int pos, int ID);
     eFileState CheckFile(QStringList list, int ID);
     void EndIndex(int Next = true);
-    static QString getIndexFileName();
-    static QString getIndexForDelFileName();
-    bool createIndexFile(QString inFileName, QFile ** inIndexFile) const;
 
+    //-------------------------------------------------------------------------
     PackageAdditionalInfo * mPackInfo;
     QNetworkAccessManager * mNetMng;
     QFile * mIndexFile = nullptr;

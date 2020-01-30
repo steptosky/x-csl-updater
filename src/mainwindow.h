@@ -9,6 +9,7 @@
 #include "IndexStep.h"
 #include "UpdateStep.h"
 #include "PackageAdditionalInfo.h"
+#include "AltitudeDefs.h"
 
 namespace Ui {
 class MainWindow;
@@ -45,6 +46,8 @@ private slots:
 
     //-------------------------------------------------------------------------
 private:
+    AltitudeDefs * mAltitudeDefs;
+
     bool mIsSimDirCustom = false;
     QString mSimDir;
     QString mTargetDir;
@@ -67,8 +70,9 @@ private:
     //
     QCommandLineParser mCliParser;
     bool mIsIndexAutoStart = false;
+    
 
-    //-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
     void parseCliArgs();
 
     QString browseSimDirDialog(const QString & inStartPath);

@@ -10,6 +10,7 @@ static const QString gProgramVersion = QString(STS_XCSL_VERSION_STRING) + "+" + 
 #define PROGRAM_NAME STS_XCSL_PROJECT_SHORT_NAME
 
 static const QString gSettingsFileName = "settings.ini";
+static const QString gTempDir = "tmp";
 
 static const QString gSimPluginsDir = "Resources/plugins";
 

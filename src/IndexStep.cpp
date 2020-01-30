@@ -16,7 +16,50 @@ IndexStep::~IndexStep() {
     delete mDelIndexFile;
 }
 
+/**************************************************************************************************/
+//////////////////////////////////////////* Functions */////////////////////////////////////////////
+/**************************************************************************************************/
+
+QString IndexStep::getIndexFileName() {
+    return "x-csl-indexes.idx";
+}
+
+QString IndexStep::getIndexForDelFileName() {
+    return "x-csl-indexes-for-delete.idx";
+}
+
+QString IndexStep::getLocalIndexFilePath() {
+    return gTempDir + "/" + getIndexFileName();
+}
+
+QString IndexStep::getLocalIndexForDelFilePath() {
+    return gTempDir + "/" + getIndexForDelFileName();
+}
+
+bool IndexStep::createIndexFile(QString inFileName, QFile ** inIndexFile) const {
+    if (QFile::exists(inFileName)) {
+        QFile::remove(inFileName);
+    }
+    delete *inIndexFile;
+    *inIndexFile = new QFile(inFileName);
+    QFile * file = *inIndexFile;
+    if (!file->open(QIODevice::WriteOnly)) {
+        SetMessage(tr("Error: Cannot write file: <%1>; Reason: %2").arg(inFileName).arg(file->errorString()));
+        delete *inIndexFile;
+        *inIndexFile = nullptr;
+        return false;
+    }
+    return true;
+}
+
+/**************************************************************************************************/
+//////////////////////////////////////////* CSL Indexing */////////////////////////////////////////////
+/**************************************************************************************************/
+
 void IndexStep::StartIndex() {
+    connect(MWUI->cancelButton, &QPushButton::pressed, this, &IndexStep::test);
+    MWUI->cancelButton->setEnabled(true);
+    //
     mPackInfo->requestStopAction();
     QSettings settings(gSettingsFileName, QSettings::IniFormat);
     mSizeOfClient = 0;
@@ -33,10 +76,10 @@ void IndexStep::StartIndex() {
     mDelIndexBytesDownloaded = 0;
     mTotalDelIndexBytes = 0;
 
-    if (!createIndexFile(getIndexFileName(), &mIndexFile)) {
+    if (!createIndexFile(getLocalIndexFilePath(), &mIndexFile)) {
         return;
     }
-    if (!createIndexFile(getIndexForDelFileName(), &mDelIndexFile)) {
+    if (!createIndexFile(getLocalIndexForDelFilePath(), &mDelIndexFile)) {
         return;
     }
 
@@ -46,14 +89,14 @@ void IndexStep::StartIndex() {
     request.setUrl(mIndexFileUrl);
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mIndexFile));
     QNetworkReply * reply = mNetMng->get(request);
-    connect(this, &IndexStep::cancelAll, reply, &QNetworkReply::abort);
+    connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
     connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::indexDownloadProgress);
 
     SetMessage(tr("Downloading an index file from the server \"%1\" ...").arg(QUrl(mDelIndexFileUrl).fileName()));
     request.setUrl(mDelIndexFileUrl);
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mDelIndexFile));
     reply = mNetMng->get(request);
-    connect(this, &IndexStep::cancelAll, reply, &QNetworkReply::abort);
+    connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
     connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::delIndexDownloadProgress);
     //
 }
@@ -88,12 +131,15 @@ void IndexStep::EndIndex(int Next) {
         SetMessage(tr("Cannot get indexing successfully done!"));
         MWUI->indexButton->setEnabled(true);
     }
-    emit cancelAll();
+    emit abortAllReplaysSig();
+    //
+    disconnect(MWUI->cancelButton, &QPushButton::pressed, this, &IndexStep::abortAllReplaysSig);
+    MWUI->cancelButton->setDisabled(true);
 }
 
 void IndexStep::ParseIndexFiles() {
     SetMessage(tr("Indexing local files ..."));
-    QString FileForDelPath = getIndexForDelFileName();
+    QString FileForDelPath = getLocalIndexForDelFilePath();
     QFile fileForDel(FileForDelPath);
     if (!fileForDel.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(fileForDel.errorString()));
@@ -117,7 +163,7 @@ void IndexStep::ParseIndexFiles() {
     }
     fileForDel.close();
 
-    QString FilePath = getIndexFileName();
+    QString FilePath = getLocalIndexFilePath();
     QFile file(FilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
@@ -203,7 +249,7 @@ void IndexStep::ParseIndexFiles() {
 }
 
 ePackageState IndexStep::CheckCslPack(int pos, int ID) {
-    QString FilePath = getIndexFileName();
+    QString FilePath = getLocalIndexFilePath();
     QFile file(FilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
@@ -316,13 +362,9 @@ eFileState IndexStep::CheckFile(QStringList List, int ID) {
     return CLIENT_FILE_STATUS_OK;
 }
 
-QString IndexStep::getIndexFileName() {
-    return "x-csl-indexes.idx";
-}
-
-QString IndexStep::getIndexForDelFileName() {
-    return "x-csl-indexes-for-delete.idx";
-}
+/**************************************************************************************************/
+//////////////////////////////////////////* Functions */////////////////////////////////////////////
+/**************************************************************************************************/
 
 void IndexStep::httpRequestFinished(QNetworkReply * inReply) {
     inReply->deleteLater();
@@ -362,18 +404,7 @@ void IndexStep::delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
     MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
 }
 
-bool IndexStep::createIndexFile(QString inFileName, QFile ** inIndexFile) const {
-    if (QFile::exists(inFileName)) {
-        QFile::remove(inFileName);
-    }
-    delete *inIndexFile;
-    *inIndexFile = new QFile(inFileName);
-    QFile * file = *inIndexFile;
-    if (!file->open(QIODevice::WriteOnly)) {
-        SetMessage(tr("Error: Cannot write file: <%1>; Reason: %2").arg(inFileName).arg(file->errorString()));
-        delete *inIndexFile;
-        *inIndexFile = nullptr;
-        return false;
-    }
-    return true;
+void IndexStep::test() {
+    emit abortAllReplaysSig();
+    SetMessage("Hello from tets!");
 }

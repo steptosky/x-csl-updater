@@ -6,8 +6,6 @@ UpdateStep::UpdateStep(QWidget *_MW, Ui::MainWindow *_MWUI,
 
 	mNetMng = new QNetworkAccessManager(this);
 	connect(mNetMng, &QNetworkAccessManager::finished, this, &UpdateStep::httpRequestFinished);
-	connect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
-
 }
 
 UpdateStep::~UpdateStep() {
@@ -101,7 +99,9 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 }
 
 void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inIndexStep) {
+	connect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
 	MWUI->cancelButton->setEnabled(true);
+	//
 	QSettings settings(gSettingsFileName, QSettings::IniFormat);
 	mEntryList.clear();
 	mSelectedListForDelete.clear();
@@ -179,6 +179,8 @@ void UpdateStep::EndUpdate() {
 		SetMessage(tr("Updating process is successfully done!"));
 	}	
 	MWUI->cancelButton->setEnabled(false);
+	disconnect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
+	//
 	MWUI->indexButton->setEnabled(false);
 	MWUI->updateButton->setEnabled(false);
 	mIndexStep->StartIndex();

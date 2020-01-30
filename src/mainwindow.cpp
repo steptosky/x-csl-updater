@@ -5,12 +5,13 @@
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent),
       mUi(new Ui::MainWindow) {
-
+    //-------------------------------------------------------------------------
+    mAltitudeDefs = AltitudeDefs::init(this);
+    //
     QCoreApplication::setApplicationName(PROGRAM_NAME);
     QCoreApplication::setApplicationVersion(gProgramVersion);
-
     // setup UI
-    mUi->setupUi(this);
+    mUi->setupUi(this);    
 
     QSettings const settings(gSettingsFileName, QSettings::IniFormat);
     mSimDir = settings.value("mSimDir", "").toString();
@@ -85,6 +86,8 @@ MainWindow::~MainWindow() {
     delete mUpdateStep;
     delete mPackInfoWin;
     delete mUi;
+    //
+    AltitudeDefs::free();
 }
 
 void MainWindow::parseCliArgs() {
@@ -221,6 +224,17 @@ void MainWindow::setupTargetDirs() {
 /**************************************************************************************************/
 
 void MainWindow::init() {
+    //
+    const QDir currDir;
+    const QDir tmpDir(gTempDir);
+    if (!tmpDir.exists()) {
+        if (!currDir.mkdir(gTempDir)) {
+            QMessageBox::information(this, PROGRAM_NAME,
+                                 "Cannot create temporary folder: " + tmpDir.absolutePath(), QMessageBox::Ok);
+            QApplication::exit(1);
+            return;
+        }
+    }
     //
     parseCliArgs();
     //
