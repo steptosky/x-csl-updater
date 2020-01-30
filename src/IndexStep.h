@@ -23,15 +23,21 @@ private slots:
     void httpRequestFinished(QNetworkReply * inReply);
     void indexDownloadProgress(qint64 bytesRead, qint64 totalBytes);
     void delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes);
-    void test();
+    void cancelSlot();
+    //-------------------------------------------------------------------------
+//public slots:
+    void stage2Slot(QNetworkReply * inReply);
 
     //-------------------------------------------------------------------------
 private:
+    void stage2();
+//-------------------------------------------------------------------------
     static QString getIndexFileName();
     static QString getIndexForDelFileName();
     static QString getLocalIndexFilePath();
     static QString getLocalIndexForDelFilePath();
     bool createIndexFile(QString inFileName, QFile ** inIndexFile) const;
+    bool createTargetFile(const QString & fileName, const QByteArray & bytesToWrite) const;
     //-------------------------------------------------------------------------
     void ParseIndexFiles();
     ePackageState CheckCslPack(int pos, int ID);

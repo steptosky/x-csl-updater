@@ -78,9 +78,9 @@ namespace sts {
 		 * \details Gets pointer to instance of the "Type".
 		 */
 		static Type * instance() {
-			if (mInstanceCounter == 0) {
-				mInstance = new Type();
-			}
+			// if (mInstanceCounter == 0) {
+			// 	mInstance = new Type();
+			// }
 			mInstanceCounter++;
 			return mInstance;
 		}

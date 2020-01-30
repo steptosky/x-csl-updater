@@ -33,11 +33,12 @@ public:
 
     //-------------------------------------------------------------------------
     static QString baseUrl() {
-        return "ALTITUDE";
+        const QSettings settings(gSettingsFileName, QSettings::IniFormat);
+        return settings.value("curServer").toString() + "ALTITUDE";
     }
 
     static QString baseLocalDir() {
-        return "ALTITUDE";
+        return gTempDir + "/ALTITUDE";
     }
 
     //
@@ -66,9 +67,8 @@ public:
     static QString configFileLocalPath() {
         return baseLocalDir() + "/" + configFileName();
     }
-
     //
-    void getFullyReady();
+    bool parseConfigFile();
 
     //-------------------------------------------------------------------------
 private:
@@ -78,6 +78,8 @@ private:
     //-------------------------------------------------------------------------
     QString mCslRemoteDir;
     QString mCslLocalDir;
+    //-------------------------------------------------------------------------
+    
 };
 
 /**************************************************************************************************/

@@ -20,16 +20,14 @@ AltitudeDefs::~AltitudeDefs() {
 //////////////////////////////////////////* Functions */////////////////////////////////////////////
 /**************************************************************************************************/
 
-void AltitudeDefs::getFullyReady() {
-    const QSettings settings(gSettingsFileName, QSettings::IniFormat);
-    QString serverUrl = settings.value("curServer").toString();
-
-    // QNetworkRequest request;
-    // request.setUrl(serverUrl + configFileUrl());
-    // request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mIndexFile));
-    // QNetworkReply * reply = mNetMng->get(request);
-    // connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
-    // connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::indexDownloadProgress);
+bool AltitudeDefs::parseConfigFile() {
+    const QString fileName = configFileLocalPath();
+    if (!QFile::exists(fileName)) {
+        return false;
+    }
+    QSettings config(fileName, QSettings::IniFormat);
+    qDebug() << config.value("folders/MyFolder", "QQQQ");
+    return true;
 }
 
 /**************************************************************************************************/
