@@ -78,13 +78,15 @@ bool IndexStep::createTargetFile(const QString & fileName, const QByteArray & by
 /**************************************************************************************************/
 
 void IndexStep::StartIndex() {
+    const QSettings settings(gSettingsFileName, QSettings::IniFormat);
+
     AltitudeDefs * altDefs = AltitudeDefs::instance();
+    altDefs->setServerUrl(settings.value("curServer").toString());
 
     connect(MWUI->cancelButton, &QPushButton::pressed, this, &IndexStep::cancelSlot);
     MWUI->cancelButton->setEnabled(true);
     //
     mPackInfo->requestStopAction();
-    QSettings settings(gSettingsFileName, QSettings::IniFormat);
     mSizeOfClient = 0;
     mSizeOfNeedUpdate = 0;
     mSizeOfServer = 0;
@@ -102,8 +104,8 @@ void IndexStep::StartIndex() {
 
     // downloading config (stage 1)
     QNetworkRequest request;
-    SetMessage(tr("Downloading an index file from the server \"%1\" ...").arg(QUrl(AltitudeDefs::configFileUrl()).fileName()));
-    request.setUrl(AltitudeDefs::configFileUrl());
+    SetMessage(tr("Downloading an index file from the server \"%1\" ...").arg(QUrl(altDefs->configFileUrl()).fileName()));
+    request.setUrl(altDefs->configFileUrl());
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(AltitudeDefs::configFileLocalPath()));
     QNetworkReply * reply = mNetMng->get(request);
     connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
@@ -138,7 +140,7 @@ void IndexStep::StartIndex() {
 void IndexStep::stage2() {
     SetMessage(tr("Hello from stage 2!"));
     AltitudeDefs * altDefs = AltitudeDefs::instance();
-    if (!altDefs->parseConfigFile()) {
+    if (!altDefs->getAllPathsAndUrlsReady()) {
         EndIndex(false);
         return;
     }
@@ -459,7 +461,10 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
     inReply->deleteLater();
     if (inReply->error() == QNetworkReply::NoError) {
         const QString targetFileName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QString>();
-        createTargetFile(targetFileName, inReply->readAll());
+        if (!createTargetFile(targetFileName, inReply->readAll())) {
+            EndIndex(false);
+            return;
+        }
         stage2();
     }
     else {

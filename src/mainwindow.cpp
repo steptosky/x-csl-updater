@@ -203,7 +203,7 @@ bool MainWindow::isSimDirValid(const QString & dir) {
 }
 
 void MainWindow::setupTargetDirs() {
-    // now we use only Altitude suffixes, but should think about support x-ivap later
+    //TODO: remove this
     if (!mIsSimDirCustom) {
         mTargetDir = mSimDir + "/" + gAltitudeResDir;
         mTargetCslDir = mSimDir + "/" + gAltitudeCslDir;
@@ -212,7 +212,8 @@ void MainWindow::setupTargetDirs() {
         mTargetDir = mSimDir;
         mTargetCslDir = mSimDir + "/" + gAltitudeCslDir;
     }
-
+    // now we use only Altitude suffixes, but should think about support x-ivap later
+    mAltitudeDefs->setSimDir(mSimDir, mIsSimDirCustom);
     //
     mUi->curPathLabel->setText(mSimDir);
     mUi->indexButton->setEnabled(true);
