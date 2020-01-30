@@ -21,45 +21,13 @@ IndexStep::~IndexStep() {
 //////////////////////////////////////////* Functions */////////////////////////////////////////////
 /**************************************************************************************************/
 
-QString IndexStep::getIndexFileName() {
-    return "x-csl-indexes.idx";
-}
-
-QString IndexStep::getIndexForDelFileName() {
-    return "x-csl-indexes-for-delete.idx";
-}
-
-QString IndexStep::getLocalIndexFilePath() {
-    return gTempDir + "/" + getIndexFileName();
-}
-
-QString IndexStep::getLocalIndexForDelFilePath() {
-    return gTempDir + "/" + getIndexForDelFileName();
-}
-
-bool IndexStep::createIndexFile(QString inFileName, QFile ** inIndexFile) const {
-    if (QFile::exists(inFileName)) {
-        QFile::remove(inFileName);
-    }
-    delete *inIndexFile;
-    *inIndexFile = new QFile(inFileName);
-    QFile * file = *inIndexFile;
-    if (!file->open(QIODevice::WriteOnly)) {
-        SetMessage(tr("Error: Cannot write file: <%1>; Reason: %2").arg(inFileName).arg(file->errorString()));
-        delete *inIndexFile;
-        *inIndexFile = nullptr;
-        return false;
-    }
-    return true;
-}
-
 bool IndexStep::createTargetFile(const QString & fileName, const QByteArray & bytesToWrite) const {
     if (QFile::exists(fileName)) {
         QFile::remove(fileName);
     }
     const QDir dir;
     if (!dir.exists(QFileInfo(fileName).dir().path())) {
-        bool res = dir.mkpath(QFileInfo(fileName).dir().path());        
+        bool res = dir.mkpath(QFileInfo(fileName).dir().path());
     }
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
@@ -71,6 +39,16 @@ bool IndexStep::createTargetFile(const QString & fileName, const QByteArray & by
     file.close();
     qInfo() << "Created file: " << fileName;
     return true;
+}
+
+void IndexStep::scheduleDownloadingFile(const QString & url, const QString & localPath) const {
+    QNetworkRequest request;
+    SetMessage(QString("Downloading a file from the server <%1> ...").arg(url));
+    SetMessage(QString("To local path: <%1>").arg(localPath));
+    request.setUrl(url);
+    request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(localPath));
+    QNetworkReply * reply = mNetMng->get(request);
+    connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
 }
 
 /**************************************************************************************************/
@@ -94,8 +72,6 @@ void IndexStep::StartIndex() {
     mFileListForDel.clear();
 
     InitProgBar(0, 1, 0, 1);
-    mIndexFileUrl = settings.value("curServer").toString() + getIndexFileName();
-    mDelIndexFileUrl = settings.value("curServer").toString() + getIndexForDelFileName();
 
     mIndexBytesDownloaded = 0;
     mTotalIndexBytes = 0;
@@ -103,38 +79,10 @@ void IndexStep::StartIndex() {
     mTotalDelIndexBytes = 0;
 
     // downloading config (stage 1)
-    QNetworkRequest request;
-    SetMessage(tr("Downloading an index file from the server \"%1\" ...").arg(QUrl(altDefs->configFileUrl()).fileName()));
-    request.setUrl(altDefs->configFileUrl());
-    request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(AltitudeDefs::configFileLocalPath()));
-    QNetworkReply * reply = mNetMng->get(request);
-    connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
+    emit abortAllReplaysSig();
+    scheduleDownloadingFile(altDefs->configFileUrl(), AltitudeDefs::configFileLocalPath());
     connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot, Qt::UniqueConnection);
-    //connect(reply, &QNetworkReply::finished, this, &IndexStep::stage2Slot);
 
-    // if (!createIndexFile(getLocalIndexFilePath(), &mIndexFile)) {
-    //     return;
-    // }
-    // if (!createIndexFile(getLocalIndexForDelFilePath(), &mDelIndexFile)) {
-    //     return;
-    // }
-
-    mFilesToDownload = 2;
-    // QNetworkRequest request;
-    // SetMessage(tr("Downloading an index file from the server \"%1\" ...").arg(QUrl(mIndexFileUrl).fileName()));
-    // request.setUrl(mIndexFileUrl);
-    // request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mIndexFile));
-    // QNetworkReply * reply = mNetMng->get(request);
-    // connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
-    // connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::indexDownloadProgress);
-    //
-    // SetMessage(tr("Downloading an index file from the server \"%1\" ...").arg(QUrl(mDelIndexFileUrl).fileName()));
-    // request.setUrl(mDelIndexFileUrl);
-    // request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(mDelIndexFile));
-    // reply = mNetMng->get(request);
-    // connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
-    // connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::delIndexDownloadProgress);
-    //
 }
 
 void IndexStep::stage2() {
@@ -144,6 +92,22 @@ void IndexStep::stage2() {
         EndIndex(false);
         return;
     }
+    //
+    disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot);
+    emit abortAllReplaysSig();
+    mFilesToDownload = 4;
+    scheduleDownloadingFile(altDefs->indexFileUrl(), AltitudeDefs::indexFileLocalPath());
+    scheduleDownloadingFile(altDefs->indexForDelFileUrl(), AltitudeDefs::indexForDelFileLocalPath());
+    scheduleDownloadingFile(altDefs->cslIndexFileUrl(), AltitudeDefs::cslIndexFileLocalPath());
+    scheduleDownloadingFile(altDefs->cslIndexForDelFileUrl(), AltitudeDefs::cslIndexForDelFileLocalPath());
+    connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot, Qt::UniqueConnection);
+}
+
+void IndexStep::stage3() {
+    SetMessage(tr("Hello from stage 3!"));
+
+    disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot);
+    emit abortAllReplaysSig();
 
     //
     EndIndex();
@@ -179,15 +143,17 @@ void IndexStep::EndIndex(int Next) {
         SetMessage(tr("Cannot get indexing successfully done!"));
         MWUI->indexButton->setEnabled(true);
     }
-    emit abortAllReplaysSig();
     //
-    disconnect(MWUI->cancelButton, &QPushButton::pressed, this, &IndexStep::abortAllReplaysSig);
+    emit abortAllReplaysSig();
+    disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot);
+    disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot);
     MWUI->cancelButton->setDisabled(true);
 }
 
 void IndexStep::ParseIndexFiles() {
+    AltitudeDefs * altDefs = AltitudeDefs::instance();
     SetMessage(tr("Indexing local files ..."));
-    QString FileForDelPath = getLocalIndexForDelFilePath();
+    QString FileForDelPath = altDefs->cslIndexForDelFileLocalPath();
     QFile fileForDel(FileForDelPath);
     if (!fileForDel.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(fileForDel.errorString()));
@@ -211,7 +177,7 @@ void IndexStep::ParseIndexFiles() {
     }
     fileForDel.close();
 
-    QString FilePath = getLocalIndexFilePath();
+    QString FilePath = altDefs->cslIndexFileLocalPath();
     QFile file(FilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
@@ -297,7 +263,8 @@ void IndexStep::ParseIndexFiles() {
 }
 
 ePackageState IndexStep::CheckCslPack(int pos, int ID) {
-    QString FilePath = getLocalIndexFilePath();
+    AltitudeDefs * altDefs = AltitudeDefs::instance();
+    QString FilePath = altDefs->cslIndexFileLocalPath();
     QFile file(FilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
@@ -459,6 +426,9 @@ void IndexStep::cancelSlot() {
 
 void IndexStep::stage2Slot(QNetworkReply * inReply) {
     inReply->deleteLater();
+    if (inReply->error() == QNetworkReply::OperationCanceledError) {
+        return;
+    }
     if (inReply->error() == QNetworkReply::NoError) {
         const QString targetFileName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QString>();
         if (!createTargetFile(targetFileName, inReply->readAll())) {
@@ -472,8 +442,47 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
         QString errorUrl = inReply->request().url().toString();
         QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
         QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
-
-        SetMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
+        if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
+            SetMessage(tr("Cannot download a file due to: %1").arg(inReply->errorString()));
+            SetMessage(tr("The file url: <%1>").arg(errorUrl));
+        }
+        else {
+            SetMessage(tr("Cannot download a file due to: %1 - %2").arg(httpStatus).arg(httpStatusMessage));
+            SetMessage(tr("The file url: <%1>").arg(errorUrl));
+        }
         EndIndex(false);
+    }
+}
+
+void IndexStep::stage3Slot(QNetworkReply * inReply) {
+    inReply->deleteLater();
+    if (inReply->error() == QNetworkReply::OperationCanceledError) {
+        return;
+    }
+    if (inReply->error() == QNetworkReply::NoError) {
+        const QString targetFileName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QString>();
+        if (!createTargetFile(targetFileName, inReply->readAll())) {
+            EndIndex(false);
+            return;
+        }
+        --mFilesToDownload;
+    }
+    else {
+        // error details
+        QString errorUrl = inReply->request().url().toString();
+        QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
+        QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+        if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
+            SetMessage(tr("Cannot download a file due to: %1").arg(inReply->errorString()));
+            SetMessage(tr("The file url: <%1>").arg(errorUrl));
+        }
+        else {
+            SetMessage(tr("Cannot download a file due to: %1 - %2").arg(httpStatus).arg(httpStatusMessage));
+            SetMessage(tr("The file url: <%1>").arg(errorUrl));
+        }
+        EndIndex(false);
+    }
+    if (mFilesToDownload <= 0) {
+        stage3();
     }
 }

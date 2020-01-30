@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QString>
-#include <QNetworkAccessManager>
 #include "Single.h"
 #include "Definitions.h"
 
@@ -46,12 +45,33 @@ public:
     }
 
     //-------------------------------------------------------------------------
+    static QString configFileName() {
+        return "client-config.ini";
+    }
+
     static QString indexFileName() {
         return "files.idx";
     }
 
-    static QString configFileName() {
-        return "client-config.ini";
+    static QString indexForDelFileName() {
+        return "files-for-delete.idx";
+    }
+
+    static QString cslIndexFileName() {
+        return "x-csl-indexes.idx";
+    }
+
+    static QString cslIndexForDelFileName() {
+        return "x-csl-indexes-for-delete.idx";
+    }
+
+    //-------------------------------------------------------------------------
+    QString configFileUrl() {
+        return baseUrL() + "/" + configFileName();
+    }
+
+    static QString configFileLocalPath() {
+        return baseLocalDir() + "/" + configFileName();
     }
 
     //-------------------------------------------------------------------------
@@ -59,17 +79,16 @@ public:
         return baseUrL() + "/" + indexFileName();
     }
 
-    QString configFileUrl() {
-        return baseUrL() + "/" + configFileName();
-    }
-
-    //-------------------------------------------------------------------------
     static QString indexFileLocalPath() {
         return baseLocalDir() + "/" + indexFileName();
     }
 
-    static QString configFileLocalPath() {
-        return baseLocalDir() + "/" + configFileName();
+    QString indexForDelFileUrl() {
+        return baseUrL() + "/" + indexForDelFileName();
+    }
+
+    static QString indexForDelFileLocalPath() {
+        return baseLocalDir() + "/" + indexForDelFileName();
     }
 
     //-------------------------------------------------------------------------
@@ -105,6 +124,23 @@ public:
             return simDir() + "/" + QString(fileUri).prepend(mFoldersMap[list[0] + "/"]);
         }
         return QString();
+    }
+
+    //-------------------------------------------------------------------------
+    QString cslIndexFileUrl() {
+        return serverUrl() + QDir::cleanPath("/" + mCslRemoteDir + "/" + cslIndexFileName());
+    }
+
+    static QString cslIndexFileLocalPath() {
+        return baseLocalDir() + "/" + cslIndexFileName();
+    }
+
+    QString cslIndexForDelFileUrl() {
+        return serverUrl() + QDir::cleanPath("/" + mCslRemoteDir + "/" + cslIndexForDelFileName());
+    }
+
+    static QString cslIndexForDelFileLocalPath() {
+        return baseLocalDir() + "/" + cslIndexForDelFileName();
     }
 
     //-------------------------------------------------------------------------

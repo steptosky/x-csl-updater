@@ -27,17 +27,15 @@ private slots:
     //-------------------------------------------------------------------------
 //public slots:
     void stage2Slot(QNetworkReply * inReply);
+    void stage3Slot(QNetworkReply * inReply);
 
     //-------------------------------------------------------------------------
 private:
     void stage2();
+    void stage3();
 //-------------------------------------------------------------------------
-    static QString getIndexFileName();
-    static QString getIndexForDelFileName();
-    static QString getLocalIndexFilePath();
-    static QString getLocalIndexForDelFilePath();
-    bool createIndexFile(QString inFileName, QFile ** inIndexFile) const;
     bool createTargetFile(const QString & fileName, const QByteArray & bytesToWrite) const;
+    void scheduleDownloadingFile(const QString & url, const QString & localPath) const;
     //-------------------------------------------------------------------------
     void ParseIndexFiles();
     ePackageState CheckCslPack(int pos, int ID);

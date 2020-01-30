@@ -14,6 +14,7 @@ BaseSteps::~BaseSteps() { }
 void BaseSteps::SetMessage(QString msg) const {
     this->MWUI->listWidget->addItem(msg);
     this->MWUI->listWidget->scrollToBottom();
+    qInfo() << msg;
 }
 
 void BaseSteps::InitProgBar(int inStart, int inEnd, int inCurrent, int inStep) {
