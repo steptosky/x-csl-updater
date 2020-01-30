@@ -54,7 +54,7 @@ void IndexStep::scheduleDownloadingFile(const QString & url, const QString & loc
 //////////////////////////////////////////* CSL Indexing */////////////////////////////////////////////
 /**************************************************************************************************/
 
-void IndexStep::StartIndex() {
+void IndexStep::startIndex() {
     const QSettings settings(gSettingsFileName, QSettings::IniFormat);
 
     AltitudeDefs * altDefs = AltitudeDefs::instance();
@@ -88,7 +88,7 @@ void IndexStep::stage2() {
     SetMessage(tr("Hello from stage 2!"));
     AltitudeDefs * altDefs = AltitudeDefs::instance();
     if (!altDefs->getAllPathsAndUrlsReady()) {
-        EndIndex(false);
+        endIndex(false);
         return;
     }
     //
@@ -109,10 +109,10 @@ void IndexStep::stage3() {
     disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot);
     emit abortAllReplaysSig();
     // stage 3
-    ParseIndexFiles();
+    parseIndexFiles();
 }
 
-void IndexStep::EndIndex(int Next) {
+void IndexStep::endIndex(int Next) {
     if (Next) {
         SetMessage(tr("Indexing local files is successfully done."));
 
@@ -149,13 +149,13 @@ void IndexStep::EndIndex(int Next) {
     MWUI->cancelButton->setDisabled(true);
 }
 
-void IndexStep::ParseIndexFiles() {
+void IndexStep::parseIndexFiles() {
     SetMessage(tr("Indexing local files ..."));
     const QString FileForDelPath = AltitudeDefs::cslIndexForDelFileLocalPath();
     QFile fileForDel(FileForDelPath);
     if (!fileForDel.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(fileForDel.errorString()));
-        EndIndex(false);
+        endIndex(false);
         return;
     }
     while (!fileForDel.atEnd()) {
@@ -179,12 +179,12 @@ void IndexStep::ParseIndexFiles() {
     QFile file(FilePath);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
-        EndIndex(false);
+        endIndex(false);
         return;
     }
     if (file.size() < 1) {
         SetMessage(tr("Error: The index file has zero size!"));
-        EndIndex(false);
+        endIndex(false);
         return;
     }
     int count = 0;
@@ -199,7 +199,7 @@ void IndexStep::ParseIndexFiles() {
             if (type != "0") {
                 SetMessage(tr("Error: The index file has wrong format!"));
                 file.close();
-                EndIndex(false);
+                endIndex(false);
                 return;
             }
             ver_file_stat = false;
@@ -221,7 +221,7 @@ void IndexStep::ParseIndexFiles() {
             char sizeMBstr[MY_MAX_PATH];
             sprintf(sizeMBstr, "%10.2f", sizeMB);
             MWUI->tableWidget->setItem(count, 4, new QTableWidgetItem(sizeMBstr));
-            ePackageState status = CheckCslPack(file.pos(), count);
+            ePackageState status = checkCslPack(file.pos(), count);
             char StrStatus[MY_MAX_PATH];
             sprintf(StrStatus, "%i", status);
             QTableWidgetItem * Item = new QTableWidgetItem();
@@ -257,10 +257,10 @@ void IndexStep::ParseIndexFiles() {
     file.close();
     //MWUI->tableWidget->sortByColumn(1);
     MWUI->tableWidget->sortItems(1);
-    EndIndex();
+    endIndex();
 }
 
-ePackageState IndexStep::CheckCslPack(int pos, int ID) {
+ePackageState IndexStep::checkCslPack(int pos, int ID) {
     AltitudeDefs * altDefs = AltitudeDefs::instance();
     const QString FilePath = altDefs->cslIndexFileLocalPath();
     QFile file(FilePath);
@@ -282,7 +282,7 @@ ePackageState IndexStep::CheckCslPack(int pos, int ID) {
         if (list[0] == "11")
             break;
         if (list[0] == "10") {
-            int st = CheckFile(list, ID);
+            int st = checkFile(list, ID);
             if (st == CLIENT_FILE_STATUS_OK) {
                 wereOkFiles = true;
             }
@@ -311,10 +311,10 @@ ePackageState IndexStep::CheckCslPack(int pos, int ID) {
     return status;
 }
 
-eFileState IndexStep::CheckFile(QStringList List, int ID) {
+eFileState IndexStep::checkFile(QStringList List, int ID) {
     PackageEntry FilesInfo;
     FilesInfo.ID = ID;
-    FilesInfo.data = List;    
+    FilesInfo.data = List;
     const QString FilePath = AltitudeDefs::instance()->cslFileLocalPath(List[1]);
     const QFileInfo fileInfo(FilePath);
     mSizeOfServer += List[2].toInt();
@@ -392,11 +392,11 @@ void IndexStep::httpRequestFinished(QNetworkReply * inReply) {
         QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
 
         SetMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
-        EndIndex(false);
+        endIndex(false);
         return;
     }
     if (mFilesToDownload <= 0) {
-        ParseIndexFiles();
+        parseIndexFiles();
     }
 }
 
@@ -416,7 +416,7 @@ void IndexStep::delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
 
 void IndexStep::cancelSlot() {
     SetMessage(tr("Indexing process has been canceled by user!"));
-    EndIndex(false);
+    endIndex(false);
 }
 
 void IndexStep::stage2Slot(QNetworkReply * inReply) {
@@ -427,7 +427,7 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
     if (inReply->error() == QNetworkReply::NoError) {
         const QString targetFileName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QString>();
         if (!createTargetFile(targetFileName, inReply->readAll())) {
-            EndIndex(false);
+            endIndex(false);
             return;
         }
         stage2();
@@ -445,7 +445,7 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
             SetMessage(tr("Cannot download a file due to: %1 - %2").arg(httpStatus).arg(httpStatusMessage));
             SetMessage(tr("The file url: <%1>").arg(errorUrl));
         }
-        EndIndex(false);
+        endIndex(false);
     }
 }
 
@@ -457,7 +457,7 @@ void IndexStep::stage3Slot(QNetworkReply * inReply) {
     if (inReply->error() == QNetworkReply::NoError) {
         const QString targetFileName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QString>();
         if (!createTargetFile(targetFileName, inReply->readAll())) {
-            EndIndex(false);
+            endIndex(false);
             return;
         }
         --mFilesToDownload;
@@ -475,7 +475,7 @@ void IndexStep::stage3Slot(QNetworkReply * inReply) {
             SetMessage(tr("Cannot download a file due to: %1 - %2").arg(httpStatus).arg(httpStatusMessage));
             SetMessage(tr("The file url: <%1>").arg(errorUrl));
         }
-        EndIndex(false);
+        endIndex(false);
     }
     if (mFilesToDownload <= 0) {
         stage3();

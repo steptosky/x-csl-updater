@@ -314,7 +314,7 @@ void MainWindow::updateSlot() const {
 void MainWindow::indexSlot() const {
     mUi->indexButton->setDisabled(true);
     mUi->updateButton->setDisabled(true);
-    mIndexStep->StartIndex();
+    mIndexStep->startIndex();
 }
 
 void MainWindow::listContextMenu(const QPoint & pos) {

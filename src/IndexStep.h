@@ -12,7 +12,7 @@ public:
 
     IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf);
     ~IndexStep();
-    void StartIndex();
+    void startIndex();
 
     //-------------------------------------------------------------------------
 signals:
@@ -25,7 +25,7 @@ private slots:
     void delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes);
     void cancelSlot();
     //-------------------------------------------------------------------------
-//public slots:
+    //public slots:
     void stage2Slot(QNetworkReply * inReply);
     void stage3Slot(QNetworkReply * inReply);
 
@@ -33,14 +33,14 @@ private slots:
 private:
     void stage2();
     void stage3();
-//-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     bool createTargetFile(const QString & fileName, const QByteArray & bytesToWrite) const;
     void scheduleDownloadingFile(const QString & url, const QString & localPath) const;
     //-------------------------------------------------------------------------
-    void ParseIndexFiles();
-    ePackageState CheckCslPack(int pos, int ID);
-    eFileState CheckFile(QStringList list, int ID);
-    void EndIndex(int Next = true);
+    void parseIndexFiles();
+    ePackageState checkCslPack(int pos, int ID);
+    eFileState checkFile(QStringList list, int ID);
+    void endIndex(int Next = true);
 
     //-------------------------------------------------------------------------
     PackageAdditionalInfo * mPackInfo;

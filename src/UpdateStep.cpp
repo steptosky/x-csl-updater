@@ -20,7 +20,7 @@ void UpdateStep::CancelSlot() {
 	MWUI->cancelButton->setEnabled(false);
 	MWUI->indexButton->setEnabled(false);
 	MWUI->updateButton->setEnabled(false);
-	mIndexStep->StartIndex();
+	mIndexStep->startIndex();
 }
 
 bool UpdateStep::removeDir(const QString & dirName) {
@@ -183,7 +183,7 @@ void UpdateStep::EndUpdate() {
 	//
 	MWUI->indexButton->setEnabled(false);
 	MWUI->updateButton->setEnabled(false);
-	mIndexStep->StartIndex();
+	mIndexStep->startIndex();
 }
 
 void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
