@@ -126,7 +126,8 @@ void IndexStep::endIndex(int Next) {
         else {
             SetMessage(tr("Congratulations! All the packages are fully up-to-date."));
         }
-        mPackInfo->GetInfoToTable();
+        //TODO: fix and return this
+        //mPackInfo->GetInfoToTable();
         MWUI->updateButton->setEnabled(true);
         MWUI->indexButton->setEnabled(true);
     }
@@ -138,20 +139,99 @@ void IndexStep::endIndex(int Next) {
     emit abortAllReplaysSig();
     disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot);
     disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot);
+    disconnect(MWUI->cancelButton, &QPushButton::pressed, this, &IndexStep::cancelSlot);
     MWUI->cancelButton->setDisabled(true);
 }
 
-void IndexStep::parseIndexFiles() {
-    SetMessage(tr("Indexing local files ..."));
-    const QString FileForDelPath = AltitudeDefs::cslIndexForDelFileLocalPath();
-    QFile fileForDel(FileForDelPath);
+/**************************************************************************************************/
+//////////////////////////////////////////* Functions */////////////////////////////////////////////
+/**************************************************************************************************/
+
+void IndexStep::addPackageToTable(int count, const QStringList & list) const {
+    MWUI->tableWidget->setRowCount(count + 1);
+    MWUI->tableWidget->setItem(count, 0, new QTableWidgetItem(QString::number(count)));
+    MWUI->tableWidget->setItem(count, 1, new QTableWidgetItem(list[1]));
+    MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Please wait...")));
+    MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
+    const double sizeMB = list[2].toDouble() / 1048576;
+    MWUI->tableWidget->setItem(count, 4, new QTableWidgetItem(QString::number(sizeMB, 'f', 2).rightJustified(10)));
+}
+
+void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
+    auto * statusTextItem = new QTableWidgetItem();
+    auto * statusItem = new QTableWidgetItem(QString::number(status));
+    switch (status) {
+        case CLIENT_PACKAGE_STATUS_OK:
+            statusTextItem->setText(tr("Up-to-date"));
+            statusTextItem->setTextColor(Qt::darkGreen);
+            MWUI->tableWidget->setItem(count, 5, statusTextItem);
+            MWUI->tableWidget->setItem(count, 6, statusItem);
+            break;
+        case CLIENT_PACKAGE_STATUS_CHANGE:
+            statusTextItem->setText(tr("Out-of-date"));
+            statusTextItem->setTextColor(Qt::red);
+            MWUI->tableWidget->setItem(count, 5, statusTextItem);
+            MWUI->tableWidget->setItem(count, 6, statusItem);
+            break;
+        case CLIENT_PACKAGE_STATUS_LOST:
+            statusTextItem->setText(tr("Not installed"));
+            statusTextItem->setTextColor(Qt::darkRed);
+            MWUI->tableWidget->setItem(count, 5, statusTextItem);
+            MWUI->tableWidget->setItem(count, 6, statusItem);
+            break;
+        default:
+            statusTextItem->setText(tr("Unknown state"));
+            statusTextItem->setTextColor(Qt::darkGray);
+            MWUI->tableWidget->setItem(count, 5, statusTextItem);
+            MWUI->tableWidget->setItem(count, 6, statusItem);
+            break;
+    }
+}
+
+bool IndexStep::parseIndexFile(int & count, const QString & indexFileName, bool isCslIndex) {
+    QFile file(indexFileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        SetMessage(tr("Error: %1").arg(file.errorString()));
+        return false;
+    }
+    if (file.size() < 1) {
+        SetMessage(tr("Error: The index file has zero size!"));
+        return false;
+    }
+    int isFirstLine = true;
+    while (!file.atEnd()) {
+        QString line = file.readLine();
+        //qDebug() << line;
+        QString type = line.left(1);
+        if (isFirstLine) {
+            if (type != "0") {
+                SetMessage(tr("Error: The index file has wrong format! File: <%1>").arg(indexFileName));
+                file.close();
+                return false;
+            }
+            isFirstLine = false;
+        }
+        if (type == "#" || type == "0" || type.isEmpty())
+            continue;
+        QStringList list = line.split("%", QString::SkipEmptyParts);
+        if (list.size() >= 6 && list[0] == "11") {
+            addPackageToTable(count, list);
+            const ePackageState status = checkCslPack(file.pos(), count, indexFileName, isCslIndex);
+            addPackageStatusToTable(count, status);
+            count++;
+        }
+    }
+    file.close();
+    return true;
+}
+
+bool IndexStep::parseIndexForDelFile(const QString & indexFileName, bool isCslIndex) {
+    QFile fileForDel(indexFileName);
     if (!fileForDel.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(fileForDel.errorString()));
-        endIndex(false);
-        return;
+        return false;
     }
     while (!fileForDel.atEnd()) {
-
         QString line = fileForDel.readLine();
         QString type = line.left(1);
         if (type == "#" || type == "0" || type.isEmpty())
@@ -162,100 +242,54 @@ void IndexStep::parseIndexFiles() {
             fileInfo.ID = list[0].toInt();
             fileInfo.data = list;
             fileInfo.state = CLIENT_FILE_STATUS_NONE;
+            if (isCslIndex) {
+                fileInfo.type = CSL_PACK_FILE;
+            }
+            else {
+                fileInfo.type = CLIENT_ADDITIONAL_FILE;
+            }
             mFileListForDel.push_back(fileInfo);
         }
     }
     fileForDel.close();
+    return true;
+}
 
-    const QString FilePath = AltitudeDefs::cslIndexFileLocalPath();
-    QFile file(FilePath);
-    if (!file.open(QIODevice::ReadOnly)) {
-        SetMessage(tr("Error: %1").arg(file.errorString()));
+void IndexStep::parseIndexFiles() {
+    SetMessage(tr("Indexing local files ..."));
+    QString fileForDelPath = AltitudeDefs::indexForDelFileLocalPath();
+    if (!parseIndexForDelFile(fileForDelPath, false)) {
         endIndex(false);
         return;
     }
-    if (file.size() < 1) {
-        SetMessage(tr("Error: The index file has zero size!"));
+    fileForDelPath = AltitudeDefs::cslIndexForDelFileLocalPath();
+    if (!parseIndexForDelFile(fileForDelPath, true)) {
         endIndex(false);
         return;
     }
+
+    // packs
     int count = 0;
-    int ver_file_stat = true;
     MWUI->tableWidget->clearContents();
     MWUI->tableWidget->setRowCount(0);
-    while (!file.atEnd()) {
-        QString line = file.readLine();
-        //qDebug() << line;
-        QString type = line.left(1);
-        if (ver_file_stat) {
-            if (type != "0") {
-                SetMessage(tr("Error: The index file has wrong format!"));
-                file.close();
-                endIndex(false);
-                return;
-            }
-            ver_file_stat = false;
-        }
-        if (type == "#" || type == "0" || type.isEmpty())
-            continue;
-        QStringList list = line.split("%", QString::SkipEmptyParts);
-        if (list.size() >= 6 && list[0] == "11") {
-            MWUI->tableWidget->setRowCount(count + 1);
-            char str[MY_MAX_PATH];
-            sprintf(str, "%i", count);
-            MWUI->tableWidget->setItem(count, 0, new QTableWidgetItem(str));
-            MWUI->tableWidget->setItem(count, 1, new QTableWidgetItem(list[1]));
-            MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Please wait...")));
-            QString msg = tr("%3 (%4)").arg(list[4], list[5]);
-            MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(msg));
-            //sizeOfServer += list[2].toInt();
-            float sizeMB = list[2].toFloat() / 1048576;
-            char sizeMBstr[MY_MAX_PATH];
-            sprintf(sizeMBstr, "%10.2f", sizeMB);
-            MWUI->tableWidget->setItem(count, 4, new QTableWidgetItem(sizeMBstr));
-            ePackageState status = checkCslPack(file.pos(), count);
-            char StrStatus[MY_MAX_PATH];
-            sprintf(StrStatus, "%i", status);
-            QTableWidgetItem * Item = new QTableWidgetItem();
-            switch (status) {
-                case CLIENT_PACKAGE_STATUS_OK:
-                    Item->setText(tr("Up-to-date"));
-                    Item->setTextColor(Qt::darkGreen);
-                    MWUI->tableWidget->setItem(count, 5, Item);
-                    MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
-                    break;
-                case CLIENT_PACKAGE_STATUS_CHANGE:
-                    Item->setText(tr("Out-of-date"));
-                    Item->setTextColor(Qt::red);
-                    MWUI->tableWidget->setItem(count, 5, Item);
-                    MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
-                    break;
-                case CLIENT_PACKAGE_STATUS_LOST:
-                    Item->setText(tr("Not installed"));
-                    Item->setTextColor(Qt::darkRed);
-                    MWUI->tableWidget->setItem(count, 5, Item);
-                    MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
-                    break;
-                default:
-                    Item->setText(tr("Unknown state"));
-                    Item->setTextColor(Qt::darkGray);
-                    MWUI->tableWidget->setItem(count, 5, Item);
-                    MWUI->tableWidget->setItem(count, 6, new QTableWidgetItem(StrStatus));
-                    break;
-            }
-            count++;
-        }
+    // altitude pack
+    QString indexFilePath = AltitudeDefs::indexFileLocalPath();
+    if (!parseIndexFile(count, indexFilePath, false)) {
+        endIndex(false);
+        return;
     }
-    file.close();
-    //MWUI->tableWidget->sortByColumn(1);
+    // csl pack
+    indexFilePath = AltitudeDefs::cslIndexFileLocalPath();
+    if (!parseIndexFile(count, indexFilePath, true)) {
+        endIndex(false);
+        return;
+    }
     MWUI->tableWidget->sortItems(1);
     endIndex();
 }
 
-ePackageState IndexStep::checkCslPack(int pos, int ID) {
-    AltitudeDefs * altDefs = AltitudeDefs::instance();
-    const QString FilePath = altDefs->cslIndexFileLocalPath();
-    QFile file(FilePath);
+ePackageState IndexStep::checkCslPack(int pos, int ID, const QString & indexFileName, bool isCslIndex) {
+    QFile file(indexFileName);
     if (!file.open(QIODevice::ReadOnly)) {
         SetMessage(tr("Error: %1").arg(file.errorString()));
         return CLIENT_PACKAGE_STATUS_LOST;
@@ -274,7 +308,7 @@ ePackageState IndexStep::checkCslPack(int pos, int ID) {
         if (list[0] == "11")
             break;
         if (list[0] == "10") {
-            int st = checkFile(list, ID);
+            int st = checkFile(list, ID, isCslIndex);
             if (st == CLIENT_FILE_STATUS_OK) {
                 wereOkFiles = true;
             }
@@ -303,23 +337,31 @@ ePackageState IndexStep::checkCslPack(int pos, int ID) {
     return status;
 }
 
-eFileState IndexStep::checkFile(QStringList List, int ID) {
-    PackageEntry FilesInfo;
-    FilesInfo.ID = ID;
-    FilesInfo.data = List;
-    const QString FilePath = AltitudeDefs::instance()->cslFileLocalPath(List[1]);
-    const QFileInfo fileInfo(FilePath);
+eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
+    PackageEntry fileEntry;
+    fileEntry.ID = ID;
+    fileEntry.data = List;
+    QString filePath;
+    if (isCslIndex) {
+        fileEntry.type = CSL_PACK_FILE;
+        filePath = AltitudeDefs::instance()->cslFileLocalPath(List[1]);
+    }
+    else {
+        fileEntry.type = CLIENT_ADDITIONAL_FILE;
+        filePath = AltitudeDefs::instance()->fileLocalPath(List[1]);
+    }
+    const QFileInfo fileInfo(filePath);
     mSizeOfServer += List[2].toInt();
     // does file exist?
     if (!fileInfo.isFile()) {
-        FilesInfo.state = CLIENT_FILE_STATUS_LOST;
-        mEntryList.push_back(FilesInfo);
+        fileEntry.state = CLIENT_FILE_STATUS_LOST;
+        mEntryList.push_back(fileEntry);
         return CLIENT_FILE_STATUS_LOST;
     }
     const int size = List[2].toInt();
     if (size != static_cast<int>(fileInfo.size())) {
-        FilesInfo.state = CLIENT_FILE_STATUS_CHANGE;
-        mEntryList.push_back(FilesInfo);
+        fileEntry.state = CLIENT_FILE_STATUS_CHANGE;
+        mEntryList.push_back(fileEntry);
         return CLIENT_FILE_STATUS_CHANGE;
     }
     // check hash if it is available
@@ -328,21 +370,21 @@ eFileState IndexStep::checkFile(QStringList List, int ID) {
         static QFile file;
         hash.reset();
         file.close();
-        file.setFileName(FilePath);
+        file.setFileName(filePath);
         if (file.open(QIODevice::ReadOnly)) {
             hash.addData(file.readAll());
             // 			qDebug() << List[1] << " - " << FilePath;
             // 			qDebug() << List[3] << " - " << QString(hash.result().toHex());
             if (List[3] != QString(hash.result().toHex())) {
-                FilesInfo.state = CLIENT_FILE_STATUS_CHANGE;
-                mEntryList.push_back(FilesInfo);
+                fileEntry.state = CLIENT_FILE_STATUS_CHANGE;
+                mEntryList.push_back(fileEntry);
                 return CLIENT_FILE_STATUS_CHANGE;
             }
             file.close();
         }
         else {
-            FilesInfo.state = CLIENT_FILE_STATUS_LOST;
-            mEntryList.push_back(FilesInfo);
+            fileEntry.state = CLIENT_FILE_STATUS_LOST;
+            mEntryList.push_back(fileEntry);
             return CLIENT_FILE_STATUS_LOST;
         }
         QApplication::processEvents();
@@ -357,10 +399,11 @@ eFileState IndexStep::checkFile(QStringList List, int ID) {
     FilesList.push_back(FilesInfo);
     return _CLIENT_FILE_STATUS_CHANGE
     }*/
-    // типа все ОК
-    mSizeOfClient += (int)fileInfo.size();
-    FilesInfo.state = CLIENT_FILE_STATUS_OK;
-    mEntryList.push_back(FilesInfo);
+
+    // file is ОК
+    mSizeOfClient += static_cast<int>(fileInfo.size());
+    fileEntry.state = CLIENT_FILE_STATUS_OK;
+    mEntryList.push_back(fileEntry);
     return CLIENT_FILE_STATUS_OK;
 }
 

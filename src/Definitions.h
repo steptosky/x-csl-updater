@@ -20,6 +20,11 @@ static const QString gXIvApCslDir = gXIvApResDir + "/CSL";
 static const QString gAltitudeResDir = gSimPluginsDir + "/IVAO_CSL";
 static const QString gAltitudeCslDir = gAltitudeResDir + "/CSL";
 
+enum eFileType {
+    CSL_PACK_FILE = 0,
+    CLIENT_ADDITIONAL_FILE
+};
+
 enum eFileState {
     CLIENT_FILE_STATUS_NONE = -999,
     CLIENT_FILE_STATUS_LOST = -1,
@@ -34,17 +39,17 @@ enum ePackageState {
     CLIENT_PACKAGE_STATUS_OK = 0
 };
 
-struct FileInfoStruct {
-    int Type;
-    QString FileName;
-    long int size;
-    QString FileHash;
-    QString FileDate;
-    QString FileTime;
-    QString FileDateTime;
-    QString FileAllStr;
-    int Flag;
-};
+// struct FileInfoStruct {
+//     int Type;
+//     QString FileName;
+//     long int size;
+//     QString FileHash;
+//     QString FileDate;
+//     QString FileTime;
+//     QString FileDateTime;
+//     QString FileAllStr;
+//     int Flag;
+// };
 
 constexpr auto MY_MAX_PATH = 2048;
 
