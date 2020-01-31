@@ -52,6 +52,9 @@ void IndexStep::scheduleDownloadingFile(const QString & url, const QString & loc
 /**************************************************************************************************/
 
 void IndexStep::startIndex() {
+    MWUI->indexButton->setEnabled(false);
+    MWUI->updateButton->setEnabled(false);
+
     const QSettings settings(gSettingsFileName, QSettings::IniFormat);
 
     AltitudeDefs * altDefs = AltitudeDefs::instance();
@@ -67,7 +70,7 @@ void IndexStep::startIndex() {
     mEntryList.clear();
     mFileListForDel.clear();
 
-    initProgBar(0, 1, 0, 1);
+    initProgBar(0, 10, 0, 1);
 
     // stage 1
     emit abortAllReplaysSig();
@@ -110,9 +113,9 @@ void IndexStep::endIndex(int Next) {
 
         mSizeOfNeedUpdate = mSizeOfServer - mSizeOfClient;
         //TODO: разобраццо с лишними символами в мегабайтах
-        float fsizeOfNeedUpdate, fsizeOfServer;
-        fsizeOfNeedUpdate = (float)mSizeOfNeedUpdate / 1048576;
-        fsizeOfServer = (float)mSizeOfServer / 1048576;
+        double fsizeOfNeedUpdate, fsizeOfServer;
+        fsizeOfNeedUpdate = mSizeOfNeedUpdate / 1048576;
+        fsizeOfServer = mSizeOfServer / 1048576;
         char cstrSizeNeed[13];
         sprintf(cstrSizeNeed, "%7.2f", fsizeOfNeedUpdate);
         char cstrSizeAll[13];
@@ -126,8 +129,7 @@ void IndexStep::endIndex(int Next) {
         else {
             setMessage(tr("Congratulations! All the packages are fully up-to-date."));
         }
-        //TODO: fix and return this
-        //mPackInfo->GetInfoToTable();
+        mPackInfo->GetInfoToTable();
         MWUI->updateButton->setEnabled(true);
         MWUI->indexButton->setEnabled(true);
     }
@@ -262,11 +264,13 @@ void IndexStep::parseIndexFiles() {
         endIndex(false);
         return;
     }
+    stepProgBar();
     fileForDelPath = AltitudeDefs::cslIndexForDelFileLocalPath();
     if (!parseIndexForDelFile(fileForDelPath, true)) {
         endIndex(false);
         return;
     }
+    stepProgBar();
 
     // packs
     int count = 0;
@@ -278,12 +282,14 @@ void IndexStep::parseIndexFiles() {
         endIndex(false);
         return;
     }
+    stepProgBar();
     // csl pack
     indexFilePath = AltitudeDefs::cslIndexFileLocalPath();
     if (!parseIndexFile(count, indexFilePath, true)) {
         endIndex(false);
         return;
     }
+    stepProgBar();
     MWUI->tableWidget->sortItems(1);
     endIndex();
 }
@@ -465,6 +471,7 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
             endIndex(false);
             return;
         }
+        stepProgBar();
         stage2();
     }
     else {
@@ -495,6 +502,7 @@ void IndexStep::stage3Slot(QNetworkReply * inReply) {
             endIndex(false);
             return;
         }
+        stepProgBar();
         --mFilesToDownload;
     }
     else {
@@ -513,6 +521,7 @@ void IndexStep::stage3Slot(QNetworkReply * inReply) {
         endIndex(false);
     }
     if (mFilesToDownload <= 0) {
+        stepProgBar();
         stage3();
     }
 }

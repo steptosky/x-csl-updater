@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget * parent)
 
     //
     mUi->progressBar->setValue(0);
-    mUi->listWidget->addItem(tr("X-CSL-Updater, Ver.:") + gProgramVersion);
+    mUi->listWidget->addItem(PROGRAM_NAME + tr(", Ver.:") + gProgramVersion);
 
     // Objs Init
     mAboutWin = new About(this);

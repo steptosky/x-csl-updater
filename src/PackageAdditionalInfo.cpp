@@ -41,7 +41,7 @@ void PackageAdditionalInfo::GetInfoToTable() {
 
 void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) {
 	QString packPath = mMainUi->tableWidget->item(inRow, 1)->text();
-	QUrl url(mServer + packPath + tr("/x-csl-info.info"));
+	QUrl url(mServer + packPath + "/x-csl-info.info");
 
 	QNetworkRequest request;
 	request.setUrl(url);
@@ -71,9 +71,10 @@ void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 		packInfo.ID = packId;
 		packInfo.Info = inReply->readAll();
 		QStringList list = packInfo.Info.split("\n", QString::SkipEmptyParts);
-		QString s_str(list[0]);
-		int size = s_str.length();
-		packInfo.ShortInfo = s_str.left(size - 1);
+		// QString s_str(list[0]);
+		// int size = s_str.length();
+		// packInfo.ShortInfo = s_str.left(size - 1);
+		packInfo.ShortInfo = list[0];
 		mPackInfo.push_back(packInfo);
 		QTableWidgetItem *Item = new QTableWidgetItem(packInfo.ShortInfo);
 		mMainUi->tableWidget->setItem(row, 2, Item);
