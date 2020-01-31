@@ -11,25 +11,25 @@ BaseSteps::BaseSteps(QWidget * _MW, Ui::MainWindow * _MWUI, const QString & targ
 
 BaseSteps::~BaseSteps() { }
 
-void BaseSteps::SetMessage(QString msg) const {
+void BaseSteps::setMessage(QString msg) const {
     this->MWUI->listWidget->addItem(msg);
     this->MWUI->listWidget->scrollToBottom();
     qInfo() << msg;
 }
 
-void BaseSteps::InitProgBar(int inStart, int inEnd, int inCurrent, int inStep) {
+void BaseSteps::initProgBar(int inStart, int inEnd, int inCurrent, int inStep) {
     this->mStep = inStep;
     this->mCurrent = inCurrent;
     this->MWUI->progressBar->setRange(inStart, inEnd);
     this->MWUI->progressBar->setValue(inCurrent);
 }
 
-void BaseSteps::StepProgBar() {
+void BaseSteps::stepProgBar() {
     int const result = this->mCurrent + this->mStep;
     this->MWUI->progressBar->setValue(result);
     this->mCurrent = result;
 }
 
-void BaseSteps::SetValProgBar(int value) const {
+void BaseSteps::setValProgBar(int value) const {
     this->MWUI->progressBar->setValue(value);
 }

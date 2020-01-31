@@ -22,7 +22,7 @@ static const QString gAltitudeCslDir = gAltitudeResDir + "/CSL";
 
 enum eFileType {
     CSL_PACK_FILE = 0,
-    CLIENT_ADDITIONAL_FILE
+    ADDITIONAL_FILE
 };
 
 enum eFileState {
@@ -38,18 +38,6 @@ enum ePackageState {
     CLIENT_PACKAGE_STATUS_CHANGE = 1,
     CLIENT_PACKAGE_STATUS_OK = 0
 };
-
-// struct FileInfoStruct {
-//     int Type;
-//     QString FileName;
-//     long int size;
-//     QString FileHash;
-//     QString FileDate;
-//     QString FileTime;
-//     QString FileDateTime;
-//     QString FileAllStr;
-//     int Flag;
-// };
 
 constexpr auto MY_MAX_PATH = 2048;
 

@@ -14,7 +14,7 @@ UpdateStep::~UpdateStep() {
 }
 
 void UpdateStep::CancelSlot() {
-	SetMessage(tr("The operation has been canceled by user!"));
+	setMessage(tr("The operation has been canceled by user!"));
 	emit cancelDownloading();
 
 	MWUI->cancelButton->setEnabled(false);
@@ -89,7 +89,7 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 		mDownloadingFile->open(QIODevice::WriteOnly);
 	}
 	if (!mDownloadingFile->isOpen()) {
-        SetMessage(tr("Error: Cannot write file: <%1>; Reason: %2").arg(fileName).arg(mDownloadingFile->errorString()));
+        setMessage(tr("Error: Cannot write file: <%1>; Reason: %2").arg(fileName).arg(mDownloadingFile->errorString()));
 		delete mDownloadingFile;
 		mDownloadingFile = nullptr;
 		return false;
@@ -127,7 +127,7 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep *inInde
 			}
 		}
 	}
-	InitProgBar(0, 1, 0, 1);
+	initProgBar(0, 1, 0, 1);
 	// added task for download several resource files
 	if (mTargetCslDir.contains("X-IvAp Resources")) {
 		PackageEntry entry;
@@ -169,14 +169,14 @@ void UpdateStep::EndUpdate() {
 		removePath(mSelectedListForDelete[i].data[1]);
 	}
 	if (mDeletedFiles > 0) {
-		SetMessage(tr("Cleanup procedure done. Removed %1 files.").arg(mDeletedFiles));
+		setMessage(tr("Cleanup procedure done. Removed %1 files.").arg(mDeletedFiles));
 	}
 
 	if (mFailedFileCounter > 0) {
-        SetMessage(tr("Warning: Updating process is NOT done! %1 files have NOT been updated for some reasons.").arg(mFailedFileCounter));
+        setMessage(tr("Warning: Updating process is NOT done! %1 files have NOT been updated for some reasons.").arg(mFailedFileCounter));
 	}
 	else {
-		SetMessage(tr("Updating process is successfully done!"));
+		setMessage(tr("Updating process is successfully done!"));
 	}	
 	MWUI->cancelButton->setEnabled(false);
 	disconnect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
@@ -208,7 +208,7 @@ void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
 	QNetworkReply *reply = mNetMng->get(request);
 	connect(this, &UpdateStep::cancelDownloading, reply, &QNetworkReply::abort);
 	connect(reply, &QNetworkReply::downloadProgress, this, &UpdateStep::updateDataReadProgress);
-	SetMessage(tr("Updating: %1...").arg(mDownloadingFileName));
+	setMessage(tr("Updating: %1...").arg(mDownloadingFileName));
 }
 
 void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
@@ -236,7 +236,7 @@ void UpdateStep::httpRequestFinished(QNetworkReply *inReply) {
 			++mFailedFileCounter;
 			mDownloadingFile->close();
 			mDownloadingFile->remove();
-			SetMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
+			setMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
             // revert file if it's a root resource file ID==100
             if(mEntryList[mFileCounter].ID == 100) {
                 QDir dir(mTargetCslDir);

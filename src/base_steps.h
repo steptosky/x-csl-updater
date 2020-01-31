@@ -33,10 +33,10 @@ protected:
     virtual ~BaseSteps();
 
     //-------------------------------------------------------------------------
-    void SetMessage(QString msg) const;
-    void InitProgBar(int inStart, int inEnd, int inCurrent = 0, int inStep = 1);
-    void StepProgBar();
-    void SetValProgBar(int value) const;
+    void setMessage(QString msg) const;
+    void initProgBar(int inStart, int inEnd, int inCurrent = 0, int inStep = 1);
+    void stepProgBar();
+    void setValProgBar(int value) const;
 
     //-------------------------------------------------------------------------
 private:
