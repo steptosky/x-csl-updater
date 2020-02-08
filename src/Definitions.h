@@ -4,6 +4,9 @@
 #include <QtGui>
 #include "Info.h"
 
+Q_DECLARE_LOGGING_CATEGORY(fromGUI)
+inline Q_LOGGING_CATEGORY(fromGUI, "GUI")
+
 static const QString gProgramVersion = QString(STS_XCSL_VERSION_STRING) + "+" + STS_XCSL_REVISION;
 
 #define ORGANIZATION STS_XCSL_ORGANIZATION_NAME

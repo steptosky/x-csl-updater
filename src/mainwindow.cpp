@@ -178,7 +178,7 @@ bool MainWindow::setupNewSimDir(const QString & newSimDir) {
         return true;
     }
     // if sim dir is not ok
-    QMessageBox::critical(this, "ERROR!",
+    QMessageBox::critical(this, PROGRAM_NAME + QString(" :: ERROR!"),
                           "The specified X-Plane executable file path is not valid!"
                           "\nOr the X-Plane installation located at the specified path is not valid or broken."
                           "\nYou can try to reinstall or repair your X-Plane installation.", QMessageBox::Ok);
