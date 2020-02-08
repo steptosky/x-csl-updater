@@ -158,21 +158,23 @@ void UpdateStep::EndUpdate() {
     }
     qInfo() << "Cleanup procedure is done. Number of removed files: " << mDeletedFiles;
 
+    MWUI->cancelButton->setEnabled(false);
+    disconnect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
+
     if (mFailedFileCounter > 0) {
         setMessage(tr("Error: Cannot get updating successfully done! The X-CSL library can be broken! See log file for details."));
         setMessage(tr("Reindexing is required to continue. Please click \"Index\" button."));
         qWarning() << "Updating is failed. Number of failed files: " << mFailedFileCounter;
+        MWUI->indexButton->setEnabled(true);
+        MWUI->updateButton->setEnabled(false);
     }
     else {
         setMessage(tr("Updating process is successfully done!"));
         qInfo() << "Updating is done.";
+        MWUI->indexButton->setEnabled(false);
+        MWUI->updateButton->setEnabled(false);
+        mIndexStep->startIndex();
     }
-    MWUI->cancelButton->setEnabled(false);
-    disconnect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
-    //
-    MWUI->indexButton->setEnabled(true);
-    MWUI->updateButton->setEnabled(false);
-    //mIndexStep->startIndex();
 }
 
 void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
