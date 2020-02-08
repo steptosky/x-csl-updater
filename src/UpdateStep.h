@@ -6,43 +6,45 @@
 #include "IndexStep.h"
 
 class UpdateStep : public BaseSteps {
-	Q_OBJECT
+Q_OBJECT
 
 public:
     UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI, const QString & targetDir, const QString & targetCslDir);
-	~UpdateStep();
-	void StartUpdate(QVector<PackageEntry> FilesList, IndexStep *Indx);
+    ~UpdateStep();
+    void StartUpdate(QVector<PackageEntry> FilesList, IndexStep * Indx);
 
 signals:
-	void cancelDownloading();
+    void cancelDownloading();
 
 private slots:
-	void httpRequestFinished(QNetworkReply *inReply);
-	void updateDataReadProgress(qint64 bytesRead, qint64 totalBytes);
-	void CancelSlot();
+    void httpRequestFinished(QNetworkReply * inReply);
+    void updateDataReadProgress(qint64 bytesRead, qint64 totalBytes);
+    void CancelSlot();
 
 private:
-	bool removeDir(const QString &dirName);
-	bool removePath(QString path);
-	bool createDownloadingFile(PackageEntry inPackageEntry);
-	void CopyRemoteFile(PackageEntry inPackageEntry);
-	void EndUpdate();
+    bool removeDir(const QString & dirName);
+    bool removePath(QString path);
+    bool createDownloadingFile(PackageEntry inPackageEntry);
+    void CopyRemoteFile(PackageEntry inPackageEntry);
+    void EndUpdate();
 
-	IndexStep *mIndexStep;
-	QNetworkAccessManager *mNetMng;
-	QFile *mDownloadingFile = nullptr;
-	QString mDownloadingFileName;
+    //-------------------------------------------------------------------------
+    AltitudeDefs * mAltDefs = nullptr;
+    IndexStep * mIndexStep;
+    QNetworkAccessManager * mNetMng;
+    QFile * mDownloadingFile = nullptr;
+    QString mDownloadingFileName;
 
-	int mDownloadedBytes;
-	int mTotalBytes;
-	int mFileCounter;
-	int mFailedFileCounter;
+    int mDownloadedBytes;
+    int mTotalBytes;
+    int mFileCounter;
+    int mFailedFileCounter;
 
-	int mDeletedFiles;
+    int mDeletedFiles;
 
-	QString mServer;
+    QString mServer;
 
-	QVector<PackageEntry> mSelectedListForDelete;
+    QVector<PackageEntry> mSelectedListForDelete;
 };
 
 #endif // UPDATE_H

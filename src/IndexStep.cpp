@@ -76,7 +76,6 @@ void IndexStep::startIndex() {
     emit abortAllReplaysSig();
     scheduleDownloadingFile(altDefs->configFileUrl(), AltitudeDefs::configFileLocalPath());
     connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot, Qt::UniqueConnection);
-
 }
 
 void IndexStep::stage2() {
@@ -439,20 +438,6 @@ void IndexStep::httpRequestFinished(QNetworkReply * inReply) {
     if (mFilesToDownload <= 0) {
         parseIndexFiles();
     }
-}
-
-void IndexStep::indexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
-    // mTotalIndexBytes = totalBytes;
-    // mIndexBytesDownloaded = bytesRead;
-    // MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
-    // MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
-}
-
-void IndexStep::delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes) {
-    // mTotalDelIndexBytes = totalBytes;
-    // mDelIndexBytesDownloaded = bytesRead;
-    // MWUI->progressBar->setMaximum(mTotalIndexBytes + mTotalDelIndexBytes);
-    // MWUI->progressBar->setValue(mIndexBytesDownloaded + mDelIndexBytesDownloaded);
 }
 
 void IndexStep::cancelSlot() {

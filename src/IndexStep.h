@@ -4,6 +4,7 @@
 #include <QtGui>
 #include "base_steps.h"
 #include "PackageAdditionalInfo.h"
+#include "AltitudeDefs.h"
 
 class IndexStep /*: public QThread*/ : public BaseSteps {
 Q_OBJECT
@@ -21,8 +22,6 @@ signals:
     //-------------------------------------------------------------------------
 private slots:
     void httpRequestFinished(QNetworkReply * inReply);
-    void indexDownloadProgress(qint64 bytesRead, qint64 totalBytes);
-    void delIndexDownloadProgress(qint64 bytesRead, qint64 totalBytes);
     void cancelSlot();
     //-------------------------------------------------------------------------
     //public slots:
@@ -50,6 +49,8 @@ private:
     //-------------------------------------------------------------------------
     PackageAdditionalInfo * mPackInfo;
     QNetworkAccessManager * mNetMng;
+
+    AltitudeDefs * mAltDefs = nullptr;
 
     int mFilesToDownload = 0;
 
