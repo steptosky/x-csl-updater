@@ -9,7 +9,7 @@ class UpdateStep : public BaseSteps {
 Q_OBJECT
 
 public:
-    UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI, const QString & targetDir, const QString & targetCslDir);
+    UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI);
     ~UpdateStep();
     void StartUpdate(QVector<PackageEntry> FilesList, IndexStep * Indx);
 
@@ -23,24 +23,24 @@ private slots:
 
 private:
     bool removeDir(const QString & dirName);
-    bool removePath(QString path);
+    bool removePath(PackageEntry inPackageEntry);
     bool createDownloadingFile(PackageEntry inPackageEntry);
     void CopyRemoteFile(PackageEntry inPackageEntry);
     void EndUpdate();
 
     //-------------------------------------------------------------------------
     AltitudeDefs * mAltDefs = nullptr;
-    IndexStep * mIndexStep;
-    QNetworkAccessManager * mNetMng;
+    IndexStep * mIndexStep = nullptr;
+    QNetworkAccessManager * mNetMng = nullptr;
     QFile * mDownloadingFile = nullptr;
     QString mDownloadingFileName;
 
-    int mDownloadedBytes;
-    int mTotalBytes;
-    int mFileCounter;
-    int mFailedFileCounter;
+    int mDownloadedBytes = 0;
+    int mTotalBytes = 0;
+    int mFileCounter = 0;
+    int mFailedFileCounter = 0;
 
-    int mDeletedFiles;
+    int mDeletedFiles = 0;
 
     QString mServer;
 

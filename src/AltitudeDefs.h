@@ -116,14 +116,27 @@ public:
     QString fileLocalPath(const QString & fileUri) const {
         QStringList list = fileUri.split('/');
         // mapping
-        // if (mFoldersMap.contains(list[0])) {
-        //     return simDir() + "/" + QString(fileUri).replace(list[0], mFoldersMap[list[0]]);
-        // }
-        // prefix
         if (mFoldersMap.contains(list[0])) {
-            return simDir() + "/" + QString(fileUri).prepend(mFoldersMap[list[0] + "/"]);
+            return simDir() + "/" + QString(fileUri).replace(list[0], mFoldersMap[list[0]]);
         }
+        // prefix
+        // if (mFoldersMap.contains(list[0])) {
+        //     return simDir() + "/" + QString(fileUri).prepend(mFoldersMap[list[0] + "/"]);
+        // }
         return QString();
+    }
+
+    //-------------------------------------------------------------------------
+    QString fullLocalPath(eFileType fileType, const QString & fileUri) const {
+        switch (fileType) {
+            case CSL_PACK_FILE:
+                return cslFileLocalPath(fileUri);
+                break;
+            case ADDITIONAL_FILE: 
+            default: 
+                return fileLocalPath(fileUri);
+                break;
+        }
     }
 
     //-------------------------------------------------------------------------

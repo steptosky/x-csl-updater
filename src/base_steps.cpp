@@ -1,9 +1,7 @@
 #include "base_steps.h"
 
-BaseSteps::BaseSteps(QWidget * _MW, Ui::MainWindow * _MWUI, const QString & targetDir, const QString & targetCslDir)
-    : QWidget(nullptr),
-      mTargetDir(targetDir),
-      mTargetCslDir(targetCslDir) {
+BaseSteps::BaseSteps(QWidget * _MW, Ui::MainWindow * _MWUI)
+    : QWidget(nullptr) {
     //-------------------------------------------------------------------------
     this->MW = _MW;
     this->MWUI = _MWUI;

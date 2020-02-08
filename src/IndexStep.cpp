@@ -3,7 +3,7 @@
 #include "AltitudeDefs.h"
 
 IndexStep::IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf)
-    : BaseSteps(_MW, _MWUI, "", "") {
+    : BaseSteps(_MW, _MWUI) {
     //-------------------------------------------------------------------------
     mPackInfo = _Inf;
     mNetMng = new QNetworkAccessManager(this);
@@ -346,15 +346,13 @@ eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
     PackageEntry fileEntry;
     fileEntry.ID = ID;
     fileEntry.data = List;
-    QString filePath;
     if (isCslIndex) {
         fileEntry.type = CSL_PACK_FILE;
-        filePath = AltitudeDefs::instance()->cslFileLocalPath(List[1]);
     }
     else {
         fileEntry.type = ADDITIONAL_FILE;
-        filePath = AltitudeDefs::instance()->fileLocalPath(List[1]);
     }
+    const QString filePath = AltitudeDefs::instance()->fullLocalPath(fileEntry.type, List[1]);
     const QFileInfo fileInfo(filePath);
     mSizeOfServer += List[2].toInt();
     // does file exist?

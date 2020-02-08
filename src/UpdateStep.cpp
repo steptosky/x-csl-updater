@@ -1,8 +1,8 @@
 #include "UpdateStep.h"
+#include <filesystem>
 
-UpdateStep::UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI,
-                       const QString & targetDir, const QString & targetCslDir)
-    : BaseSteps(_MW, _MWUI, targetDir, targetCslDir) {
+UpdateStep::UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI)
+    : BaseSteps(_MW, _MWUI) {
     //-------------------------------------------------------------------------
     mAltDefs = AltitudeDefs::instance();
     mNetMng = new QNetworkAccessManager(this);
@@ -45,33 +45,26 @@ bool UpdateStep::removeDir(const QString & dirName) {
     return result;
 }
 
-bool UpdateStep::removePath(QString path) {
-    QString correctedPath = QDir::toNativeSeparators(mTargetCslDir + "/" + path).trimmed();
+bool UpdateStep::removePath(PackageEntry inPackageEntry) {
+    const QString path = mAltDefs->fullLocalPath(inPackageEntry.type, inPackageEntry.data[1]);
     //qDebug() << correctedPath;
-    QFileInfo fileInfo(correctedPath);
-    QDir dir(correctedPath);
+    QFileInfo fileInfo(path);
+    QDir dir(path);
     if (fileInfo.isFile()) {
-        bool res = QFile::remove(correctedPath);
+        bool res = QFile::remove(path);
         if (res) {
             ++mDeletedFiles;
         }
         return res;
     }
     else {
-        return removeDir(correctedPath);
+        return removeDir(path);
     }
 }
 
 bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
-    QString fileName = mTargetCslDir + "/" + inPackageEntry.data[1];
-    if (inPackageEntry.ID == 100) {
-        // files for root recourses folder
-        QDir dir(mTargetCslDir);
-        dir.cdUp();
-        const QString corrFolderName = dir.path();
-        fileName = corrFolderName + "/" + inPackageEntry.data[1];
-    }
-    if (QFile::exists(fileName) && inPackageEntry.ID == 100) {
+    const QString fileName = mAltDefs->fullLocalPath(inPackageEntry.type, inPackageEntry.data[1]);
+    if (QFile::exists(fileName)) {
         QFile::copy(fileName, fileName + ".backup");
     }
     if (QFile::exists(fileName)) {
@@ -133,31 +126,6 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep * inInd
         }
     }
     initProgBar(0, 1, 0, 1);
-    // added task for download several resource files
-    if (mTargetCslDir.contains("X-IvAp Resources")) {
-        PackageEntry entry;
-        // mtl.dat
-        entry.ID = 100; // files for root recourses folder
-        entry.data.clear();
-        entry.data.append("100");
-        entry.data.append("mtl.dat");
-        entry.state = CLIENT_FILE_STATUS_CHANGE;
-        mEntryList.push_front(entry);
-        // Doc8643.txt
-        entry.ID = 100; // files for root recourses folder
-        entry.data.clear();
-        entry.data.append("100");
-        entry.data.append("Doc8643.txt");
-        entry.state = CLIENT_FILE_STATUS_CHANGE;
-        mEntryList.push_front(entry);
-        // related.txt
-        entry.ID = 100; // files for root recourses folder
-        entry.data.clear();
-        entry.data.append("100");
-        entry.data.append("related.txt");
-        entry.state = CLIENT_FILE_STATUS_CHANGE;
-        mEntryList.push_front(entry);
-    }
     if (!mEntryList.empty()) {
         mFileCounter = 0;
         mFailedFileCounter = 0;
@@ -171,7 +139,7 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep * inInd
 void UpdateStep::EndUpdate() {
     // remove files was planed to delete	
     for (int i = 0; i < mSelectedListForDelete.size(); i++) {
-        removePath(mSelectedListForDelete[i].data[1]);
+        removePath(mSelectedListForDelete[i]);
     }
     if (mDeletedFiles > 0) {
         setMessage(tr("Cleanup procedure done. Removed %1 files.").arg(mDeletedFiles));
@@ -223,15 +191,10 @@ void UpdateStep::httpRequestFinished(QNetworkReply * inReply) {
         if (inReply->error() == QNetworkReply::NoError) {
             mDownloadingFile->write(inReply->readAll());
             mDownloadingFile->close();
-            // remove backup file if it's a root resource file ID==100
-            if (mEntryList[mFileCounter].ID == 100) {
-                QDir dir(mTargetCslDir);
-                dir.cdUp();
-                const QString corrFolderName = dir.path();
-                const QString fileName = corrFolderName + "/" + mEntryList[mFileCounter].data[1] + ".backup";
-                if (QFile::exists(fileName)) {
-                    QFile::remove(fileName);
-                }
+            // remove backup file
+            const QString fileName = mDownloadingFile->fileName() + ".backup";
+            if (QFile::exists(fileName)) {
+                QFile::remove(fileName);
             }
         }
         else {
@@ -243,14 +206,8 @@ void UpdateStep::httpRequestFinished(QNetworkReply * inReply) {
             mDownloadingFile->close();
             mDownloadingFile->remove();
             setMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
-            // revert file if it's a root resource file ID==100
-            if (mEntryList[mFileCounter].ID == 100) {
-                QDir dir(mTargetCslDir);
-                dir.cdUp();
-                const QString corrFolderName = dir.path();
-                const QString fileName = corrFolderName + "/" + mEntryList[mFileCounter].data[1];
-                QFile::copy(fileName + ".backup", fileName);
-            }
+            // revert file from a backup
+            QFile::copy(mDownloadingFile->fileName() + ".backup", mDownloadingFile->fileName());
         }
         // start for next file
         delete mDownloadingFile;

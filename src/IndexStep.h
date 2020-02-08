@@ -50,8 +50,6 @@ private:
     PackageAdditionalInfo * mPackInfo;
     QNetworkAccessManager * mNetMng;
 
-    AltitudeDefs * mAltDefs = nullptr;
-
     int mFilesToDownload = 0;
 
     int mSizeOfServer;

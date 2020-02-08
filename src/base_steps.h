@@ -25,11 +25,8 @@ protected:
     QWidget * MW;
     Ui::MainWindow * MWUI;
 
-    const QString & mTargetDir;
-    const QString & mTargetCslDir;
-
     //-------------------------------------------------------------------------
-    BaseSteps(QWidget * _MW, Ui::MainWindow * _MWUI, const QString & targetDir, const QString & targetCslDir);
+    BaseSteps(QWidget * _MW, Ui::MainWindow * _MWUI);
     virtual ~BaseSteps();
 
     //-------------------------------------------------------------------------
