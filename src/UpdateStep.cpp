@@ -26,34 +26,40 @@ void UpdateStep::CancelSlot() {
 
 bool UpdateStep::removeDir(const QString & dirName) {
     bool result = false;
-    QDir dir(dirName);
-
+    QDir dir(dirName);    
     if (dir.exists(dirName)) {
         Q_FOREACH(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::System | QDir::Hidden | QDir::AllDirs | QDir::Files, QDir::DirsFirst)) {
             if (info.isDir()) {
                 result = removeDir(info.absoluteFilePath());
             }
             else {
+                qDebug() << "This file is about to be removed: <" << info.absoluteFilePath() << ">";
                 result = QFile::remove(info.absoluteFilePath());
                 if (result) {
                     ++mDeletedFiles;
+                    qDebug() << "The file has been removed.";
                 }
             }
         }
+        qDebug() << "This directory is about to be removed: <" << dirName << ">";
         result = dir.rmdir(dirName);
+        if (result){
+            qDebug() << "The directory has been removed.";
+        }
     }
     return result;
 }
 
 bool UpdateStep::removePath(PackageEntry inPackageEntry) {
     const QString path = mAltDefs->fullLocalPath(inPackageEntry.type, inPackageEntry.data[1]);
-    //qDebug() << correctedPath;
     QFileInfo fileInfo(path);
     QDir dir(path);
     if (fileInfo.isFile()) {
+        qDebug() << "This file is about to be removed: <" << path << ">";
         bool res = QFile::remove(path);
         if (res) {
             ++mDeletedFiles;
+            qDebug() << "The file has been removed.";
         }
         return res;
     }
@@ -65,7 +71,10 @@ bool UpdateStep::removePath(PackageEntry inPackageEntry) {
 bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
     const QString fileName = mAltDefs->fullLocalPath(inPackageEntry.type, inPackageEntry.data[1]);
     if (QFile::exists(fileName)) {
-        QFile::copy(fileName, fileName + ".backup");
+        const bool res = QFile::copy(fileName, fileName + ".backup");
+        if (res){
+            qDebug() << "A backup file has been created: <" << fileName + ".backup" << ">";
+        }
     }
     if (QFile::exists(fileName)) {
         QFile::remove(fileName);
@@ -85,7 +94,7 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
         mDownloadingFile->open(QIODevice::WriteOnly);
     }
     if (!mDownloadingFile->isOpen()) {
-        setMessage(tr("Error: Cannot write file: <%1>; Reason: %2").arg(fileName).arg(mDownloadingFile->errorString()));
+        qWarning() << QString("Cannot write to file : <%1>; Reason: %2").arg(fileName).arg(mDownloadingFile->errorString());
         delete mDownloadingFile;
         mDownloadingFile = nullptr;
         return false;
@@ -95,6 +104,7 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 }
 
 void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep * inIndexStep) {
+    setMessage(tr("Updating, please wait..."));
     // auto selection for client additional files package
     MWUI->tableWidget->item(0, 0)->setSelected(true);
 
@@ -111,6 +121,7 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep * inInd
     mSelectedListForDelete = mIndexStep->mFileListForDel;
     mDeletedFiles = 0;
     // determine files to update
+    qDebug() << "Checking selected packages to determine which files are needed to be updated.";
     for (int it = 0; it < size; it++) {
         for (int i = 0; i < rowCount; i++) {
             if (MWUI->tableWidget->item(i, 0)->isSelected()) {
@@ -127,36 +138,41 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep * inInd
     }
     initProgBar(0, 1, 0, 1);
     if (!mEntryList.empty()) {
+        qInfo() << "Staring updating files, number of files to update: " << mEntryList.size();
         mFileCounter = 0;
         mFailedFileCounter = 0;
         CopyRemoteFile(mEntryList[mFileCounter]);
     }
     else {
+        qInfo() << "Updating files is skipped, no packages are selected.";
         EndUpdate();
     }
 }
 
 void UpdateStep::EndUpdate() {
-    // remove files was planed to delete	
+    qInfo() << "Updating final stage has been entered.";
+    qInfo() << "Cleaning up files and dirs...";
+    // remove files was planed to delete
     for (int i = 0; i < mSelectedListForDelete.size(); i++) {
         removePath(mSelectedListForDelete[i]);
     }
-    if (mDeletedFiles > 0) {
-        setMessage(tr("Cleanup procedure done. Removed %1 files.").arg(mDeletedFiles));
-    }
+    qInfo() << "Cleanup procedure is done. Number of removed files: " << mDeletedFiles;
 
     if (mFailedFileCounter > 0) {
-        setMessage(tr("Warning: Updating process is NOT done! %1 files have NOT been updated for some reasons.").arg(mFailedFileCounter));
+        setMessage(tr("Error: Cannot get updating successfully done! The X-CSL library can be broken! See log file for details."));
+        setMessage(tr("Reindexing is required to continue. Please click \"Index\" button."));
+        qWarning() << "Updating is failed. Number of failed files: " << mFailedFileCounter;
     }
     else {
         setMessage(tr("Updating process is successfully done!"));
+        qInfo() << "Updating is done.";
     }
     MWUI->cancelButton->setEnabled(false);
     disconnect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
     //
-    MWUI->indexButton->setEnabled(false);
+    MWUI->indexButton->setEnabled(true);
     MWUI->updateButton->setEnabled(false);
-    mIndexStep->startIndex();
+    //mIndexStep->startIndex();
 }
 
 void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
@@ -190,23 +206,39 @@ void UpdateStep::httpRequestFinished(QNetworkReply * inReply) {
         if (inReply->error() == QNetworkReply::NoError) {
             mDownloadingFile->write(inReply->readAll());
             mDownloadingFile->close();
+            qDebug() << "The downloaded file has been put here: " << mDownloadingFile->fileName();
             // remove backup file
             const QString fileName = mDownloadingFile->fileName() + ".backup";
             if (QFile::exists(fileName)) {
-                QFile::remove(fileName);
+                const bool res = QFile::remove(fileName);
+                if (res) {
+                    qDebug() << "The backup file has been removed: <" << fileName << ">";
+                }
             }
         }
         else {
             // error details
-            QString errorUrl = inReply->request().url().toString();
-            QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
-            QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+            const QString errorUrl = inReply->request().url().toString();
+            const QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
+            const QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
             ++mFailedFileCounter;
             mDownloadingFile->close();
             mDownloadingFile->remove();
-            setMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
+            if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
+                QString msg = QString("Cannot download a file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
+                setMessage(tr(msg.toStdString().c_str()));
+                qWarning() << msg;
+            }
+            else {
+                QString msg = QString("Cannot download a file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
+                setMessage(tr(msg.toStdString().c_str()));
+                qWarning() << msg;
+            }
             // revert file from a backup
-            QFile::copy(mDownloadingFile->fileName() + ".backup", mDownloadingFile->fileName());
+            const bool res = QFile::copy(mDownloadingFile->fileName() + ".backup", mDownloadingFile->fileName());
+            if (res){
+                qDebug() << "The file has been restored from the backup file : <" << mDownloadingFile->fileName() + ".backup" << ">";
+            }
         }
         // start for next file
         delete mDownloadingFile;

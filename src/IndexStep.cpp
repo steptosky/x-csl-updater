@@ -140,10 +140,12 @@ void IndexStep::endIndex(int Next) {
         mPackInfo->GetInfoToTable();
         MWUI->updateButton->setEnabled(true);
         MWUI->indexButton->setEnabled(true);
+        qInfo() << "Indexing is done.";
     }
     else {
-        setMessage(tr("Cannot get indexing successfully done! See the log file."));
+        setMessage(tr("Error: Cannot get indexing successfully done! See log file for details."));
         MWUI->indexButton->setEnabled(true);
+        qWarning() << "Indexing is failed. See details above.";
     }
     //
     emit abortAllReplaysSig();
@@ -188,7 +190,7 @@ void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
             statusTextItem->setTextColor(Qt::darkGray);
             break;
     }
-    qDebug() << QString("The status of the package at %1 row has ben set to: <%2>").arg(count).arg(packageState2Text(status));
+    qDebug() << QString("The status of the package at %1th row has ben set to: <%2>").arg(count).arg(packageState2Text(status));
 }
 
 bool IndexStep::parseIndexFile(int & count, const QString & indexFileName, bool isCslIndex) {
