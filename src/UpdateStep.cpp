@@ -104,7 +104,6 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep * inInd
     mEntryList.clear();
     mSelectedListForDelete.clear();
     mIndexStep = inIndexStep;
-    mServer = settings.value("curServer").toString();
     int size = inFileList.size();
     int rowCount = MWUI->tableWidget->rowCount();
     // determine files to delete, we just will delete all files server wants.
@@ -160,8 +159,7 @@ void UpdateStep::EndUpdate() {
 }
 
 void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
-    QString From = mServer + inPackageEntry.data[1];
-    QUrl url(From);
+    const QUrl url(mAltDefs->fullUrl(inPackageEntry.type, inPackageEntry.data[1]));
     if (!createDownloadingFile(inPackageEntry)) {
         // cannot create file
         ++mFailedFileCounter;

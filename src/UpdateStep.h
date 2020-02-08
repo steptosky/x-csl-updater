@@ -42,8 +42,6 @@ private:
 
     int mDeletedFiles = 0;
 
-    QString mServer;
-
     QVector<PackageEntry> mSelectedListForDelete;
 };
 

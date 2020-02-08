@@ -139,6 +139,18 @@ public:
         }
     }
 
+    QString fullUrl(eFileType fileType, const QString & fileUri) {
+        switch (fileType) {
+            case CSL_PACK_FILE: 
+                return cslFileUrl(fileUri);
+                break;
+            case ADDITIONAL_FILE: 
+            default: ;
+                return fileUrl(fileUri);
+                break;
+        }
+    }
+
     //-------------------------------------------------------------------------
     QString cslIndexFileUrl() {
         return serverUrl() + QDir::cleanPath("/" + mCslRemoteDir + "/" + cslIndexFileName());
