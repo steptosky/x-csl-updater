@@ -19,6 +19,8 @@ class MainWindow final : public QMainWindow {
 Q_OBJECT
 
 public:
+    static bool mIsLogVerbose;
+
     MainWindow(QWidget * parent = nullptr);
     ~MainWindow();
 
@@ -43,8 +45,9 @@ private slots:
     void tableContextMenu(const QPoint & pos);
     void tableSelAll() const;
     void tableInfo() const;
+    void setMessage(QString msg) const;
 
-    //-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 private:
     AltitudeDefs * mAltitudeDefs = nullptr;
 

@@ -12,8 +12,10 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
     const char * categoryC = "";
     switch (type) {
         case QtDebugMsg:
-            fprintf(stdout, "[DEBUG]%s %s\n", categoryC, localMsg.constData());
-            logFile << QString("[DEBUG]%1 %2\n").arg(category).arg(localMsg.constData());
+            if (MainWindow::mIsLogVerbose){
+                fprintf(stdout, "[DEBUG]%s %s\n", categoryC, localMsg.constData());
+                logFile << QString("[DEBUG]%1 %2\n").arg(category).arg(localMsg.constData());
+            }
             break;
         case QtInfoMsg:
             fprintf(stdout, "[INFO]%s %s\n", categoryC, localMsg.constData());
@@ -78,5 +80,6 @@ int main(int argc, char * argv[]) {
     w.show();
     const int res = a.exec();
     qInfo() << "Will exit with code: " << res;
+    gLogFile->close();
     return res;
 }

@@ -2,11 +2,14 @@
 #include <QAction>
 #include <QtWidgets>
 
+bool MainWindow::mIsLogVerbose = false;
+
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent),
       mUi(new Ui::MainWindow) {
     //-------------------------------------------------------------------------
     mAltitudeDefs = AltitudeDefs::init(this);
+    qInfo() << "Initializing for the Altitude IVAO client.";
     //
     QCoreApplication::setApplicationName(PROGRAM_NAME);
     QCoreApplication::setApplicationVersion(gProgramVersion);
@@ -47,8 +50,7 @@ MainWindow::MainWindow(QWidget * parent)
 
     //
     mUi->progressBar->setValue(0);
-    mUi->listWidget->addItem(PROGRAM_NAME + tr(", Ver.:") + gProgramVersion);
-    mUi->listWidget->scrollToBottom();
+    setMessage(PROGRAM_NAME + tr(", Ver.:") + gProgramVersion);
 
     // Objs Init
     mAboutWin = new About(this);
@@ -95,15 +97,19 @@ void MainWindow::parseCliArgs() {
     mCliParser.setApplicationDescription(STS_XCSL_PROJECT_DESCRIPTION);
     const auto helpOpt = mCliParser.addHelpOption();
     const auto verOpt = mCliParser.addVersionOption();
-    QCommandLineOption const simDir(QStringList() << "d" << "sim-dir",
-                                    "X-Plane root directory where the X-CSL library will be installed.",
-                                    "dir");
+    QCommandLineOption const simDir(QStringList() << "t" << "sim-target-dir",
+                                    "X-Plane root directory where the X-CSL library will be installed.");
+    mCliParser.addOption(simDir);
+
     QCommandLineOption const indexAutoStart(QStringList() << "i" << "index-auto-start",
                                             "If set indexing process will be started automatically.");
     mCliParser.addOption(indexAutoStart);
 
-    mCliParser.addOption(simDir);
-    QCommandLineOption const customDir("custom-tgt-dir",
+    QCommandLineOption const isLogVerbose(QStringList() << "d" << "verbose",
+                                          "If set the app will write more debug info to the log file and stdout.");
+    mCliParser.addOption(isLogVerbose);
+
+    QCommandLineOption const customDir("custom-target-dir",
                                        "Custom target directory where the X-CSL library will be installed."
                                        "\nNo any target directory checks or auto target directory suffixes will be applied!"
                                        "\nRecommended only for advanced users who are sure what they are doing!");
@@ -137,6 +143,7 @@ void MainWindow::parseCliArgs() {
 #endif
 
     mIsIndexAutoStart = mCliParser.isSet(indexAutoStart);
+    MainWindow::mIsLogVerbose = mCliParser.isSet(isLogVerbose);
     if (mCliParser.isSet(customDir)) {
         mSimDir = mCliParser.value(customDir);
         mIsSimDirCustom = true;
@@ -206,12 +213,14 @@ bool MainWindow::isSimDirValid(const QString & dir) {
 void MainWindow::setupTargetDirs() const {
     // now we use only Altitude suffixes, but should think about support x-ivap later
     mAltitudeDefs->setSimDir(mSimDir, mIsSimDirCustom);
+    qInfo() << "New sim target dir is selected.";
+    qInfo() << "The sim target dir is set to: <" << mSimDir << ">";
+    qInfo() << "Custom target dir mode is " << (mIsSimDirCustom ? "enabled." : "disabled.");
     //
     mIndexStep->resetIndex();
     mUi->curPathLabel->setText(mSimDir);
     mUi->indexButton->setEnabled(true);
-    mUi->listWidget->addItem(tr("Now click \"Index\" to determine files which need to be updated."));
-    mUi->listWidget->scrollToBottom();
+    setMessage(tr("Now click \"Index\" to determine files which need to be updated."));
 }
 
 /**************************************************************************************************/
@@ -219,19 +228,20 @@ void MainWindow::setupTargetDirs() const {
 /**************************************************************************************************/
 
 void MainWindow::init() {
+    parseCliArgs();
     //
     const QDir currDir;
     const QDir tmpDir(gTempDir);
     if (!tmpDir.exists()) {
         if (!currDir.mkdir(gTempDir)) {
+            qCritical() << "Cannot create temporary folder: " << tmpDir.absolutePath();
             QMessageBox::information(this, PROGRAM_NAME,
                                  "Cannot create temporary folder: " + tmpDir.absolutePath(), QMessageBox::Ok);
             QApplication::exit(1);
             return;
         }
+        qDebug() << "Created tmp folder: " << tmpDir.absolutePath();
     }
-    //
-    parseCliArgs();
     //
     if (!mIsSimDirCustom) {
         while (!isSimDirValid(mSimDir)) {
@@ -295,27 +305,32 @@ void MainWindow::selectCustomDirSlot() {
 
 //-------------------------------------------------------------------------
 void MainWindow::aboutSlot() const {
+    qDebug() << "About slot has been called.";
     mAboutWin->show();
 }
 
 void MainWindow::settingSlot() const {
+    qDebug() << "Settings slot has been called.";
     mSettingsWin->LoadSettings();
     mSettingsWin->show();
 }
 
 void MainWindow::updateSlot() const {
+    qDebug() << "Update slot has been called.";
     mUi->indexButton->setDisabled(true);
     mUi->updateButton->setDisabled(true);
     mUpdateStep->StartUpdate(mIndexStep->mEntryList, mIndexStep);
 }
 
 void MainWindow::indexSlot() const {
+    qDebug() << "Index slot has been called.";
     mUi->indexButton->setDisabled(true);
     mUi->updateButton->setDisabled(true);
     mIndexStep->startIndex();
 }
 
 void MainWindow::listContextMenu(const QPoint & pos) {
+    qDebug() << "List context menu has been called.";
     QMenu menu(this);
     menu.addAction(mListClearAct);
     menu.addAction(mListSelAllAct);
@@ -324,18 +339,22 @@ void MainWindow::listContextMenu(const QPoint & pos) {
 
 void MainWindow::listClear() const {
     mUi->listWidget->clear();
+    qDebug() << "List has been cleared.";
 }
 
 void MainWindow::listSelAll() const {
+    qDebug() << "List select all slot has been called.";
     mUi->listWidget->selectAll();
 }
 
 void MainWindow::tableSelAll() const {
+    qDebug() << "Table select all slot has been called.";
     mUi->tableWidget->selectAll();
     mUi->tableWidget->setFocus();
 }
 
 void MainWindow::tableContextMenu(const QPoint & pos) {
+    qDebug() << "Table context menu has been called.";
     QMenu menu(this);
     if (mUi->tableWidget->rowCount() < 1) {
         mTableInfoAct->setDisabled(true);
@@ -349,5 +368,12 @@ void MainWindow::tableContextMenu(const QPoint & pos) {
 }
 
 void MainWindow::tableInfo() const {
+    qDebug() << "Table info slot has been called.";
     mPackInfoWin->OpenInfoWin();
+}
+
+void MainWindow::setMessage(QString msg) const {
+    mUi->listWidget->addItem(msg);
+    mUi->listWidget->scrollToBottom();
+    qInfo() << "[GUI]" << msg;
 }

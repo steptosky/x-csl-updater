@@ -22,7 +22,6 @@ signals:
 
     //-------------------------------------------------------------------------
 private slots:
-    void httpRequestFinished(QNetworkReply * inReply);
     void cancelSlot();
     //-------------------------------------------------------------------------
     //public slots:

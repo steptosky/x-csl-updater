@@ -28,20 +28,19 @@ bool IndexStep::createTargetFile(const QString & fileName, const QByteArray & by
     }
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
-        setMessage(tr("Error: Cannot write file: <%1>").arg(fileName));
-        setMessage(tr("Reason: %1").arg(file.errorString()));
+        qWarning() << "Cannot write to file: <" << fileName << ">";
+        qWarning() << "Reason: " << file.errorString();
         return false;
     }
     file.write(bytesToWrite);
     file.close();
-    qInfo() << "Created file: " << fileName;
+    qDebug() << "The downloaded file has been put here: " << fileName;
     return true;
 }
 
 void IndexStep::scheduleDownloadingFile(const QString & url, const QString & localPath) const {
+    qDebug() << "Will download a file from: <" << url << ">";
     QNetworkRequest request;
-    setMessage(QString("Downloading a file from the server <%1> ...").arg(url));
-    setMessage(QString("To local path: <%1>").arg(localPath));
     request.setUrl(url);
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(localPath));
     QNetworkReply * reply = mNetMng->get(request);
@@ -53,6 +52,7 @@ void IndexStep::scheduleDownloadingFile(const QString & url, const QString & loc
 /**************************************************************************************************/
 
 void IndexStep::startIndex() {
+    setMessage(tr("Indexing, please wait..."));
     resetIndex();
 
     MWUI->indexButton->setEnabled(false);
@@ -84,10 +84,11 @@ void IndexStep::resetIndex() {
     MWUI->tableWidget->clearContents();
     MWUI->tableWidget->setRowCount(0);
     MWUI->indexButton->setEnabled(true);
+    qDebug() << "Index data has been reset.";
 }
 
 void IndexStep::stage2() {
-    setMessage(tr("Hello from stage 2!"));
+    qInfo() << "Indexing stage 2 has been entered.";
     if (!mAltDefs->getAllPathsAndUrlsReady()) {
         endIndex(false);
         return;
@@ -105,7 +106,7 @@ void IndexStep::stage2() {
 }
 
 void IndexStep::stage3() {
-    setMessage(tr("Hello from stage 3!"));
+    qInfo() << "Indexing stage 3 has been entered.";
 
     disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot);
     emit abortAllReplaysSig();
@@ -114,6 +115,7 @@ void IndexStep::stage3() {
 }
 
 void IndexStep::endIndex(int Next) {
+    qInfo() << "Indexing final stage has been entered.";
     if (Next) {
         setMessage(tr("Indexing local files is successfully done."));
 
@@ -140,7 +142,7 @@ void IndexStep::endIndex(int Next) {
         MWUI->indexButton->setEnabled(true);
     }
     else {
-        setMessage(tr("Cannot get indexing successfully done!"));
+        setMessage(tr("Cannot get indexing successfully done! See the log file."));
         MWUI->indexButton->setEnabled(true);
     }
     //
@@ -163,47 +165,41 @@ void IndexStep::addPackageToTable(int count, const QStringList & list) const {
     MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
     const double sizeMB = list[2].toDouble() / 1048576;
     MWUI->tableWidget->setItem(count, 4, new QTableWidgetItem(QString::number(sizeMB, 'f', 2).rightJustified(10)));
+    qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(count);
 }
 
 void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
     auto * statusTextItem = new QTableWidgetItem();
     auto * statusItem = new QTableWidgetItem(QString::number(status));
+    statusTextItem->setText(tr(packageState2Text(status)));
+    MWUI->tableWidget->setItem(count, 5, statusTextItem);
+    MWUI->tableWidget->setItem(count, 6, statusItem);
     switch (status) {
         case CLIENT_PACKAGE_STATUS_OK:
-            statusTextItem->setText(tr("Up-to-date"));
             statusTextItem->setTextColor(Qt::darkGreen);
-            MWUI->tableWidget->setItem(count, 5, statusTextItem);
-            MWUI->tableWidget->setItem(count, 6, statusItem);
             break;
         case CLIENT_PACKAGE_STATUS_CHANGE:
-            statusTextItem->setText(tr("Out-of-date"));
             statusTextItem->setTextColor(Qt::red);
-            MWUI->tableWidget->setItem(count, 5, statusTextItem);
-            MWUI->tableWidget->setItem(count, 6, statusItem);
             break;
         case CLIENT_PACKAGE_STATUS_LOST:
-            statusTextItem->setText(tr("Not installed"));
             statusTextItem->setTextColor(Qt::darkRed);
-            MWUI->tableWidget->setItem(count, 5, statusTextItem);
-            MWUI->tableWidget->setItem(count, 6, statusItem);
             break;
         default:
-            statusTextItem->setText(tr("Unknown state"));
             statusTextItem->setTextColor(Qt::darkGray);
-            MWUI->tableWidget->setItem(count, 5, statusTextItem);
-            MWUI->tableWidget->setItem(count, 6, statusItem);
             break;
     }
+    qDebug() << QString("The status of the package at %1 row has ben set to: <%2>").arg(count).arg(packageState2Text(status));
 }
 
 bool IndexStep::parseIndexFile(int & count, const QString & indexFileName, bool isCslIndex) {
+    qDebug() << "Parsing an index file: <" << indexFileName << ">";
     QFile file(indexFileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        setMessage(tr("Error: %1").arg(file.errorString()));
+        qWarning() << "Cannot open the index file, reason: " << file.errorString();
         return false;
     }
     if (file.size() < 1) {
-        setMessage(tr("Error: The index file has zero size!"));
+        qWarning() << "Cannot parse the index file, reason: The index file has zero size!";
         return false;
     }
     int isFirstLine = true;
@@ -213,7 +209,8 @@ bool IndexStep::parseIndexFile(int & count, const QString & indexFileName, bool 
         QString type = line.left(1);
         if (isFirstLine) {
             if (type != "0") {
-                setMessage(tr("Error: The index file has wrong format! File: <%1>").arg(indexFileName));
+                qWarning() << "Cannot parse the index file, reason: The index file has wrong format!";
+
                 file.close();
                 return false;
             }
@@ -230,13 +227,15 @@ bool IndexStep::parseIndexFile(int & count, const QString & indexFileName, bool 
         }
     }
     file.close();
+    qDebug() << "The index file has been parsed.";
     return true;
 }
 
 bool IndexStep::parseIndexForDelFile(const QString & indexFileName, bool isCslIndex) {
+    qDebug() << "Parsing an index for deleting file: <" << indexFileName << ">";
     QFile fileForDel(indexFileName);
     if (!fileForDel.open(QIODevice::ReadOnly)) {
-        setMessage(tr("Error: %1").arg(fileForDel.errorString()));
+        qWarning() << "Cannot open the index for deleting file, reason: " << fileForDel.errorString();
         return false;
     }
     while (!fileForDel.atEnd()) {
@@ -260,11 +259,12 @@ bool IndexStep::parseIndexForDelFile(const QString & indexFileName, bool isCslIn
         }
     }
     fileForDel.close();
+    qDebug() << "The index for deleting file has been parsed.";
     return true;
 }
 
 void IndexStep::parseIndexFiles() {
-    setMessage(tr("Indexing local files ..."));
+    qDebug() << "Parsing index for delete files...";
     QString fileForDelPath = AltitudeDefs::indexForDelFileLocalPath();
     if (!mAltDefs->isCustomSimDirSelected() && !parseIndexForDelFile(fileForDelPath, false)) {
         endIndex(false);
@@ -279,6 +279,7 @@ void IndexStep::parseIndexFiles() {
     stepProgBar();
 
     // packs
+    qDebug() << "Parsing index files...";
     int count = 0;
     MWUI->tableWidget->clearContents();
     MWUI->tableWidget->setRowCount(0);
@@ -303,7 +304,7 @@ void IndexStep::parseIndexFiles() {
 ePackageState IndexStep::checkCslPack(int pos, int ID, const QString & indexFileName, bool isCslIndex) {
     QFile file(indexFileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        setMessage(tr("Error: %1").arg(file.errorString()));
+        qWarning() << "Cannot open the index file, reason: " << file.errorString();
         return CLIENT_PACKAGE_STATUS_LOST;
     }
     QTextStream in(&file);
@@ -360,18 +361,21 @@ eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
         fileEntry.type = ADDITIONAL_FILE;
     }
     const QString filePath = mAltDefs->fullLocalPath(fileEntry.type, List[1]);
+    qDebug() << "Checking local file: <" << filePath << ">";
     const QFileInfo fileInfo(filePath);
     mSizeOfServer += List[2].toInt();
     // does file exist?
     if (!fileInfo.isFile()) {
         fileEntry.state = CLIENT_FILE_STATUS_LOST;
         mEntryList.push_back(fileEntry);
+        qDebug() << "The file state has been set to: " << localFileState2Text(CLIENT_FILE_STATUS_LOST);
         return CLIENT_FILE_STATUS_LOST;
     }
     const int size = List[2].toInt();
     if (size != static_cast<int>(fileInfo.size())) {
         fileEntry.state = CLIENT_FILE_STATUS_CHANGE;
         mEntryList.push_back(fileEntry);
+        qDebug() << "The file state has been set to: " << localFileState2Text(CLIENT_FILE_STATUS_CHANGE);
         return CLIENT_FILE_STATUS_CHANGE;
     }
     // check hash if it is available
@@ -388,6 +392,7 @@ eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
             if (List[3] != QString(hash.result().toHex())) {
                 fileEntry.state = CLIENT_FILE_STATUS_CHANGE;
                 mEntryList.push_back(fileEntry);
+                qDebug() << "The file state has been set to: " << localFileState2Text(CLIENT_FILE_STATUS_CHANGE);
                 return CLIENT_FILE_STATUS_CHANGE;
             }
             file.close();
@@ -395,6 +400,7 @@ eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
         else {
             fileEntry.state = CLIENT_FILE_STATUS_LOST;
             mEntryList.push_back(fileEntry);
+            qDebug() << "The file state has been set to: " << localFileState2Text(CLIENT_FILE_STATUS_LOST);
             return CLIENT_FILE_STATUS_LOST;
         }
         QApplication::processEvents();
@@ -414,36 +420,13 @@ eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
     mSizeOfClient += static_cast<int>(fileInfo.size());
     fileEntry.state = CLIENT_FILE_STATUS_OK;
     mEntryList.push_back(fileEntry);
+    qDebug() << "The file state has been set to: " << localFileState2Text(CLIENT_FILE_STATUS_OK);
     return CLIENT_FILE_STATUS_OK;
 }
 
 /**************************************************************************************************/
-//////////////////////////////////////////* Functions */////////////////////////////////////////////
+//////////////////////////////////////////* Slots */////////////////////////////////////////////
 /**************************************************************************************************/
-
-void IndexStep::httpRequestFinished(QNetworkReply * inReply) {
-    inReply->deleteLater();
-    QFile * indexFile = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QFile*>();
-
-    if (inReply->error() == QNetworkReply::NoError) {
-        indexFile->write(inReply->readAll());
-        indexFile->close();
-        --mFilesToDownload;
-    }
-    else {
-        // error details
-        QString errorUrl = inReply->request().url().toString();
-        QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
-        QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
-
-        setMessage(tr("Error : %1.").arg(httpStatus + " - " + httpStatusMessage));
-        endIndex(false);
-        return;
-    }
-    if (mFilesToDownload <= 0) {
-        parseIndexFiles();
-    }
-}
 
 void IndexStep::cancelSlot() {
     setMessage(tr("Indexing process has been canceled by user!"));
@@ -466,16 +449,14 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
     }
     else {
         // error details
-        QString errorUrl = inReply->request().url().toString();
-        QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
-        QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+        const QString errorUrl = inReply->request().url().toString();
+        const QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
+        const QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
         if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
-            setMessage(tr("Cannot download a file due to: %1").arg(inReply->errorString()));
-            setMessage(tr("The file url: <%1>").arg(errorUrl));
+            qWarning() << QString("Cannot download a file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
         }
         else {
-            setMessage(tr("Cannot download a file due to: %1 - %2").arg(httpStatus).arg(httpStatusMessage));
-            setMessage(tr("The file url: <%1>").arg(errorUrl));
+            qWarning() << QString("Cannot download a file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
         }
         endIndex(false);
     }
@@ -497,16 +478,14 @@ void IndexStep::stage3Slot(QNetworkReply * inReply) {
     }
     else {
         // error details
-        QString errorUrl = inReply->request().url().toString();
-        QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
-        QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+        const QString errorUrl = inReply->request().url().toString();
+        const QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
+        const QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
         if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
-            setMessage(tr("Cannot download a file due to: %1").arg(inReply->errorString()));
-            setMessage(tr("The file url: <%1>").arg(errorUrl));
+            qWarning() << QString("Cannot download a file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
         }
         else {
-            setMessage(tr("Cannot download a file due to: %1 - %2").arg(httpStatus).arg(httpStatusMessage));
-            setMessage(tr("The file url: <%1>").arg(errorUrl));
+            qWarning() << QString("Cannot download a file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
         }
         endIndex(false);
     }
