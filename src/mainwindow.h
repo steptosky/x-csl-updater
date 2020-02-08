@@ -46,12 +46,10 @@ private slots:
 
     //-------------------------------------------------------------------------
 private:
-    AltitudeDefs * mAltitudeDefs;
+    AltitudeDefs * mAltitudeDefs = nullptr;
 
     bool mIsSimDirCustom = false;
     QString mSimDir;
-    QString mTargetDir;
-    QString mTargetCslDir;
     //
     Ui::MainWindow * mUi;
     About * mAboutWin;
@@ -79,7 +77,7 @@ private:
     bool setupNewSimDir(const QString & newSimDir);
     bool setupNewCustomDir(const QString & newCustomDir);
     static bool isSimDirValid(const QString & dir);
-    void setupTargetDirs();
+    void setupTargetDirs() const;
 };
 
 #endif // MAINWINDOW_H

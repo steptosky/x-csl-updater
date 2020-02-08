@@ -5,6 +5,7 @@
 IndexStep::IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf)
     : BaseSteps(_MW, _MWUI) {
     //-------------------------------------------------------------------------
+    mAltDefs = AltitudeDefs::instance();
     mPackInfo = _Inf;
     mNetMng = new QNetworkAccessManager(this);
 }
@@ -52,36 +53,42 @@ void IndexStep::scheduleDownloadingFile(const QString & url, const QString & loc
 /**************************************************************************************************/
 
 void IndexStep::startIndex() {
+    resetIndex();
+
     MWUI->indexButton->setEnabled(false);
     MWUI->updateButton->setEnabled(false);
 
     const QSettings settings(gSettingsFileName, QSettings::IniFormat);
-
-    AltitudeDefs * altDefs = AltitudeDefs::instance();
-    altDefs->setServerUrl(settings.value("curServer").toString());
+    mAltDefs->setServerUrl(settings.value("curServer").toString());
 
     connect(MWUI->cancelButton, &QPushButton::pressed, this, &IndexStep::cancelSlot);
     MWUI->cancelButton->setEnabled(true);
-    //
+
+    // stage 1
+    emit abortAllReplaysSig();
+    scheduleDownloadingFile(mAltDefs->configFileUrl(), AltitudeDefs::configFileLocalPath());
+    connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot, Qt::UniqueConnection);
+}
+
+void IndexStep::resetIndex() {
+    MWUI->indexButton->setEnabled(false);
+    MWUI->updateButton->setEnabled(false);
     mPackInfo->requestStopAction();
     mSizeOfClient = 0;
     mSizeOfNeedUpdate = 0;
     mSizeOfServer = 0;
     mEntryList.clear();
     mFileListForDel.clear();
-
     initProgBar(0, 10, 0, 1);
-
-    // stage 1
     emit abortAllReplaysSig();
-    scheduleDownloadingFile(altDefs->configFileUrl(), AltitudeDefs::configFileLocalPath());
-    connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot, Qt::UniqueConnection);
+    MWUI->tableWidget->clearContents();
+    MWUI->tableWidget->setRowCount(0);
+    MWUI->indexButton->setEnabled(true);
 }
 
 void IndexStep::stage2() {
     setMessage(tr("Hello from stage 2!"));
-    AltitudeDefs * altDefs = AltitudeDefs::instance();
-    if (!altDefs->getAllPathsAndUrlsReady()) {
+    if (!mAltDefs->getAllPathsAndUrlsReady()) {
         endIndex(false);
         return;
     }
@@ -90,10 +97,10 @@ void IndexStep::stage2() {
     emit abortAllReplaysSig();
     // stage 2
     mFilesToDownload = 4;
-    scheduleDownloadingFile(altDefs->indexFileUrl(), AltitudeDefs::indexFileLocalPath());
-    scheduleDownloadingFile(altDefs->indexForDelFileUrl(), AltitudeDefs::indexForDelFileLocalPath());
-    scheduleDownloadingFile(altDefs->cslIndexFileUrl(), AltitudeDefs::cslIndexFileLocalPath());
-    scheduleDownloadingFile(altDefs->cslIndexForDelFileUrl(), AltitudeDefs::cslIndexForDelFileLocalPath());
+    scheduleDownloadingFile(mAltDefs->indexFileUrl(), AltitudeDefs::indexFileLocalPath());
+    scheduleDownloadingFile(mAltDefs->indexForDelFileUrl(), AltitudeDefs::indexForDelFileLocalPath());
+    scheduleDownloadingFile(mAltDefs->cslIndexFileUrl(), AltitudeDefs::cslIndexFileLocalPath());
+    scheduleDownloadingFile(mAltDefs->cslIndexForDelFileUrl(), AltitudeDefs::cslIndexForDelFileLocalPath());
     connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot, Qt::UniqueConnection);
 }
 
@@ -259,7 +266,7 @@ bool IndexStep::parseIndexForDelFile(const QString & indexFileName, bool isCslIn
 void IndexStep::parseIndexFiles() {
     setMessage(tr("Indexing local files ..."));
     QString fileForDelPath = AltitudeDefs::indexForDelFileLocalPath();
-    if (!parseIndexForDelFile(fileForDelPath, false)) {
+    if (!mAltDefs->isCustomSimDirSelected() && !parseIndexForDelFile(fileForDelPath, false)) {
         endIndex(false);
         return;
     }
@@ -277,7 +284,7 @@ void IndexStep::parseIndexFiles() {
     MWUI->tableWidget->setRowCount(0);
     // altitude pack
     QString indexFilePath = AltitudeDefs::indexFileLocalPath();
-    if (!parseIndexFile(count, indexFilePath, false)) {
+    if (!mAltDefs->isCustomSimDirSelected() && !parseIndexFile(count, indexFilePath, false)) {
         endIndex(false);
         return;
     }
@@ -352,7 +359,7 @@ eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
     else {
         fileEntry.type = ADDITIONAL_FILE;
     }
-    const QString filePath = AltitudeDefs::instance()->fullLocalPath(fileEntry.type, List[1]);
+    const QString filePath = mAltDefs->fullLocalPath(fileEntry.type, List[1]);
     const QFileInfo fileInfo(filePath);
     mSizeOfServer += List[2].toInt();
     // does file exist?

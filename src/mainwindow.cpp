@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget * parent)
     //
     mUi->progressBar->setValue(0);
     mUi->listWidget->addItem(PROGRAM_NAME + tr(", Ver.:") + gProgramVersion);
+    mUi->listWidget->scrollToBottom();
 
     // Objs Init
     mAboutWin = new About(this);
@@ -179,7 +180,7 @@ bool MainWindow::setupNewSimDir(const QString & newSimDir) {
     // if sim dir is not ok
     QMessageBox::critical(this, "ERROR!",
                           "The specified X-Plane executable file path is not valid!"
-                          "\nOr X-Plane installation located at the specified path is not valid or broken."
+                          "\nOr the X-Plane installation located at the specified path is not valid or broken."
                           "\nYou can try to reinstall or repair your X-Plane installation.", QMessageBox::Ok);
     return false;
 }
@@ -202,22 +203,15 @@ bool MainWindow::isSimDirValid(const QString & dir) {
     return false;
 }
 
-void MainWindow::setupTargetDirs() {
-    //TODO: remove this
-    if (!mIsSimDirCustom) {
-        mTargetDir = mSimDir + "/" + gAltitudeResDir;
-        mTargetCslDir = mSimDir + "/" + gAltitudeCslDir;
-    }
-    else {
-        mTargetDir = mSimDir;
-        mTargetCslDir = mSimDir + "/" + gAltitudeCslDir;
-    }
+void MainWindow::setupTargetDirs() const {
     // now we use only Altitude suffixes, but should think about support x-ivap later
     mAltitudeDefs->setSimDir(mSimDir, mIsSimDirCustom);
     //
+    mIndexStep->resetIndex();
     mUi->curPathLabel->setText(mSimDir);
     mUi->indexButton->setEnabled(true);
     mUi->listWidget->addItem(tr("Now click \"Index\" to determine files which need to be updated."));
+    mUi->listWidget->scrollToBottom();
 }
 
 /**************************************************************************************************/
@@ -285,13 +279,17 @@ void MainWindow::selectSimDirSlot() {
 void MainWindow::selectCustomDirSlot() {
     QMessageBox::warning(this, PROGRAM_NAME,
                          tr("Warning! This function is designed for advanced users."
-                            "\nPlease use it only if you are absolutely sure what you are doing otherwise the program can become unusable!"), QMessageBox::Ok);
+                            "\nPlease use it only if you are absolutely sure what you are doing otherwise the program can become unusable!"
+                            "\nNote: no additional files will be installed/updated, only the X-CSL library files will be installed/updated."), QMessageBox::Ok);
 
     QString const newDir = QFileDialog::getExistingDirectory(this,
                                                              PROGRAM_NAME + tr(" :: Specify a folder where the library will be installed"), mSimDir, QFileDialog::ShowDirsOnly);
-
     if (!newDir.isEmpty()) {
+        QString const oldSimDir = mSimDir;
         setupNewCustomDir(newDir);
+        if (oldSimDir != mSimDir) {
+            setupTargetDirs();
+        }
     }
 }
 

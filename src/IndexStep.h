@@ -14,6 +14,7 @@ public:
     IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf);
     ~IndexStep();
     void startIndex();
+    void resetIndex();
 
     //-------------------------------------------------------------------------
 signals:
@@ -45,7 +46,7 @@ private:
     ePackageState checkCslPack(int pos, int ID, const QString & indexFileName, bool isCslIndex);
     eFileState checkFile(QStringList list, int ID, bool isCslIndex);
     //-------------------------------------------------------------------------
-
+    AltitudeDefs* mAltDefs = nullptr;
     //-------------------------------------------------------------------------
     PackageAdditionalInfo * mPackInfo;
     QNetworkAccessManager * mNetMng;

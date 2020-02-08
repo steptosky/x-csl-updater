@@ -97,7 +97,12 @@ public:
     }
 
     QString cslBaseLocalDir() const {
-        return mSimDir + "/" + mCslLocalDir;
+        if (isCustomSimDirSelected()){
+            return simDir();
+        }
+        else{
+            return simDir() + "/" + mCslLocalDir;
+        }
     }
 
     QString cslFileUrl(const QString & fileUri) {
@@ -123,6 +128,7 @@ public:
         // if (mFoldersMap.contains(list[0])) {
         //     return simDir() + "/" + QString(fileUri).prepend(mFoldersMap[list[0] + "/"]);
         // }
+        qDebug() << "Cannot map a file, remote uri: " << fileUri;
         return QString();
     }
 
@@ -173,6 +179,10 @@ public:
 
     const QString & simDir() const {
         return mSimDir;
+    }
+
+    bool isCustomSimDirSelected() const {
+        return mIsSimDurCustom;
     }
 
     bool getAllPathsAndUrlsReady();

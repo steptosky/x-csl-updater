@@ -14,11 +14,8 @@ static const QString gTempDir = "tmp";
 
 static const QString gSimPluginsDir = "Resources/plugins";
 
-static const QString gXIvApResDir = gSimPluginsDir + "/X-IvAp Resources";
-static const QString gXIvApCslDir = gXIvApResDir + "/CSL";
-
-static const QString gAltitudeResDir = gSimPluginsDir + "/IVAO_CSL";
-static const QString gAltitudeCslDir = gAltitudeResDir + "/CSL";
+// static const QString gXIvApResDir = gSimPluginsDir + "/X-IvAp Resources";
+// static const QString gXIvApCslDir = gXIvApResDir + "/CSL";
 
 enum eFileType {
     CSL_PACK_FILE = 0,
@@ -38,7 +35,5 @@ enum ePackageState {
     CLIENT_PACKAGE_STATUS_CHANGE = 1,
     CLIENT_PACKAGE_STATUS_OK = 0
 };
-
-constexpr auto MY_MAX_PATH = 2048;
 
 #endif // TYPES_H
