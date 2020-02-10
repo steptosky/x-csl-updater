@@ -38,3 +38,5 @@ src\x-csl-updater-win32.aps
 src/Info.h
 releases/
 TestServer/volumes/
+TestServer/www/package--/
+TestServer/www/package

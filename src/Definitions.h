@@ -32,13 +32,17 @@ enum eFileState {
     CLIENT_FILE_STATUS_OK = 0
 };
 
-static const char * localFileState2Text(eFileState state){
+inline extern const char * localFileState2Text(eFileState state) {
     switch (state) {
-        case CLIENT_FILE_STATUS_OK: return "Up-to-date"; break;
-        case CLIENT_FILE_STATUS_CHANGE: return "Out-of-date"; break;
-        case CLIENT_FILE_STATUS_LOST: return "Not installed"; break;
+        case CLIENT_FILE_STATUS_OK: return "Up-to-date";
+            break;
+        case CLIENT_FILE_STATUS_CHANGE: return "Out-of-date";
+            break;
+        case CLIENT_FILE_STATUS_LOST: return "Not installed";
+            break;
         default: ;
-        case CLIENT_FILE_STATUS_NONE: return "Unknown state"; break;
+        case CLIENT_FILE_STATUS_NONE: return "Unknown state";
+            break;
     }
 }
 
@@ -49,7 +53,7 @@ enum ePackageState {
     CLIENT_PACKAGE_STATUS_OK = 0
 };
 
-static const char * packageState2Text(ePackageState state) {
+inline extern const char * packageState2Text(ePackageState state) {
     switch (state) {
         case CLIENT_PACKAGE_STATUS_LOST: return "Not installed";
             break;

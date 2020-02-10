@@ -5,7 +5,7 @@
 IndexStep::IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf)
     : BaseSteps(_MW, _MWUI) {
     //-------------------------------------------------------------------------
-    mAltDefs = AltitudeDefs::instance();
+    mAltDefs = mAltDefs->instance();
     mPackInfo = _Inf;
     mNetMng = new QNetworkAccessManager(this);
 }
@@ -24,7 +24,10 @@ bool IndexStep::createTargetFile(const QString & fileName, const QByteArray & by
     }
     const QDir dir;
     if (!dir.exists(QFileInfo(fileName).dir().path())) {
-        bool res = dir.mkpath(QFileInfo(fileName).dir().path());
+        if (!dir.mkpath(QFileInfo(fileName).dir().path())) {
+            qWarning() << "Cannot create the path: <" << fileName << ">";
+            return false;
+        }
     }
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
@@ -66,7 +69,7 @@ void IndexStep::startIndex() {
 
     // stage 1
     emit abortAllReplaysSig();
-    scheduleDownloadingFile(mAltDefs->configFileUrl(), AltitudeDefs::configFileLocalPath());
+    scheduleDownloadingFile(mAltDefs->configFileUrl(), mAltDefs->configFileLocalPath());
     connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot, Qt::UniqueConnection);
 }
 
@@ -98,10 +101,10 @@ void IndexStep::stage2() {
     emit abortAllReplaysSig();
     // stage 2
     mFilesToDownload = 4;
-    scheduleDownloadingFile(mAltDefs->indexFileUrl(), AltitudeDefs::indexFileLocalPath());
-    scheduleDownloadingFile(mAltDefs->indexForDelFileUrl(), AltitudeDefs::indexForDelFileLocalPath());
-    scheduleDownloadingFile(mAltDefs->cslIndexFileUrl(), AltitudeDefs::cslIndexFileLocalPath());
-    scheduleDownloadingFile(mAltDefs->cslIndexForDelFileUrl(), AltitudeDefs::cslIndexForDelFileLocalPath());
+    scheduleDownloadingFile(mAltDefs->indexFileUrl(), mAltDefs->indexFileLocalPath());
+    scheduleDownloadingFile(mAltDefs->indexForDelFileUrl(), mAltDefs->indexForDelFileLocalPath());
+    scheduleDownloadingFile(mAltDefs->cslIndexFileUrl(), mAltDefs->cslIndexFileLocalPath());
+    scheduleDownloadingFile(mAltDefs->cslIndexForDelFileUrl(), mAltDefs->cslIndexForDelFileLocalPath());
     connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot, Qt::UniqueConnection);
 }
 
@@ -267,13 +270,13 @@ bool IndexStep::parseIndexForDelFile(const QString & indexFileName, bool isCslIn
 
 void IndexStep::parseIndexFiles() {
     qDebug() << "Parsing index for delete files...";
-    QString fileForDelPath = AltitudeDefs::indexForDelFileLocalPath();
+    QString fileForDelPath = mAltDefs->indexForDelFileLocalPath();
     if (!mAltDefs->isCustomSimDirSelected() && !parseIndexForDelFile(fileForDelPath, false)) {
         endIndex(false);
         return;
     }
     stepProgBar();
-    fileForDelPath = AltitudeDefs::cslIndexForDelFileLocalPath();
+    fileForDelPath = mAltDefs->cslIndexForDelFileLocalPath();
     if (!parseIndexForDelFile(fileForDelPath, true)) {
         endIndex(false);
         return;
@@ -286,20 +289,20 @@ void IndexStep::parseIndexFiles() {
     MWUI->tableWidget->clearContents();
     MWUI->tableWidget->setRowCount(0);
     // altitude pack
-    QString indexFilePath = AltitudeDefs::indexFileLocalPath();
+    QString indexFilePath = mAltDefs->indexFileLocalPath();
     if (!mAltDefs->isCustomSimDirSelected() && !parseIndexFile(count, indexFilePath, false)) {
         endIndex(false);
         return;
     }
     stepProgBar();
     // csl pack
-    indexFilePath = AltitudeDefs::cslIndexFileLocalPath();
+    indexFilePath = mAltDefs->cslIndexFileLocalPath();
     if (!parseIndexFile(count, indexFilePath, true)) {
         endIndex(false);
         return;
     }
     stepProgBar();
-    MWUI->tableWidget->sortItems(1);
+    //MWUI->tableWidget->sortItems(0);
     endIndex();
 }
 

@@ -40,11 +40,15 @@ public:
         return serverUrl() + "/ALTITUDE";
     }
 
-    static QString baseLocalDir() {
-        return gTempDir + "/ALTITUDE";
+    QString baseLocalDir() const {
+        return simDir() + "/Output/preferences/X-CSL-Package/ALTITUDE";
     }
 
     //-------------------------------------------------------------------------
+    static QString infoFileName() {
+        return "x-csl-info.info";
+    }
+
     static QString configFileName() {
         return "client-config.ini";
     }
@@ -70,7 +74,7 @@ public:
         return baseUrL() + "/" + configFileName();
     }
 
-    static QString configFileLocalPath() {
+    QString configFileLocalPath() const {
         return baseLocalDir() + "/" + configFileName();
     }
 
@@ -79,7 +83,7 @@ public:
         return baseUrL() + "/" + indexFileName();
     }
 
-    static QString indexFileLocalPath() {
+    QString indexFileLocalPath() const {
         return baseLocalDir() + "/" + indexFileName();
     }
 
@@ -87,7 +91,7 @@ public:
         return baseUrL() + "/" + indexForDelFileName();
     }
 
-    static QString indexForDelFileLocalPath() {
+    QString indexForDelFileLocalPath() const {
         return baseLocalDir() + "/" + indexForDelFileName();
     }
 
@@ -121,15 +125,30 @@ public:
     QString fileLocalPath(const QString & fileUri) const {
         QStringList list = fileUri.split('/');
         // mapping
-        if (mFoldersMap.contains(list[0])) {
-            return simDir() + "/" + QString(fileUri).replace(list[0], mFoldersMap[list[0]]);
+        if (mFoldersMap.contains(list[1])) {
+            QString res = simDir() + "/" + mFoldersMap[list[1]];
+            for (int i = 2; i < list.size(); ++i) {
+                res += "/" + list.at(i);
+            }
+            return res;
         }
-        // prefix
-        // if (mFoldersMap.contains(list[0])) {
-        //     return simDir() + "/" + QString(fileUri).prepend(mFoldersMap[list[0] + "/"]);
-        // }
-        qDebug() << "Cannot map a file, remote uri: " << fileUri;
-        return QString();
+        // we have no mapping for the specified file
+        if (fileUri.contains(infoFileName())){
+            // for info file
+            QString res = baseLocalDir();
+            for (int i = 1; i < list.size(); ++i) {
+                res += "/" + list.at(i);
+            }
+            return res;
+        }
+        // for other unmapped files
+        QString res = baseLocalDir() + "/unmapped";
+        for (int i = 1; i < list.size(); ++i) {
+            res += "/" + list.at(i);
+        }
+        qDebug() << "Cannot map the file uri: " << fileUri;
+        qDebug() << "Will map it to unmapped directory: " << res;
+        return res;
     }
 
     //-------------------------------------------------------------------------
@@ -162,7 +181,7 @@ public:
         return serverUrl() + QDir::cleanPath("/" + mCslRemoteDir + "/" + cslIndexFileName());
     }
 
-    static QString cslIndexFileLocalPath() {
+    QString cslIndexFileLocalPath() const {
         return baseLocalDir() + "/" + cslIndexFileName();
     }
 
@@ -170,7 +189,7 @@ public:
         return serverUrl() + QDir::cleanPath("/" + mCslRemoteDir + "/" + cslIndexForDelFileName());
     }
 
-    static QString cslIndexForDelFileLocalPath() {
+    QString cslIndexForDelFileLocalPath() const {
         return baseLocalDir() + "/" + cslIndexForDelFileName();
     }
 

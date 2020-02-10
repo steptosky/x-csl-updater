@@ -1,4 +1,5 @@
 #include "PackageAdditionalInfo.h"
+#include "AltitudeDefs.h"
 
 PackageAdditionalInfo::PackageAdditionalInfo(QWidget *parent, Ui::MainWindow *_MWUI) :
 	QDialog(parent),
@@ -41,7 +42,14 @@ void PackageAdditionalInfo::GetInfoToTable() {
 
 void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) {
 	QString packPath = mMainUi->tableWidget->item(inRow, 1)->text();
-	QUrl url(mServer + packPath + "/x-csl-info.info");
+	AltitudeDefs* altDefs = AltitudeDefs::instance();
+	QUrl url;
+	if (inRow == 0){
+		url = altDefs->fileUrl(packPath + "/" + altDefs->infoFileName());
+	}
+	else{
+		url = altDefs->cslFileUrl(packPath + "/" + altDefs->infoFileName());
+	}
 
 	QNetworkRequest request;
 	request.setUrl(url);

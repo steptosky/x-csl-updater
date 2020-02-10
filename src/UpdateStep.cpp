@@ -4,7 +4,7 @@
 UpdateStep::UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI)
     : BaseSteps(_MW, _MWUI) {
     //-------------------------------------------------------------------------
-    mAltDefs = AltitudeDefs::instance();
+    mAltDefs = mAltDefs->instance();
     mNetMng = new QNetworkAccessManager(this);
     connect(mNetMng, &QNetworkAccessManager::finished, this, &UpdateStep::httpRequestFinished);
 }
