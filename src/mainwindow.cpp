@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget * parent)
     QCoreApplication::setApplicationName(PROGRAM_NAME);
     QCoreApplication::setApplicationVersion(gProgramVersion);
     // setup UI
-    mUi->setupUi(this);    
+    mUi->setupUi(this);
 
     QSettings const settings(gSettingsFileName, QSettings::IniFormat);
     mSimDir = settings.value("mSimDir", "").toString();
@@ -114,8 +114,8 @@ void MainWindow::parseCliArgs() {
                                        "Custom target directory where the X-CSL library will be installed."
                                        "\nNo any target directory checks or auto target directory suffixes will be applied!"
                                        "\nRecommended only for advanced users who are sure what they are doing!",
-                                "directory"
-        );
+                                       "directory"
+                                      );
     mCliParser.addOption(customDir);
 
     //parse
@@ -239,7 +239,7 @@ void MainWindow::init() {
         if (!currDir.mkdir(gTempDir)) {
             qCritical() << "Cannot create temporary folder: " << tmpDir.absolutePath();
             QMessageBox::information(this, PROGRAM_NAME,
-                                 "Cannot create temporary folder: " + tmpDir.absolutePath(), QMessageBox::Ok);
+                                     "Cannot create temporary folder: " + tmpDir.absolutePath(), QMessageBox::Ok);
             QApplication::exit(1);
             return;
         }
