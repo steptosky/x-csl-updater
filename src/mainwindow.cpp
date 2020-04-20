@@ -97,22 +97,24 @@ void MainWindow::parseCliArgs() {
     mCliParser.setApplicationDescription(STS_XCSL_PROJECT_DESCRIPTION);
     const auto helpOpt = mCliParser.addHelpOption();
     const auto verOpt = mCliParser.addVersionOption();
-    QCommandLineOption const simDir(QStringList() << "t" << "sim-target-dir",
-                                    "X-Plane root directory where the X-CSL library will be installed.");
+    const QCommandLineOption simDir(QStringList() << "t" << "sim-target-dir",
+                                    "X-Plane root directory where the X-CSL library will be installed.",
+                                    "directory");
     mCliParser.addOption(simDir);
 
-    QCommandLineOption const indexAutoStart(QStringList() << "i" << "index-auto-start",
+    const QCommandLineOption indexAutoStart(QStringList() << "i" << "index-auto-start",
                                             "If set indexing process will be started automatically.");
     mCliParser.addOption(indexAutoStart);
 
-    QCommandLineOption const isLogVerbose(QStringList() << "d" << "verbose",
+    const QCommandLineOption isLogVerbose(QStringList() << "d" << "verbose",
                                           "If set the app will write more debug info to the log file and stdout.");
     mCliParser.addOption(isLogVerbose);
 
-    QCommandLineOption const customDir("custom-target-dir",
+    const QCommandLineOption customDir("custom-target-dir",
                                        "Custom target directory where the X-CSL library will be installed."
                                        "\nNo any target directory checks or auto target directory suffixes will be applied!"
-                                       "\nRecommended only for advanced users who are sure what they are doing!");
+                                       "\nRecommended only for advanced users who are sure what they are doing!",
+        );
     mCliParser.addOption(customDir);
 
     //parse
