@@ -54,31 +54,22 @@ int main(int argc, char * argv[]) {
     qInfo() << "Version: " << gProgramVersion;
     qInfo() << "-------------------------------";
 
-    // QSettings settings(gSettingsFileName, QSettings::IniFormat);
-    // QString lang;
-    // if (settings.value("first", "no").toString() == "no") {
-    //     QLocale Loc;
-    //     QString local(Loc.name());
-    //     if (local == "ru_RU") {
-    //         lang = settings.value("lang", "default").toString();
-    //         settings.setValue("lang", "default");
-    //     }
-    //     else {
-    //         lang = settings.value("lang", ":/lang/english.qm").toString();
-    //         settings.setValue("lang", ":/lang/english.qm");
-    //     }
-    // }
-    // else {
-    //     lang = settings.value("lang", "default").toString();
-    // }
-    // QTranslator translator;
-    // translator.load(lang);
-    // a.installTranslator(&translator);
-    //settings.setValue("first", "yes");
+    QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    QString lang;
+    if (settings.value("first", "no").toString() == "no") {
+        const QLocale locale;
+        if (locale.name() == "ru_RU") {
+            settings.setValue("lang", ":/x-csl-updater_ru.qm");
+        }
+        else {
+            settings.setValue("lang", "default");
+        }
+    }
+    settings.setValue("first", "yes");
 
     MainWindow w;
     w.show();
-    const int res = a.exec();
+    const int res = QApplication::exec();
     qInfo() << "Will exit with code: " << res;
     gLogFile->close();
     return res;

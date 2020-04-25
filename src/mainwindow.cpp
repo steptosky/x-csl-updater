@@ -93,6 +93,17 @@ MainWindow::~MainWindow() {
     AltitudeDefs::free();
 }
 
+void MainWindow::changeEvent(QEvent* e) {
+    QMainWindow::changeEvent(e);
+    switch (e->type()) {
+    case QEvent::LanguageChange:
+        mUi->retranslateUi(this);
+        break;
+    default:
+        break;
+    }
+}
+
 bool MainWindow::parseCliArgs() {
     mCliParser.setApplicationDescription(STS_XCSL_PROJECT_DESCRIPTION);
     const auto helpOpt = mCliParser.addHelpOption();

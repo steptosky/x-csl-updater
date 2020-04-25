@@ -21,9 +21,13 @@ protected:
 private slots:
     void OkSlot();
     void CancelSlot();
+    void LangChangedSlot(int);
 
 private:
     Ui::Settings *m_ui;
+    QTranslator * mTranslator = nullptr;
+
+    void setupTranslator();
 };
 
 #endif // SETTINGS_H
