@@ -52,9 +52,11 @@ private:
 
     int mFilesToDownload = 0;
 
-    int mSizeOfServer;
-    int mSizeOfNeedUpdate;
-    int mSizeOfClient;
+    size_t mSizeOfServer;
+    size_t mSizeOfNeedUpdate;
+    size_t mSizeOfClient;
+
+    mutable QLocale mLocale;
 };
 
 #endif // INDEX_H

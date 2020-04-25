@@ -3,7 +3,8 @@
 #include "AltitudeDefs.h"
 
 IndexStep::IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf)
-    : BaseSteps(_MW, _MWUI) {
+    : BaseSteps(_MW, _MWUI), mLocale(this->locale())
+{
     //-------------------------------------------------------------------------
     mAltDefs = mAltDefs->instance();
     mPackInfo = _Inf;
@@ -121,20 +122,12 @@ void IndexStep::endIndex(int Next) {
     qInfo() << "Indexing final stage has been entered.";
     if (Next) {
         setMessage(tr("Indexing local files is successfully done."));
-
         mSizeOfNeedUpdate = mSizeOfServer - mSizeOfClient;
-        //TODO: разобраццо с лишними символами в мегабайтах
-        double fsizeOfNeedUpdate, fsizeOfServer;
-        fsizeOfNeedUpdate = mSizeOfNeedUpdate / 1048576;
-        fsizeOfServer = mSizeOfServer / 1048576;
-        char cstrSizeNeed[13];
-        sprintf(cstrSizeNeed, "%7.2f", fsizeOfNeedUpdate);
-        char cstrSizeAll[13];
-        sprintf(cstrSizeAll, "%7.2f", fsizeOfServer);
-        QString strSizeNeed(cstrSizeNeed), strSizeAll(cstrSizeAll);
+        const QString strSizeNeed = mLocale.formattedDataSize(mSizeOfNeedUpdate);
+        const QString strSizeAll = mLocale.formattedDataSize(mSizeOfServer);
         //1048576
         if (mSizeOfNeedUpdate != 0) {
-            setMessage(tr("To make all the packages up-to-date you have to download %1 MB of %2 MB").arg(strSizeNeed, strSizeAll));
+            setMessage(tr("To make all the packages up-to-date you have to download %1 of %2").arg(strSizeNeed, strSizeAll));
             setMessage(tr("Select the packages you want to update and click \"Update\"."));
         }
         else {
@@ -168,8 +161,10 @@ void IndexStep::addPackageToTable(int count, const QStringList & list) const {
     MWUI->tableWidget->setItem(count, 1, new QTableWidgetItem(list[1]));
     MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Please wait...")));
     MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
-    const double sizeMB = list[2].toDouble() / 1048576;
-    MWUI->tableWidget->setItem(count, 4, new QTableWidgetItem(QString::number(sizeMB, 'f', 2).rightJustified(10)));
+    const QString sizeStr = mLocale.formattedDataSize(list[2].toDouble());
+    QTableWidgetItem* sizeItem = new QTableWidgetItem(sizeStr);
+    sizeItem->setData(Qt::TextAlignmentRole, Qt::AlignRight);
+    MWUI->tableWidget->setItem(count, 4, sizeItem);
     qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(count);
 }
 
