@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget * parent)
     mUi->tableWidget->setColumnWidth(1, 150); //Title
     mUi->tableWidget->setColumnWidth(2, 230); //Info
     mUi->tableWidget->setColumnWidth(3, 130); //Ver
-    mUi->tableWidget->setColumnWidth(4, 80);  //sizeMB
+    mUi->tableWidget->setColumnWidth(4, 80);  //size
     mUi->tableWidget->setColumnWidth(5, 120); //status
     mUi->tableWidget->setColumnWidth(6, 20);  //code
     mUi->tableWidget->setColumnHidden(6, true);
@@ -93,7 +93,7 @@ MainWindow::~MainWindow() {
     AltitudeDefs::free();
 }
 
-void MainWindow::parseCliArgs() {
+bool MainWindow::parseCliArgs() {
     mCliParser.setApplicationDescription(STS_XCSL_PROJECT_DESCRIPTION);
     const auto helpOpt = mCliParser.addHelpOption();
     const auto verOpt = mCliParser.addVersionOption();
@@ -120,25 +120,25 @@ void MainWindow::parseCliArgs() {
 
     //parse
 #ifdef  Q_OS_WIN32
-    bool res = mCliParser.parse(QApplication::arguments());
+    const bool res = mCliParser.parse(QApplication::arguments());
     if (!res) {
         QMessageBox::critical(this, PROGRAM_NAME + tr(" :: ERROR!"),
                               "<html><body>An error has occured during parsing command line input.<br>" +
                               mCliParser.errorText() + "<br><pre>" + mCliParser.helpText() + "</pre></body></html>", QMessageBox::Ok);
         QApplication::exit(1);
-        return;
+        return false;
     }
     if (mCliParser.isSet(helpOpt)) {
         QMessageBox::information(this, PROGRAM_NAME + tr(" :: Command line usage:"),
                                  "<html><body><pre>" + mCliParser.helpText() + "</pre></body></html>", QMessageBox::Ok);
-        QApplication::exit(1);
-        return;
+        QApplication::quit();
+        return false;
     }
     if (mCliParser.isSet(verOpt)) {
         QMessageBox::information(this, PROGRAM_NAME,
                                  "Version: " + gProgramVersion, QMessageBox::Ok);
-        QApplication::exit(1);
-        return;
+        QApplication::quit();
+        return false;
     }
 #else
     // on unix systems it should normally work through terminal
@@ -157,6 +157,8 @@ void MainWindow::parseCliArgs() {
         mIsSimDirCustom = false;
         setupNewSimDir(mSimDir);
     }
+
+    return true;
 }
 
 QString MainWindow::browseSimDirDialog(const QString & inStartPath) {
@@ -231,7 +233,10 @@ void MainWindow::setupTargetDirs() const {
 /**************************************************************************************************/
 
 void MainWindow::init() {
-    parseCliArgs();
+    if (!parseCliArgs()){
+        QApplication::quit();
+        return;
+    }
     //
     const QDir currDir;
     const QDir tmpDir(gTempDir);

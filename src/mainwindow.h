@@ -74,7 +74,7 @@ private:
     
 
 //-------------------------------------------------------------------------
-    void parseCliArgs();
+bool parseCliArgs();
 
     QString browseSimDirDialog(const QString & inStartPath);
     bool setupNewSimDir(const QString & newSimDir);
