@@ -106,7 +106,9 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
 void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep * inIndexStep) {
     setMessage(tr("Updating, please wait..."));
     // auto selection for client additional files package
-    MWUI->tableWidget->item(0, 0)->setSelected(true);
+    if (!mAltDefs->isCustomSimDirSelected()){
+        MWUI->tableWidget->item(0, 0)->setSelected(true);
+    }
 
     connect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
     MWUI->cancelButton->setEnabled(true);

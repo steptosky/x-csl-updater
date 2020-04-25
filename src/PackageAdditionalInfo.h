@@ -44,7 +44,7 @@ private:
 	QVector<PackInfo> mPackInfo;
 	Ui::PackageAdditionalInfo *mUi;
 	Ui::MainWindow *mMainUi;
-	void getPackageInfo(int inPackID, int inRow);
+	void getPackageInfo(int inPackID, int inRow) const;
 	QNetworkAccessManager *mNetMng;
 
 	QString mServer;

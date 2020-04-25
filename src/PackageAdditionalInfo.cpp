@@ -32,7 +32,7 @@ void PackageAdditionalInfo::OpenInfoWin() {
 }
 
 void PackageAdditionalInfo::GetInfoToTable() {
-	QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    const QSettings settings(gSettingsFileName, QSettings::IniFormat);
 	mServer = settings.value("curServer").toString();
 	mPackInfo.clear();
 	for (int i = 0; i < mMainUi->tableWidget->rowCount(); i++) {
@@ -40,15 +40,15 @@ void PackageAdditionalInfo::GetInfoToTable() {
 	}	
 }
 
-void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) {
-	QString packPath = mMainUi->tableWidget->item(inRow, 1)->text();
+void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) const {
+    const QString packPath = mMainUi->tableWidget->item(inRow, 1)->text();
 	AltitudeDefs* altDefs = AltitudeDefs::instance();
 	QUrl url;
-	if (inRow == 0){
-		url = altDefs->fileUrl(packPath + "/" + altDefs->infoFileName());
+	if (!altDefs->isCustomSimDirSelected() && inRow == 0){
+		url = altDefs->fileUrl(packPath + "/" + AltitudeDefs::infoFileName());
 	}
 	else{
-		url = altDefs->cslFileUrl(packPath + "/" + altDefs->infoFileName());
+		url = altDefs->cslFileUrl(packPath + "/" + AltitudeDefs::infoFileName());
 	}
 
 	QNetworkRequest request;
@@ -63,8 +63,8 @@ void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) {
 void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 	inReply->deleteLater();
 
-	int packId = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackID)).toInt();
-	QString packName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackName)).toString();
+    const int packId = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackID)).toInt();
+    const QString packName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackName)).toString();
 	int row = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackRow)).toInt();
 
 	if (row >= mMainUi->tableWidget->rowCount()
