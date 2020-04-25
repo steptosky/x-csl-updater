@@ -38,10 +38,10 @@ void Settings::LangChangedSlot(int newState) {
     if (newState){
         QSettings settings(gSettingsFileName, QSettings::IniFormat);
         if (this->m_ui->checkRus->isChecked()) {
-            settings.setValue("lang", ":/x-csl-updater_ru.qm");
+            settings.setValue("lang", "ru");
         }
         else {
-            settings.setValue("lang", "default");
+            settings.setValue("lang", "en");
         }
         setupTranslator();
     }
@@ -52,7 +52,7 @@ void Settings::setupTranslator() {
     QApplication::removeTranslator(mTranslator);
     delete mTranslator;
     mTranslator = new QTranslator();
-    mTranslator->load(settings.value("lang", "default").toString());
+    mTranslator->load(translationFileName(settings.value("lang", "en").toString()));
     QApplication::installTranslator(mTranslator);
 }
 
@@ -87,10 +87,10 @@ void Settings::LoadSettings() {
             break;
     }
     //
-    if (settings.value("lang", "default").toString() == ":/x-csl-updater_ru.qm") {
+    if (settings.value("lang", "en").toString() == "ru") {
         this->m_ui->checkRus->setChecked(true);
     }
-    if (settings.value("lang", "default").toString() == "default") {
+    if (settings.value("lang", "en").toString() == "en") {
         this->m_ui->checkEng->setChecked(true);
     }
 }
@@ -98,10 +98,10 @@ void Settings::LoadSettings() {
 void Settings::SaveSettings() {
     QSettings settings(gSettingsFileName, QSettings::IniFormat);
     if (this->m_ui->checkRus->isChecked()) {
-        settings.setValue("lang", ":/x-csl-updater_ru.qm");
+        settings.setValue("lang", "ru");
     }
     else {
-        settings.setValue("lang", "default");
+        settings.setValue("lang", "en");
     }
 
     //servers

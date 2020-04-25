@@ -19,6 +19,20 @@ static const QString gSimPluginsDir = "Resources/plugins";
 
 // static const QString gXIvApResDir = gSimPluginsDir + "/X-IvAp Resources";
 // static const QString gXIvApCslDir = gXIvApResDir + "/CSL";
+//
+
+inline extern QString translationFileName(const QString & inLangId) {
+    if (inLangId == "ru") {
+        static const QString name = "x-csl-updater_ru.qm";
+        if (QFileInfo::exists(name)) {
+            return name;
+        }
+        else {
+            return ":/" + name;
+        }
+    }
+    return "default";
+}
 
 enum eFileType {
     CSL_PACK_FILE = 0,

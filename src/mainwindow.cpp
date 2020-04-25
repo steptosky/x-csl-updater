@@ -54,8 +54,8 @@ MainWindow::MainWindow(QWidget * parent)
 
     // Objs Init
     mAboutWin = new About(this);
-    mSettingsWin = new Settings(this);
     mPackInfoWin = new PackageAdditionalInfo(this, mUi);
+    mSettingsWin = new Settings(this);
     mIndexStep = new IndexStep(this, mUi, mPackInfoWin);
     mUpdateStep = new UpdateStep(this, mUi);
 
@@ -85,8 +85,8 @@ MainWindow::~MainWindow() {
     QSettings settings(gSettingsFileName, QSettings::IniFormat);
     settings.setValue("pos", pos());
     settings.setValue("size", size());
-    delete mIndexStep;
     delete mUpdateStep;
+    delete mIndexStep;
     delete mPackInfoWin;
     delete mUi;
     //

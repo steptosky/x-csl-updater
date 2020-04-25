@@ -59,10 +59,10 @@ int main(int argc, char * argv[]) {
     if (settings.value("first", "no").toString() == "no") {
         const QLocale locale;
         if (locale.name() == "ru_RU") {
-            settings.setValue("lang", ":/x-csl-updater_ru.qm");
+            settings.setValue("lang", "ru");
         }
         else {
-            settings.setValue("lang", "default");
+            settings.setValue("lang", "en");
         }
     }
     settings.setValue("first", "yes");
