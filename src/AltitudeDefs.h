@@ -41,7 +41,16 @@ public:
     }
 
     QString baseLocalDir() const {
-        return simDir() + "/Output/preferences/X-CSL-Package/ALTITUDE";
+        if (isCustomSimDirSelected()) {
+            return gTempDir;
+        }
+        else{
+            return simDir() + "/Output/preferences/X-CSL-Package";
+        }
+    }
+
+    QString altitudeBaseLocalDir() const {
+        return baseLocalDir() + "/ALTITUDE";
     }
 
     //-------------------------------------------------------------------------
@@ -75,7 +84,7 @@ public:
     }
 
     QString configFileLocalPath() const {
-        return baseLocalDir() + "/" + configFileName();
+        return altitudeBaseLocalDir() + "/" + configFileName();
     }
 
     //-------------------------------------------------------------------------
@@ -84,7 +93,7 @@ public:
     }
 
     QString indexFileLocalPath() const {
-        return baseLocalDir() + "/" + indexFileName();
+        return altitudeBaseLocalDir() + "/" + indexFileName();
     }
 
     QString indexForDelFileUrl() {
@@ -92,7 +101,7 @@ public:
     }
 
     QString indexForDelFileLocalPath() const {
-        return baseLocalDir() + "/" + indexForDelFileName();
+        return altitudeBaseLocalDir() + "/" + indexForDelFileName();
     }
 
     //-------------------------------------------------------------------------
