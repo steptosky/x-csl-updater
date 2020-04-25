@@ -162,7 +162,7 @@ void IndexStep::addPackageToTable(int count, const QStringList & list) const {
     MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Please wait...")));
     MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
     const QString sizeStr = mLocale.formattedDataSize(list[2].toDouble());
-    QTableWidgetItem* sizeItem = new QTableWidgetItem(sizeStr);
+    auto * sizeItem = new QTableWidgetItem(sizeStr);
     sizeItem->setData(Qt::TextAlignmentRole, Qt::AlignRight);
     MWUI->tableWidget->setItem(count, 4, sizeItem);
     qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(count);

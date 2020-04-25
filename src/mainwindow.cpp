@@ -151,6 +151,9 @@ bool MainWindow::parseCliArgs() {
         mSimDir = mCliParser.value(customDir);
         mIsSimDirCustom = true;
         setupNewCustomDir(mSimDir);
+        mUi->browseSimDirButton->setDisabled(true);
+        mUi->actionSetFolder->setDisabled(true);
+        mUi->actionSet_Custom_Path->setDisabled(true);
     }
     else if (mCliParser.isSet(simDir)) {
         mSimDir = mCliParser.value(simDir);
