@@ -144,14 +144,14 @@ public:
         // we have no mapping for the specified file
         if (fileUri.contains(infoFileName())){
             // for info file
-            QString res = baseLocalDir();
+            QString res = altitudeBaseLocalDir();
             for (int i = 1; i < list.size(); ++i) {
                 res += "/" + list.at(i);
             }
             return res;
         }
         // for other unmapped files
-        QString res = baseLocalDir() + "/unmapped";
+        QString res = altitudeBaseLocalDir() + "/unmapped";
         for (int i = 1; i < list.size(); ++i) {
             res += "/" + list.at(i);
         }
