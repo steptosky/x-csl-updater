@@ -226,6 +226,12 @@ void MainWindow::setupTargetDirs() const {
     qInfo() << "Custom target dir mode is " << (mIsSimDirCustom ? "enabled." : "disabled.");
     //
     mIndexStep->resetIndex();
+    if (mIsSimDirCustom){
+        mUi->curPathTitleLabel->setText("Custom dir: ");
+    }
+    else{
+        mUi->curPathTitleLabel->setText("X-Plane dir: ");
+    }
     mUi->curPathLabel->setText(mSimDir);
     mUi->indexButton->setEnabled(true);
     setMessage(tr("Now click \"Index\" to determine files which need to be updated."));
