@@ -87,7 +87,7 @@
          </size>
         </property>
         <property name="toolTip">
-         <string>logo</string>
+         <string>X-CSL-Package logo</string>
         </property>
         <property name="styleSheet">
          <string notr="true">background-image: url(:/xcsl_logo.png);</string>
@@ -146,6 +146,12 @@
            </property>
            <item>
             <widget class="QLabel" name="curPathTitleLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="minimumSize">
               <size>
                <width>70</width>
@@ -154,7 +160,7 @@
              </property>
              <property name="maximumSize">
               <size>
-               <width>0</width>
+               <width>100</width>
                <height>15</height>
               </size>
              </property>
@@ -168,6 +174,12 @@
            </item>
            <item>
             <widget class="QLabel" name="curPathLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="minimumSize">
               <size>
                <width>300</width>
@@ -539,7 +551,7 @@
      <locale language="English" country="UnitedStates"/>
     </property>
     <property name="title">
-     <string>File</string>
+     <string>Menu</string>
     </property>
     <addaction name="actionSetFolder"/>
     <addaction name="actionSettings"/>

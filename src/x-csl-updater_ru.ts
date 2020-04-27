@@ -15,11 +15,7 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;More info at &lt;a href=&quot;http://www.steptosky.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.steptosky.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;More info at &lt;a href=&quot;http://www.steptosky.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.steptosky.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="about.ui" line="90"/>
@@ -28,11 +24,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;More info at &lt;a href=&quot;http://www.x-air.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.x-air.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;More info at &lt;a href=&quot;http://www.x-air.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.x-air.ru&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="about.ui" line="145"/>
@@ -55,20 +47,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Programming - den_rain (&lt;/span&gt;&lt;a href=&quot;mailto:den_rain@steptosky.com&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;den_rain@steptosky.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;https://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;.SF NS Text&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Official site of project X-CSL-Package (&lt;/span&gt;&lt;a href=&quot;https://csl.x-air.ru&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://csl.x-air.ru&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Copyright © 2009-2018 StepToSky (&lt;/span&gt;&lt;a href=&quot;https://steptosky.com&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://steptosky.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&amp;amp;&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Copyright © 2007-2020   X-AiR (&lt;/span&gt;&lt;a href=&quot;https://x-air.ru&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://x-air.ru&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;***&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Programming - den_rain (&lt;/span&gt;&lt;a href=&quot;mailto:den_rain@steptosky.com&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;den_rain@steptosky.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -86,7 +65,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="IndexStep.cpp" line="130"/>
         <source>To make all the packages up-to-date you have to download %1 of %2</source>
-        <translation>Для полного обновления вам надо загрузить %1 of %2</translation>
+        <translation>Для полного обновления вам надо загрузить %1 из %2</translation>
     </message>
     <message>
         <location filename="IndexStep.cpp" line="131"/>
@@ -119,12 +98,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="mainwindow.ui" line="44"/>
         <source>X-CSL-Updater</source>
-        <translation>X-CSL-Updater [RU]</translation>
+        <translation>X-CSL-Updater</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="90"/>
-        <source>logo</source>
-        <translation>X-CSL</translation>
+        <source>X-CSL-Package logo</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="165"/>
@@ -186,7 +165,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="mainwindow.ui" line="391"/>
         <source>Size</source>
-        <translation>Размер (МБ)</translation>
+        <translation>Размер</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="396"/>
@@ -208,7 +187,7 @@ p, li { white-space: pre-wrap; }
         <location filename="mainwindow.cpp" line="30"/>
         <location filename="mainwindow.cpp" line="35"/>
         <source>Select All</source>
-        <translation>Выбрать всё</translation>
+        <translation>Выделить всё</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="458"/>
@@ -233,7 +212,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="mainwindow.ui" line="492"/>
         <source>Ctrl+I</source>
-        <translation>Ctrl+I</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="511"/>
@@ -248,12 +227,16 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="mainwindow.ui" line="517"/>
         <source>Ctrl+U</source>
-        <translation>Ctrl+U</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="542"/>
-        <source>File</source>
+        <source>Menu</source>
         <translation>Меню</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="vanished">Меню</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="558"/>
@@ -264,12 +247,12 @@ p, li { white-space: pre-wrap; }
         <location filename="mainwindow.ui" line="568"/>
         <location filename="mainwindow.ui" line="571"/>
         <source>Set X-Plane location</source>
-        <translation>Установить  путь к X-Plane</translation>
+        <translation>Установить путь к X-Plane</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="580"/>
         <source>Ctrl+O</source>
-        <translation>(Ctrl+O)</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="588"/>
@@ -285,7 +268,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="mainwindow.ui" line="602"/>
         <source>Ctrl+Q</source>
-        <translation>Ctr+Q</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="607"/>
@@ -300,12 +283,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="mainwindow.ui" line="616"/>
         <source>Ctrl+/</source>
-        <translation>Ctrl+/</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="621"/>
         <source>About Qt</source>
-        <translation>О модулях Qt</translation>
+        <translation>О Qt</translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="626"/>
@@ -315,7 +298,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="mainwindow.ui" line="629"/>
         <source>Ctrl+Shift+O</source>
-        <translation>Ctrl+Shift+O</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="28"/>
@@ -326,22 +309,21 @@ p, li { white-space: pre-wrap; }
         <location filename="mainwindow.cpp" line="31"/>
         <location filename="mainwindow.cpp" line="36"/>
         <source>Ctrl+A</source>
-        <translation>Ctrl+A</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="53"/>
         <source>, Ver.:</source>
-        <translation>, Ver.:</translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="136"/>
+        <location filename="mainwindow.cpp" line="207"/>
         <source> :: ERROR!</source>
         <translation> :: ОШИБКА!</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="143"/>
         <source> :: Command line usage:</source>
-        <translation> :: Параметры запуска из сомандной строки:</translation>
+        <translation type="vanished"> :: Параметры запуска из сомандной строки:</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="181"/>
@@ -351,9 +333,33 @@ p, li { white-space: pre-wrap; }
         <translation> :: Укажите расположение исполняемого файла X-Plane ...</translation>
     </message>
     <message>
+        <location filename="mainwindow.cpp" line="208"/>
+        <source>The specified X-Plane executable file path is not valid!
+Or the X-Plane installation located at the specified path is not valid or broken.
+You can try to reinstall or repair your X-Plane installation.</source>
+        <translation>Указанный путь до исполняемого файла X-Plane не валиден!
+Или инсталяция X-Plane по указанному пути не валидна или сломана.
+Вы можете попробовать переустановить X-Plane.</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="241"/>
+        <source>Custom dir: </source>
+        <translation>Путь для CSL (!): </translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="244"/>
+        <source>X-Plane dir: </source>
+        <translation>Путь к X-Plane: </translation>
+    </message>
+    <message>
         <location filename="mainwindow.cpp" line="248"/>
         <source>Now click &quot;Index&quot; to determine files which need to be updated.</source>
         <translation>Нажмите &quot;Индексировать&quot; для определения пакетов, требующих установки/обновления .</translation>
+    </message>
+    <message>
+        <location filename="mainwindow.cpp" line="267"/>
+        <source>Cannot create temporary folder: </source>
+        <translation>Не могу создать временную папку: </translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="277"/>
@@ -370,14 +376,14 @@ Navigate to the folder where your X-Plane is installed and select the X-Plane ex
 Please use it only if you are absolutely sure what you are doing otherwise the program can become unusable!
 Note: no additional files will be installed/updated, only the X-CSL library files will be installed/updated.</source>
         <translation>Внимание!!! Эта функция только для опытных пользователей
-Пожалуйста используйте эту настройку только если абсолютно уверены в том, что делете. Иначе программа может стать неработоспособной!
+Пожалуйста используйте эту настройку только если абсолютно уверены в том, что делаете. Иначе программа может стать неработоспособной!
 
-Важно! Никакие дополнительные  файлы не будут установлены/обновлены,только пакеты CSL-моделей.</translation>
+Важно! Никакие дополнительные файлы не будут установлены/обновлены,только пакеты CSL-моделей.</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="324"/>
         <source> :: Specify a folder where the library will be installed</source>
-        <translation> :: Укажите папку, в кторую будут установлены пакеты CSL моделей</translation>
+        <translation> :: Укажите папку, в которую будут установлены пакеты CSL моделей</translation>
     </message>
 </context>
 <context>
@@ -405,21 +411,26 @@ Note: no additional files will be installed/updated, only the X-CSL library file
     <message>
         <location filename="PackageAdditionalInfo.ui" line="91"/>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="PackageAdditionalInfo.cpp" line="93"/>
         <location filename="PackageAdditionalInfo.cpp" line="94"/>
         <source>There is no information...</source>
-        <translation>Здесь нет информации...</translation>
+        <translation>Нет информации...</translation>
     </message>
 </context>
 <context>
     <name>QApplication</name>
     <message>
+        <location filename="main.cpp" line="46"/>
+        <source> :: ERROR!</source>
+        <translation> :: ОШИБКА!</translation>
+    </message>
+    <message>
         <location filename="main.cpp" line="47"/>
         <source>Cannot open log file: &lt;log.txt&gt;</source>
-        <translation>Не могу открыть дог-файл: &lt;log.txt&gt;</translation>
+        <translation>Не могу открыть лог-файл: &lt;log.txt&gt;</translation>
     </message>
 </context>
 <context>
@@ -450,7 +461,7 @@ Note: no additional files will be installed/updated, only the X-CSL library file
         <location filename="settings.ui" line="160"/>
         <location filename="settings.ui" line="190"/>
         <source>The program will use the selected server</source>
-        <translation>Программа будет сипользовать указанный сервер</translation>
+        <translation>Программа будет использовать указанный сервер</translation>
     </message>
     <message>
         <location filename="settings.ui" line="103"/>
@@ -498,7 +509,7 @@ Note: no additional files will be installed/updated, only the X-CSL library file
     <message>
         <location filename="settings.ui" line="220"/>
         <source>Русский</source>
-        <translation>Русский</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="settings.ui" line="230"/>
@@ -518,23 +529,23 @@ Note: no additional files will be installed/updated, only the X-CSL library file
     <message>
         <location filename="settings.ui" line="280"/>
         <source>Click to save changes</source>
-        <translation>Нажмите для сохранения</translation>
+        <translation>Нажмите для сохранения изменений</translation>
     </message>
     <message>
         <location filename="settings.ui" line="283"/>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="settings.cpp" line="54"/>
         <location filename="settings.cpp" line="62"/>
-        <location filename="settings.cpp" line="66"/>
         <location filename="settings.cpp" line="70"/>
         <location filename="settings.cpp" line="74"/>
         <location filename="settings.cpp" line="78"/>
-        <location filename="settings.cpp" line="128"/>
+        <location filename="settings.cpp" line="82"/>
+        <location filename="settings.cpp" line="86"/>
+        <location filename="settings.cpp" line="122"/>
         <source>http://csl.x-air.ru/package/</source>
-        <translation>http://csl.x-air.ru/package/</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -545,11 +556,6 @@ Note: no additional files will be installed/updated, only the X-CSL library file
         <translation>Операция отменена пользователем!</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="87"/>
-        <source>/</source>
-        <translation>/</translation>
-    </message>
-    <message>
         <location filename="UpdateStep.cpp" line="107"/>
         <source>Updating, please wait...</source>
         <translation>Обновление, пожалуйста ждите...</translation>
@@ -557,12 +563,12 @@ Note: no additional files will be installed/updated, only the X-CSL library file
     <message>
         <location filename="UpdateStep.cpp" line="167"/>
         <source>Error: Cannot get updating successfully done! The X-CSL library can be broken! See log file for details.</source>
-        <translation>Ошибка: Не могу выполнить обновление! X-CSL может быть повреждён! См. лог-файл.</translation>
+        <translation>Ошибка: Не могу выполнить обновление! X-CSL библиотека может быть повреждёна! См. лог-файл.</translation>
     </message>
     <message>
         <location filename="UpdateStep.cpp" line="168"/>
         <source>Reindexing is required to continue. Please click &quot;Index&quot; button.</source>
-        <translation>Для переиндексации необходимо продолжить.Нажмите кнопку «Индексировать».</translation>
+        <translation>Переиндексация необходима чтобы продолжить.Нажмите кнопку «Индексировать».</translation>
     </message>
     <message>
         <location filename="UpdateStep.cpp" line="174"/>

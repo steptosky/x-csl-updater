@@ -84,7 +84,7 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
     mDownloadingFile->open(QIODevice::WriteOnly);
     if (!mDownloadingFile->isOpen()) {
         // lets suppose that path to file is not exist
-        int index = fileName.lastIndexOf(tr("/"));
+        int index = fileName.lastIndexOf("/");
         const QString dir_path = fileName.left(index);
         QDir dir("");
         dir.mkpath(dir_path);

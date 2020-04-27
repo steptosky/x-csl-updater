@@ -98,6 +98,13 @@ void MainWindow::changeEvent(QEvent* e) {
     switch (e->type()) {
     case QEvent::LanguageChange:
         mUi->retranslateUi(this);
+        if (mIsSimDirCustom) {
+            mUi->curPathTitleLabel->setText(tr("Custom dir: "));
+        }
+        else {
+            mUi->curPathTitleLabel->setText(tr("X-Plane dir: "));
+        }
+        mUi->curPathLabel->setText(mSimDir);
         break;
     default:
         break;
@@ -133,14 +140,14 @@ bool MainWindow::parseCliArgs() {
 #ifdef  Q_OS_WIN32
     const bool res = mCliParser.parse(QApplication::arguments());
     if (!res) {
-        QMessageBox::critical(this, PROGRAM_NAME + tr(" :: ERROR!"),
+        QMessageBox::critical(this, PROGRAM_NAME + QString(" :: ERROR!"),
                               "<html><body>An error has occured during parsing command line input.<br>" +
                               mCliParser.errorText() + "<br><pre>" + mCliParser.helpText() + "</pre></body></html>", QMessageBox::Ok);
         QApplication::exit(1);
         return false;
     }
     if (mCliParser.isSet(helpOpt)) {
-        QMessageBox::information(this, PROGRAM_NAME + tr(" :: Command line usage:"),
+        QMessageBox::information(this, PROGRAM_NAME + QString(" :: Command line usage:"),
                                  "<html><body><pre>" + mCliParser.helpText() + "</pre></body></html>", QMessageBox::Ok);
         QApplication::quit();
         return false;
@@ -204,10 +211,10 @@ bool MainWindow::setupNewSimDir(const QString & newSimDir) {
         return true;
     }
     // if sim dir is not ok
-    QMessageBox::critical(this, PROGRAM_NAME + QString(" :: ERROR!"),
-                          "The specified X-Plane executable file path is not valid!"
+    QMessageBox::critical(this, PROGRAM_NAME + tr(" :: ERROR!"),
+                          tr("The specified X-Plane executable file path is not valid!"
                           "\nOr the X-Plane installation located at the specified path is not valid or broken."
-                          "\nYou can try to reinstall or repair your X-Plane installation.", QMessageBox::Ok);
+                          "\nYou can try to reinstall or repair your X-Plane installation."), QMessageBox::Ok);
     return false;
 }
 
@@ -238,10 +245,10 @@ void MainWindow::setupTargetDirs() const {
     //
     mIndexStep->resetIndex();
     if (mIsSimDirCustom){
-        mUi->curPathTitleLabel->setText("Custom dir: ");
+        mUi->curPathTitleLabel->setText(tr("Custom dir: "));
     }
     else{
-        mUi->curPathTitleLabel->setText("X-Plane dir: ");
+        mUi->curPathTitleLabel->setText(tr("X-Plane dir: "));
     }
     mUi->curPathLabel->setText(mSimDir);
     mUi->indexButton->setEnabled(true);
@@ -264,7 +271,7 @@ void MainWindow::init() {
         if (!currDir.mkdir(gTempDir)) {
             qCritical() << "Cannot create temporary folder: " << tmpDir.absolutePath();
             QMessageBox::information(this, PROGRAM_NAME,
-                                     "Cannot create temporary folder: " + tmpDir.absolutePath(), QMessageBox::Ok);
+                                     tr("Cannot create temporary folder: ") + tmpDir.absolutePath(), QMessageBox::Ok);
             QApplication::exit(1);
             return;
         }

@@ -43,7 +43,7 @@ int main(int argc, char * argv[]) {
     QApplication a(argc, argv);
     gLogFile.reset(new QFile("log.txt"));
     if (!gLogFile->open(QFile::WriteOnly)) {
-        QMessageBox::critical(nullptr, PROGRAM_NAME + QString(" :: ERROR!"),
+        QMessageBox::critical(nullptr, PROGRAM_NAME + QApplication::tr(" :: ERROR!"),
                               QApplication::tr("Cannot open log file: <log.txt>"), QMessageBox::Ok);
         return 1;
     }
