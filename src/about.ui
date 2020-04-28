@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>580</width>
+    <width>668</width>
     <height>170</height>
    </rect>
   </property>
@@ -21,13 +21,13 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>580</width>
+    <width>668</width>
     <height>170</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>580</width>
+    <width>668</width>
     <height>170</height>
    </size>
   </property>
@@ -180,7 +180,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The X-CSL-Package project is a centralized CSL model library for displaying &lt;a href=&quot;https://ivao.aero&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;IVAO&lt;/span&gt;&lt;/a&gt; traffic in &lt;a href=&quot;https://x-plane.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;X-Plane&lt;/span&gt;&lt;/a&gt;. The project is developed, maintained and served by&lt;br /&gt;the X-AiR and StepToSky Teams.&lt;br /&gt;It can be installed and continuously updated using this X-CSL-Updater.&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The X-CSL-Package project is a centralized CSL model library for displaying &lt;a href=&quot;https://ivao.aero&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;IVAO&lt;/span&gt;&lt;/a&gt; traffic in &lt;a href=&quot;https://x-plane.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;X-Plane&lt;/span&gt;&lt;/a&gt;.&lt;br /&gt;The project is developed, maintained and served by the X-AiR and StepToSky Teams.&lt;br /&gt;It can be installed and continuously updated using this X-CSL-Updater.&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;right&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Official X-CSL-Package project web site (&lt;a href=&quot;https://csl.x-air.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://csl.x-air.ru&lt;/span&gt;&lt;/a&gt;)&lt;br /&gt;Copyright © 2009-2020 X-AiR Team (&lt;a href=&quot;https://x-air.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://x-air.ru&lt;/span&gt;&lt;/a&gt;)&lt;br /&gt;Copyright © 2009-2020 StepToSky Team (&lt;a href=&quot;https://steptosky.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://steptosky.com&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
