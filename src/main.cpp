@@ -5,7 +5,7 @@ QScopedPointer<QFile> gLogFile;
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const QString & msg) {
     QTextStream logFile(gLogFile.data());
-    const QByteArray localMsg = msg.toLocal8Bit();
+    const QByteArray localMsg = msg.toUtf8();
     const char * file = context.file ? context.file : "";
     const char * function = context.function ? context.function : "";
     const QString category = "";

@@ -147,14 +147,14 @@
            <item>
             <widget class="QLabel" name="curPathTitleLabel">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
              <property name="minimumSize">
               <size>
-               <width>70</width>
+               <width>0</width>
                <height>0</height>
               </size>
              </property>
@@ -636,9 +636,6 @@
   <action name="actionSet_Custom_Path">
    <property name="text">
     <string>Set Custom Path</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+O</string>
    </property>
   </action>
  </widget>
