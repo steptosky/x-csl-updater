@@ -40,3 +40,4 @@ releases/
 TestServer/volumes/
 TestServer/www/package--/
 TestServer/www/package
+*.qm
