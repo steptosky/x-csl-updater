@@ -1,4 +1,4 @@
-﻿X-CSL-Package©
+X-CSL-Package©
 http://csl.x-air.ru
 
 Welcome to X-CSL Package!

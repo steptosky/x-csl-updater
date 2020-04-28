@@ -1,4 +1,4 @@
-﻿X-CSL-Package©
+X-CSL-Package©
 http://csl.x-air.ru
 
 Добро пожаловать в проект X-CSL Package!

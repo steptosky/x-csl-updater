@@ -5,7 +5,7 @@ QScopedPointer<QFile> gLogFile;
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const QString & msg) {
     QTextStream logFile(gLogFile.data());
-    const QByteArray localMsg = msg.toUtf8();
+    const QByteArray localMsg = msg.toLocal8Bit();
     const char * file = context.file ? context.file : "";
     const char * function = context.function ? context.function : "";
     const QString category = "";
@@ -14,26 +14,26 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
         case QtDebugMsg:
             if (MainWindow::mIsLogVerbose){
                 fprintf(stdout, "[DEBUG]%s %s\n", categoryC, localMsg.constData());
-                logFile << QString("[DEBUG]%1 %2\n").arg(category).arg(localMsg.constData());
+                logFile << QString("[DEBUG]%1 %2\n").arg(category).arg(msg);
             }
             break;
         case QtInfoMsg:
             fprintf(stdout, "[INFO]%s %s\n", categoryC, localMsg.constData());
-            logFile << QString("[INFO]%1 %2\n").arg(category).arg(localMsg.constData());
+            logFile << QString("[INFO]%1 %2\n").arg(category).arg(msg);
             break;
         case QtWarningMsg:
             fprintf(stdout, "[WARNING]%s %s\n", categoryC, localMsg.constData());
-            logFile << QString("[WARNING]%1 %2\n").arg(category).arg(localMsg.constData());
+            logFile << QString("[WARNING]%1 %2\n").arg(category).arg(msg);
             break;
         case QtCriticalMsg:
             fprintf(stdout, "[CRITICAL]%s %s (%s:%u, %s)\n", categoryC, localMsg.constData(), file, context.line, function);
             fprintf(stderr, "[CRITICAL]%s %s (%s:%u, %s)\n", categoryC, localMsg.constData(), file, context.line, function);
-            logFile << QString("[CRITICAL]%1 %2 (%3:%4)\n").arg(category).arg(localMsg.constData()).arg(file).arg(context.line).arg(function);
+            logFile << QString("[CRITICAL]%1 %2 (%3:%4)\n").arg(category).arg(msg).arg(file).arg(context.line).arg(function);
             break;
         case QtFatalMsg:
             fprintf(stdout, "[FATAL]%s %s (%s:%u, %s)\n", categoryC, localMsg.constData(), file, context.line, function);
             fprintf(stderr, "[FATAL]%s %s (%s:%u, %s)\n", categoryC, localMsg.constData(), file, context.line, function);
-            logFile << QString("[FATAL]%1 %2 (%3:%4)\n").arg(category).arg(localMsg.constData()).arg(file).arg(context.line).arg(function);
+            logFile << QString("[FATAL]%1 %2 (%3:%4)\n").arg(category).arg(msg).arg(file).arg(context.line).arg(function);
             break;
     }
     logFile.flush();
