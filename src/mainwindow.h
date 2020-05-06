@@ -3,74 +3,85 @@
 
 #include "ui_mainwindow.h"
 #include <QtGui>
-#include "types.h"
+#include "Definitions.h"
 #include "about.h"
 #include "settings.h"
 #include "IndexStep.h"
 #include "UpdateStep.h"
 #include "PackageAdditionalInfo.h"
+#include "AltitudeDefs.h"
 
-namespace Ui
-{
-    class MainWindow;
+namespace Ui {
+class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow final : public QMainWindow {
+Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-    QString separator;
-    QAction *newAct;
-    QString FolderName;
+    static bool mIsLogVerbose;
 
+    MainWindow(QWidget * parent = nullptr);
+    ~MainWindow();
+void changeEvent(QEvent * e);
+
+//-------------------------------------------------------------------------
 public slots:
 
-
+    //-------------------------------------------------------------------------
 private slots:
-    // About
-    void AboutSlot();
-    // Setting
-    void SettingSlot();
-    // Выбор папки
-    void SetFolder();
-    void SetCustomFolder();
-    void UpdateSlot();
-    void IndexSlot();
-    // Контекст меню для списка
-    void ListContextMenu(const QPoint & pos);
-    void ListClear();
-    void ListSelAll();
-    // Контекст меню для таблицы
-    void TableContextMenu(const QPoint & pos);
-    void TableSelAll();
-    void TableInfo();
-    // Общее контекст меню, если понадобиццо
-    void contextMenuEvent(QContextMenuEvent * event);
-    /*void SetMsgSlot(QString Msg);
-    void InitProgBarSlot(int start, int end, int current = 0, int step = 1);
-    void StepProgBarSlot();
-    void SetValProgBarSlot(int value);*/
-    //void IndexFinish();
+    void init();
+    void selectSimDirSlot();
+    void selectCustomDirSlot();
+    //
+    void aboutSlot() const;
+    void settingSlot() const;   
+    void updateSlot() const;
+    void indexSlot() const;
+    // list context menu
+    void listContextMenu(const QPoint & pos);
+    void listClear() const;
+    void listSelAll() const;
+    // table context menu
+    void tableContextMenu(const QPoint & pos);
+    void tableSelAll() const;
+    void tableInfo() const;
+    void setMessage(QString msg) const;
 
+//-------------------------------------------------------------------------
 private:
-    Ui::MainWindow *mUi;
-    About *AboutWin;
-    Settings *SettingsWin;
-    IndexStep *Indx;
-    UpdateStep *Updt;
-    PackageAdditionalInfo *Inf;
+    AltitudeDefs * mAltitudeDefs = nullptr;
 
-    // контекст меню Списка
-    QAction *ListClearAct;
-    QAction *ListSelAllAct;
-    // контекст меню Таблицы
-    QAction *TableSelAllAct;
-    QAction *TableInfoAct;
+    bool mIsSimDirCustom = false;
+    QString mSimDir;
+    //
+    Ui::MainWindow * mUi;
+    About * mAboutWin;
+    Settings * mSettingsWin;
+    IndexStep * mIndexStep;
+    UpdateStep * mUpdateStep;
+    PackageAdditionalInfo * mPackInfoWin;
 
-    QString removeCslSpecifiedPathIfNeeded(const QString &inPath);
+    // list context menu
+    QAction * mListClearAct;
+    QAction * mListSelAllAct;
+    // table context menu
+    QAction * mTableSelAllAct;
+    QAction * mTableInfoAct;
+
+    //
+    QCommandLineParser mCliParser;
+    bool mIsIndexAutoStart = false;
+    
+
+//-------------------------------------------------------------------------
+bool parseCliArgs();
+
+    QString browseSimDirDialog(const QString & inStartPath);
+    bool setupNewSimDir(const QString & newSimDir);
+    bool setupNewCustomDir(const QString & newCustomDir);
+    static bool isSimDirValid(const QString & dir);
+    void setupTargetDirs() const;
 };
 
 #endif // MAINWINDOW_H

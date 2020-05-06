@@ -1,4 +1,5 @@
 #include "PackageAdditionalInfo.h"
+#include "AltitudeDefs.h"
 
 PackageAdditionalInfo::PackageAdditionalInfo(QWidget *parent, Ui::MainWindow *_MWUI) :
 	QDialog(parent),
@@ -31,8 +32,7 @@ void PackageAdditionalInfo::OpenInfoWin() {
 }
 
 void PackageAdditionalInfo::GetInfoToTable() {
-	QSettings settings(ORGANISATION, PROGRAM_NAME);
-	mCslFolder = settings.value("FolderName").toString();
+    const QSettings settings(gSettingsFileName, QSettings::IniFormat);
 	mServer = settings.value("curServer").toString();
 	mPackInfo.clear();
 	for (int i = 0; i < mMainUi->tableWidget->rowCount(); i++) {
@@ -40,10 +40,16 @@ void PackageAdditionalInfo::GetInfoToTable() {
 	}	
 }
 
-void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) {
-	QString packPath = mMainUi->tableWidget->item(inRow, 1)->text();
-	QUrl url(mServer + packPath + tr("/x-csl-info.info"));
-	QString fileName = mCslFolder + "/" + packPath + tr("/x-csl-info.info");
+void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) const {
+    const QString packPath = mMainUi->tableWidget->item(inRow, 1)->text();
+	AltitudeDefs* altDefs = AltitudeDefs::instance();
+	QUrl url;
+	if (!altDefs->isCustomSimDirSelected() && inRow == 0){
+		url = altDefs->fileUrl(packPath + "/" + AltitudeDefs::infoFileName());
+	}
+	else{
+		url = altDefs->cslFileUrl(packPath + "/" + AltitudeDefs::infoFileName());
+	}
 
 	QNetworkRequest request;
 	request.setUrl(url);
@@ -57,8 +63,8 @@ void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) {
 void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 	inReply->deleteLater();
 
-	int packId = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackID)).toInt();
-	QString packName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackName)).toString();
+    const int packId = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackID)).toInt();
+    const QString packName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackName)).toString();
 	int row = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(PackRow)).toInt();
 
 	if (row >= mMainUi->tableWidget->rowCount()
@@ -73,9 +79,10 @@ void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 		packInfo.ID = packId;
 		packInfo.Info = inReply->readAll();
 		QStringList list = packInfo.Info.split("\n", QString::SkipEmptyParts);
-		QString s_str(list[0]);
-		int size = s_str.length();
-		packInfo.ShortInfo = s_str.left(size - 1);
+		// QString s_str(list[0]);
+		// int size = s_str.length();
+		// packInfo.ShortInfo = s_str.left(size - 1);
+		packInfo.ShortInfo = list[0];
 		mPackInfo.push_back(packInfo);
 		QTableWidgetItem *Item = new QTableWidgetItem(packInfo.ShortInfo);
 		mMainUi->tableWidget->setItem(row, 2, Item);

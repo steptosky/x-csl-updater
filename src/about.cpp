@@ -1,29 +1,31 @@
 #include "about.h"
 
-About::About(QWidget *parent) :
+About::About(QWidget * parent)
+    :
     QDialog(parent),
-    m_ui(new Ui::About)
-{
+    m_ui(new Ui::About) {
+
     m_ui->setupUi(this);
-	m_ui->versionLabel->setText(QString(STS_XCSL_PROJECT_NAME) + " Ver.: ");
-    m_ui->version->setText(VerProg);
-	
+    setVersionInfo();
 }
 
-About::~About()
-{
+About::~About() {
     delete m_ui;
 }
 
-void About::changeEvent(QEvent *e)
-{
+void About::setVersionInfo() {
+    m_ui->versionLabel->setText(QString(PROGRAM_NAME) + " Ver.:");
+    m_ui->version->setText(gProgramVersion);
+}
+
+void About::changeEvent(QEvent * e) {
     QDialog::changeEvent(e);
-    switch (e->type())
-    {
-    case QEvent::LanguageChange:
-        m_ui->retranslateUi(this);
-        break;
-    default:
-        break;
+    switch (e->type()) {
+        case QEvent::LanguageChange:
+            m_ui->retranslateUi(this);
+            setVersionInfo();
+            break;
+        default:
+            break;
     }
 }
