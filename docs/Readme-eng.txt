@@ -1,21 +1,20 @@
-X-CSL-Package©
-http://csl.x-air.ru
+Thank you for choosing the X-CSL Package!
 
-Welcome to X-CSL Package!
+The X-CSL-Package project is a centralized CSL model library for displaying IVAO traffic in X-Plane.
+The project is developed, maintained and served by the X-AiR and StepToSky Teams.
+It can be installed and continuously updated using this X-CSL-Updater software.
 
-The X-CSL-Package project is a centralized CSL model library for displaying IVAO traffic in X-Plane, developed, maintained and served by the X-AiR and StepToSky Teams.
-It can be installed and continuously updated through our X-CSL-Updater software.
+- The X-CSL-Package is developed for and compatible with IVAO clients: X-IvAp and Altitude.
 
+- The X-CSL-Package is not compatible with any other CSL libraries or separate CSL models, 
+so please remove ALL files from your CSL library folder before using our library. 
+If you are going ONLY to test our library - save a copy of your current CSL folder somewhere aside.
 
-What is this project and what is it created for? First of all, this project is aimed at all X-Plane flight simulator users, flying in the IVAO® network.
-As you can probably know, the IVAO client software uses some kind of 3d-object library to display aircraft, helicopters, follow-me cars and other vehicles of users acting in the network around you. Such library also contains a lot of textures (liveries) to make the client software able to display traffic with correct liveries. The MSFS, FSX and Prepar3D users have a centralized traffic library already. It is maintained and served by IVAO itself and called MTL. It means these users can install and update the library through a convenient software, can expect the library is tested, the library doesn't contain a lot of bugs, duplicates and etc. The X-Plane users didn't have such ability and had to search custom CSL libraries or even single CSL models in the Internet manually, and that often led to a lot of problems, bugs, duplicates in their local custom CSL library, and even to impossibility to launch the X-Plane and connect to IVAO.
-The X-CSL-Package is created to resolve this problem for the X-Plane community and to provide an ability to get a centralized, maintained and tested CSL library in one place and to continuously update it through our X-CSL-Updater software. Eventual our project aim is to be fully synchronized with the MTL and maybe even to have more models than MTL has.
-
+- The X-CSL-Package is not compatible with other virtual aviation network clients, but even in this case you are able to try to use our library. 
+Use Menu -> Set Custom Path setting for set a custom location of CSL models.
+If you are going ONLY to test our library - save a copy of your current CSL folder somewhere aside.
 
 Please, read the instruction for downloading and installation!
-
-Our CSL library is not compatible with any other CSL libraries or separate CSL models, so please remove ALL files from <sim/Resources/plugins/X-IvAp Resources/CSL> folder before using our library. 
-If you are going ONLY to test our library - save a copy of your current CSL folder somewhere aside.
 
 Short instruction on how to start using the software:
 1. Download zip-archive (dmg-image for MacOS) according to your operational system.
@@ -29,8 +28,10 @@ Short instruction on how to start using the software:
 6. When indexation process is completed, you will be able to see which packages are out-of-date in the package list.
 7. To update outdated packages, select such packages (for select two or more lines - keep Ctrl-key pressed or press the "Select All" button to select all the packages) and press the "Update" button.
 
-Contact form -  http://csl.x-air.ru/contact
-e-mаil: csl@x-air.ru, info@steptosky.com
 
-Idea & CSL Library development: X-AiR Team (http://x-air.ru)
-Software development:           StepToSky  (http://steptosky.com)
+
+Use this form to contact us: https://csl.x-air.ru/contact/?lang_id=43
+
+Official X-CSL-Package project web site (https://csl.x-air.ru/?lang_id=43)
+Copyright © 2009-2020 X-AiR Team (https://x-air.ru)
+Copyright © 2009-2020 StepToSky Team (https://steptosky.com)
