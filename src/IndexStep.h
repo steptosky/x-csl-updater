@@ -37,9 +37,9 @@ private:
     void stage3();
     void endIndex(int Next = true);
     //-------------------------------------------------------------------------
-    void addPackageToTable(int count, const QStringList & list) const;
+    void addPackageToTable(const QStringList & list) const;
     void addPackageStatusToTable(int count, ePackageState status) const;
-    bool parseIndexFile(int & count, const QString & indexFileName, bool isCslIndex);
+    bool parseIndexFile(int & packagesCount, const QString & indexFileName, bool isCslIndex);
     bool parseIndexForDelFile(const QString & indexFileName, bool isCslIndex);
     void parseIndexFiles();
     ePackageState checkCslPack(int pos, int ID, const QString & indexFileName, bool isCslIndex);
