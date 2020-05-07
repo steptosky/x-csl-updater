@@ -42,3 +42,4 @@ TestServer/www/package--/
 TestServer/www/package
 *.qm
 TestServer/www/
+ReadyPackages/
