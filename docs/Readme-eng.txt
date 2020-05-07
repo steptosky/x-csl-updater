@@ -6,6 +6,8 @@ It can be installed and continuously updated using this X-CSL-Updater software.
 
 - The X-CSL-Package is developed for and compatible with IVAO clients: X-IvAp and Altitude.
 
+- This X-CSL-Updater is compatible Only with the Altitude IVAO client. If you still use X-IvAp download an older version of X-CSL-Updater (1.2.0 or older)
+
 - The X-CSL-Package is not compatible with any other CSL libraries or separate CSL models, 
 so please remove ALL files from your CSL library folder before using our library. 
 If you are going ONLY to test our library - save a copy of your current CSL folder somewhere aside.
