@@ -3,23 +3,25 @@
 
 #include "ui_about.h"
 #include <QtWidgets/QDialog>
-#include "types.h"
+#include "Definitions.h"
 
 namespace Ui {
-    class About;
+class About;
 }
 
 class About : public QDialog {
-    Q_OBJECT
+Q_OBJECT
 public:
-    About(QWidget *parent = 0);
+    About(QWidget * parent = 0);
     ~About();
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent * e);
 
 private:
-    Ui::About *m_ui;
+    Ui::About * m_ui;
+
+    void setVersionInfo();
 };
 
 #endif // ABOUT_H

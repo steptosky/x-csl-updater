@@ -3,35 +3,42 @@
 
 #include <QtGui>
 #include "ui_mainwindow.h"
-#include "types.h"
+#include "Definitions.h"
 #include <QtNetwork>
 
-class BaseSteps : public QWidget
-{
-	Q_OBJECT
+class BaseSteps : public QWidget {
+Q_OBJECT
+
+    //-------------------------------------------------------------------------
 public:
-	QWidget *MW;
-	Ui::MainWindow *MWUI;
-	QString mSeparator;
-	QString mCslFolderName;
-	struct PackageEntry
-	{
-		int ID;
-		QStringList data;
-		eFileState state;
-	};
-	QVector<PackageEntry> mEntryList;
+    struct PackageEntry {
+        int ID;
+        QStringList data;
+        eFileState state;
+        eFileType type;
+    };
 
-	BaseSteps(QWidget *_MW, Ui::MainWindow *_MWUI);
-	~BaseSteps();
-	void SetMessage(QString Msg);
-	void InitProgBar(int start, int end, int current = 0, int step = 1);
-	void StepProgBar();
-	void SetValProgBar(int value);
+    QVector<PackageEntry> mEntryList;
 
+    //-------------------------------------------------------------------------
+protected:
+    QWidget * MW;
+    Ui::MainWindow * MWUI;
+
+    //-------------------------------------------------------------------------
+    BaseSteps(QWidget * _MW, Ui::MainWindow * _MWUI);
+    virtual ~BaseSteps();
+
+    //-------------------------------------------------------------------------
+    void setMessage(QString msg) const;
+    void initProgBar(int inStart, int inEnd, int inCurrent = 0, int inStep = 1);
+    void stepProgBar();
+    void setValProgBar(int value) const;
+
+    //-------------------------------------------------------------------------
 private:
-	int step;
-	int current;
+    int mStep = 0;
+    int mCurrent = 0;
 };
 
 #endif // BASE_STEPS_H

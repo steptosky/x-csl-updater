@@ -4,5 +4,6 @@
         <file>x-air-team-logo.png</file>
         <file>xcsl_logo.png</file>
         <file>sts_logo.png</file>
+        <file>x-csl-updater_ru.qm</file>
     </qresource>
 </RCC>

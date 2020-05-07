@@ -36,31 +36,37 @@ function(genInfoFile destinationFile descriptionFile)
 	set(CONTENT  "${CONTENT}/*! \\warning For internal use only */\n")
 	set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}COMPILE_TIME __TIME__\n\n")
 
-	if (${VcsType} STREQUAL hg)
-		execute_process(
-			COMMAND "hg" "parent" "--template" "{node|short}"
-			WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-			RESULT_VARIABLE vcs_result
-			OUTPUT_VARIABLE vcs_revision
-		)
-		set(CONTENT  "${CONTENT}/* hg */\n")
-	elseif (${VcsType} STREQUAL git)
-		execute_process(
-			COMMAND "git" "log" "-1" "--pretty=format:%h"
-			WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-			RESULT_VARIABLE vcs_result
-			OUTPUT_VARIABLE vcs_revision
-		)
-		set(CONTENT  "${CONTENT}/* git */\n")
-	else ()
-		message ("WARNING: Unknown VCS")
-	endif ()
+	if (NOT vcs_revision)
+        execute_process(
+                COMMAND "git" "log" "-1" "--pretty=format:%h"
+                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                RESULT_VARIABLE vcs_result
+                OUTPUT_VARIABLE vcs_revision
+        )
+    endif()
+    if (NOT vcs_branch)
+        execute_process(
+                COMMAND "git" "rev-parse" "--abbrev-ref" "HEAD"
+                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+                RESULT_VARIABLE vcs_result
+                OUTPUT_VARIABLE vcs_branch
+        )
+        if(vcs_branch)
+            string(STRIP ${vcs_branch} vcs_branch)
+            set(CONTENT "${CONTENT}/* git */\n")
+        endif()
+    endif()
+
+    #-------------------------------#
+    if(NOT vcs_revision)
+        set(vcs_revision "undefined")
+    endif()
+    if(NOT vcs_branch)
+        set(vcs_branch "undefined")
+    endif()
 	
-	if(${vcs_result} EQUAL 0)
-		set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}REVISION \"${vcs_revision}\"\n")		
-	else()
-		message ("WARNING: VCS is not found, so the ${InfoFilePrefix}REVISION constant is not added.")
-	endif ()
+	set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}REVISION \"${vcs_revision}\"\n")
+    set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}BRANCH \"${vcs_branch}\"\n")
 		
 	#-----------------------------------------------------------#
 		

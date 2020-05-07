@@ -4,50 +4,59 @@
 #include <QtGui>
 #include "base_steps.h"
 #include "PackageAdditionalInfo.h"
+#include "AltitudeDefs.h"
 
 class IndexStep /*: public QThread*/ : public BaseSteps {
-	Q_OBJECT
+Q_OBJECT
 public:
-	QVector<PackageEntry> mFileListForDel;
+    QVector<PackageEntry> mFileListForDel;
 
-	IndexStep(QWidget *_MW, Ui::MainWindow *_MWUI, PackageAdditionalInfo *_Inf);
-	~IndexStep();
-	void StartIndex();
+    IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf);
+    ~IndexStep();
+    void startIndex();
+    void resetIndex();
 
+    //-------------------------------------------------------------------------
 signals:
-	void cancelAll();
+    void abortAllReplaysSig();
 
+    //-------------------------------------------------------------------------
 private slots:
-	void httpRequestFinished(QNetworkReply *inReply);
-	void indexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
-	void delIndexDonwloadProgress(qint64 bytesRead, qint64 totalBytes);
+    void cancelSlot();
+    //-------------------------------------------------------------------------
+    //public slots:
+    void stage2Slot(QNetworkReply * inReply);
+    void stage3Slot(QNetworkReply * inReply);
 
+    //-------------------------------------------------------------------------
 private:
-	void ParseIndexFiles();
-    ePackageState CheckCslPack(int pos, int ID);
-    eFileState CheckFile(QStringList list, int ID);
-	void EndIndex(int Next = true);
-	QString getIndexFilePath();
-	QString getIndexForDelFilePath();
-	bool createIndexFile(QString inFileName, QFile **inIndexFile);
+    bool createTargetFile(const QString & fileName, const QByteArray & bytesToWrite) const;
+    void scheduleDownloadingFile(const QString & url, const QString & localPath) const;
+    //-------------------------------------------------------------------------
+    void stage2();
+    void stage3();
+    void endIndex(int Next = true);
+    //-------------------------------------------------------------------------
+    void addPackageToTable(const QStringList & list) const;
+    void addPackageStatusToTable(int count, ePackageState status) const;
+    bool parseIndexFile(int & packagesCount, const QString & indexFileName, bool isCslIndex);
+    bool parseIndexForDelFile(const QString & indexFileName, bool isCslIndex);
+    void parseIndexFiles();
+    ePackageState checkCslPack(int pos, int ID, const QString & indexFileName, bool isCslIndex);
+    eFileState checkFile(QStringList list, int ID, bool isCslIndex);
+    //-------------------------------------------------------------------------
+    AltitudeDefs* mAltDefs = nullptr;
+    //-------------------------------------------------------------------------
+    PackageAdditionalInfo * mPackInfo;
+    QNetworkAccessManager * mNetMng;
 
-	PackageAdditionalInfo *mPackInfo;
-	QNetworkAccessManager *mNetMng;
-	QFile *mIndexFile = nullptr;
-	QFile *mDelIndexFile = nullptr;
+    int mFilesToDownload = 0;
 
-	int mFilesToDownload = 2;
-	int mIndexBytesDownloaded;
-	int mTotalIndexBytes;
-	int mDelIndexBytesDownloaded;
-	int mTotalDelIndexBytes;
+    size_t mSizeOfServer;
+    size_t mSizeOfNeedUpdate;
+    size_t mSizeOfClient;
 
-	int mSizeOfServer;
-	int mSizeOfNeedUpdate;
-	int mSizeOfClient;
-
-	QString mIndexFileUrl;
-	QString mDelIndexFileUrl;
+    mutable QLocale mLocale;
 };
 
 #endif // INDEX_H

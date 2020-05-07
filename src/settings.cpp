@@ -1,6 +1,6 @@
 ﻿#include "settings.h"
 #include "ui_settings.h"
-#include "types.h"
+#include "Definitions.h"
 
 Settings::Settings(QWidget * parent)
     :
@@ -8,12 +8,17 @@ Settings::Settings(QWidget * parent)
     m_ui(new Ui::Settings) {
     m_ui->setupUi(this);
 
-    m_ui->tab_2->setEnabled(false);
+    //m_ui->tab_2->setEnabled(false);
 
     this->LoadSettings();
 
-    connect(this->m_ui->CancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
+    connect(this->m_ui->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
     connect(this->m_ui->OkButton, SIGNAL(pressed()), this, SLOT(OkSlot()));
+
+    connect(m_ui->checkRus, &QCheckBox::stateChanged, this, &Settings::LangChangedSlot);
+    connect(m_ui->checkEng, &QCheckBox::stateChanged, this, &Settings::LangChangedSlot);
+
+    setupTranslator();
 }
 
 Settings::~Settings() {
@@ -29,8 +34,30 @@ void Settings::CancelSlot() {
     this->close();
 }
 
+void Settings::LangChangedSlot(int newState) {
+    if (newState){
+        QSettings settings(gSettingsFileName, QSettings::IniFormat);
+        if (this->m_ui->checkRus->isChecked()) {
+            settings.setValue("lang", "ru");
+        }
+        else {
+            settings.setValue("lang", "en");
+        }
+        setupTranslator();
+    }
+}
+
+void Settings::setupTranslator() {
+    const QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    QApplication::removeTranslator(mTranslator);
+    delete mTranslator;
+    mTranslator = new QTranslator();
+    mTranslator->load(translationFileName(settings.value("lang", "en").toString()));
+    QApplication::installTranslator(mTranslator);
+}
+
 void Settings::LoadSettings() {
-    QSettings settings(ORGANISATION, PROGRAM_NAME);
+    QSettings settings(gSettingsFileName, QSettings::IniFormat);
     // http://csl-updater.loc/CSL-Package/
     this->m_ui->server1->setText(settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
     this->m_ui->server2->setText(settings.value("Server2").toString());
@@ -59,36 +86,23 @@ void Settings::LoadSettings() {
             settings.setValue("curServer", settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
             break;
     }
-    settings.setValue("IndexFile", "x-csl-indexes.idx");
-    settings.setValue("IndexForDelFile", "x-csl-indexes-for-delete.idx");
-    /*QString PathLang = QDir::currentPath()+tr("/english.qm");
-    QFileInfo FInfo(PathLang);
-    if (!FInfo.isFile())
-    {
-	this->m_ui->checkEng->setDisabled(true);
-	this->m_ui->checkRus->setChecked(true);
-	settings.setValue("lang", "default");
-    }*/
-
-    // if (settings.value("lang", "default").toString() == ":/lang/english.qm")
-    //     this->m_ui->checkEng->setChecked(true);
-    // if (settings.value("lang", "default").toString() == "default")
-    //     this->m_ui->checkRus->setChecked(true);
-
-    this->m_ui->checkEng->setChecked(true);
-    this->m_ui->checkRus->setChecked(false);
-    settings.setValue("lang", "default");
+    //
+    if (settings.value("lang", "en").toString() == "ru") {
+        this->m_ui->checkRus->setChecked(true);
+    }
+    if (settings.value("lang", "en").toString() == "en") {
+        this->m_ui->checkEng->setChecked(true);
+    }
 }
 
 void Settings::SaveSettings() {
-    QSettings settings(ORGANISATION, PROGRAM_NAME);
-    // if (this->m_ui->checkEng->isChecked()) {
-    //     settings.setValue("lang", ":/lang/english.qm");
-    // }
-    // else {
-    //     settings.setValue("lang", "default");
-    // }
-    settings.setValue("lang", "default");
+    QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    if (this->m_ui->checkRus->isChecked()) {
+        settings.setValue("lang", "ru");
+    }
+    else {
+        settings.setValue("lang", "en");
+    }
 
     //servers
     QString _server = this->m_ui->server2->text();
@@ -103,8 +117,6 @@ void Settings::SaveSettings() {
     if (!_server.endsWith("/"))
         _server += "/";
     settings.setValue("Server4", _server);
-    settings.setValue("IndexFile", tr("x-csl-indexes.idx"));
-    settings.setValue("IndexForDelFile", "x-csl-indexes-for-delete.idx");
     if (this->m_ui->checkBox_1->isChecked()) {
         settings.setValue("serverActive", 1);
         settings.setValue("curServer", settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());

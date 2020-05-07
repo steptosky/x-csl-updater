@@ -4,7 +4,7 @@
 #include <QtGui>
 #include "ui_PackageAdditionalInfo.h"
 #include "ui_mainwindow.h"
-#include "types.h"
+#include "Definitions.h"
 #include <QtNetwork>
 
 namespace Ui {
@@ -44,11 +44,10 @@ private:
 	QVector<PackInfo> mPackInfo;
 	Ui::PackageAdditionalInfo *mUi;
 	Ui::MainWindow *mMainUi;
-	void getPackageInfo(int inPackID, int inRow);
+	void getPackageInfo(int inPackID, int inRow) const;
 	QNetworkAccessManager *mNetMng;
 
 	QString mServer;
-	QString mCslFolder;
 
 };
 
