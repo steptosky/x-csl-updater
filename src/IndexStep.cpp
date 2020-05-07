@@ -1,6 +1,7 @@
 #include "IndexStep.h"
 #include <QDebug>
 #include "AltitudeDefs.h"
+#include <filesystem>
 
 IndexStep::IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf)
     : BaseSteps(_MW, _MWUI), mLocale(this->locale())
@@ -155,17 +156,21 @@ void IndexStep::endIndex(int Next) {
 //////////////////////////////////////////* Functions */////////////////////////////////////////////
 /**************************************************************************************************/
 
-void IndexStep::addPackageToTable(int count, const QStringList & list) const {
-    MWUI->tableWidget->setRowCount(count + 1);
-    MWUI->tableWidget->setItem(count, 0, new QTableWidgetItem(QString::number(count)));
-    MWUI->tableWidget->setItem(count, 1, new QTableWidgetItem(list[1]));
-    MWUI->tableWidget->setItem(count, 2, new QTableWidgetItem(tr("Please wait...")));
-    MWUI->tableWidget->setItem(count, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
+void IndexStep::addPackageToTable(const QStringList & list) const {
+    Q_ASSERT(list.size() > 7);
+    const int rowCount = MWUI->tableWidget->rowCount();
+    MWUI->tableWidget->setRowCount(rowCount + 1);
+    MWUI->tableWidget->setItem(rowCount, 0, new QTableWidgetItem(list[7]));
+    MWUI->tableWidget->setItem(rowCount, 1, new QTableWidgetItem(list[1]));
+    MWUI->tableWidget->setItem(rowCount, 2, new QTableWidgetItem(tr("Please wait...")));
+    MWUI->tableWidget->setItem(rowCount, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
     const QString sizeStr = mLocale.formattedDataSize(list[2].toDouble());
     auto * sizeItem = new QTableWidgetItem(sizeStr);
     sizeItem->setData(Qt::TextAlignmentRole, Qt::AlignRight);
-    MWUI->tableWidget->setItem(count, 4, sizeItem);
-    qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(count);
+    MWUI->tableWidget->setItem(rowCount, 4, sizeItem);
+    addPackageStatusToTable(rowCount, static_cast<ePackageState>(list[6].toInt()));
+
+    qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(rowCount);
 }
 
 void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
@@ -191,7 +196,7 @@ void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
     qDebug() << QString("The status of the package at %1th row has ben set to: <%2>").arg(count).arg(packageState2Text(status));
 }
 
-bool IndexStep::parseIndexFile(int & count, const QString & indexFileName, bool isCslIndex) {
+bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileName, bool isCslIndex) {
     qDebug() << "Parsing an index file: <" << indexFileName << ">";
     QFile file(indexFileName);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -202,10 +207,10 @@ bool IndexStep::parseIndexFile(int & count, const QString & indexFileName, bool 
         qWarning() << "Cannot parse the index file, reason: The index file has zero size!";
         return false;
     }
+    QStringList sortedLines;
     int isFirstLine = true;
     while (!file.atEnd()) {
-        QString line = file.readLine();
-        //qDebug() << line;
+        QString line = QString(file.readLine()).trimmed();
         QString type = line.left(1);
         if (isFirstLine) {
             if (type != "0") {
@@ -220,13 +225,18 @@ bool IndexStep::parseIndexFile(int & count, const QString & indexFileName, bool 
             continue;
         QStringList list = line.split("%", QString::SkipEmptyParts);
         if (list.size() >= 6 && list[0] == "11") {
-            addPackageToTable(count, list);
-            const ePackageState status = checkCslPack(file.pos(), count, indexFileName, isCslIndex);
-            addPackageStatusToTable(count, status);
-            count++;
+            const ePackageState status = checkCslPack(file.pos(), packagesCount, indexFileName, isCslIndex);
+            sortedLines << line + "%" + QString::number(status) + "%" + QString::number(packagesCount);
+            packagesCount++;
         }
     }
     file.close();
+    //
+    sortedLines.sort();
+    for (const QString & line : sortedLines) {
+        QStringList list = line.split("%", QString::SkipEmptyParts);
+        addPackageToTable(list);
+    }
     qDebug() << "The index file has been parsed.";
     return true;
 }
@@ -280,19 +290,19 @@ void IndexStep::parseIndexFiles() {
 
     // packs
     qDebug() << "Parsing index files...";
-    int count = 0;
+    int packagesCount = 0;
     MWUI->tableWidget->clearContents();
     MWUI->tableWidget->setRowCount(0);
     // altitude pack
     QString indexFilePath = mAltDefs->indexFileLocalPath();
-    if (!mAltDefs->isCustomSimDirSelected() && !parseIndexFile(count, indexFilePath, false)) {
+    if (!mAltDefs->isCustomSimDirSelected() && !parseIndexFile(packagesCount, indexFilePath, false)) {
         endIndex(false);
         return;
     }
     stepProgBar();
     // csl pack
     indexFilePath = mAltDefs->cslIndexFileLocalPath();
-    if (!parseIndexFile(count, indexFilePath, true)) {
+    if (!parseIndexFile(packagesCount, indexFilePath, true)) {
         endIndex(false);
         return;
     }
@@ -453,10 +463,10 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
         const QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
         const QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
         if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
-            qWarning() << QString("Cannot download a file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
+            qWarning() << QString("Cannot download the file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
         }
         else {
-            qWarning() << QString("Cannot download a file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
+            qWarning() << QString("Cannot download the file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
         }
         endIndex(false);
     }
@@ -482,10 +492,10 @@ void IndexStep::stage3Slot(QNetworkReply * inReply) {
         const QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
         const QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
         if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
-            qWarning() << QString("Cannot download a file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
+            qWarning() << QString("Cannot download the file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
         }
         else {
-            qWarning() << QString("Cannot download a file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
+            qWarning() << QString("Cannot download the file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
         }
         endIndex(false);
     }

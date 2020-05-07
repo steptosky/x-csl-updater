@@ -20,7 +20,7 @@ macro(loadDescription)
 	
 	set(VersionMajorString "1")
 	set(VersionMinorString "3")
-	set(VersionPatchString "0")
+	set(VersionPatchString "1")
 	
 	set(ReleaseTypeString "")
 	set(InfoFilePrefix "STS_XCSL_")

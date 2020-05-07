@@ -39,14 +39,16 @@ MainWindow::MainWindow(QWidget * parent)
     connect(mTableInfoAct, &QAction::triggered, this, &MainWindow::tableInfo);
 
     // table colons widths
-    mUi->tableWidget->setColumnWidth(0, 30);  //ID
-    mUi->tableWidget->setColumnWidth(1, 150); //Title
-    mUi->tableWidget->setColumnWidth(2, 230); //Info
-    mUi->tableWidget->setColumnWidth(3, 130); //Ver
-    mUi->tableWidget->setColumnWidth(4, 80);  //size
-    mUi->tableWidget->setColumnWidth(5, 120); //status
-    mUi->tableWidget->setColumnWidth(6, 20);  //code
+    mUi->tableWidget->setColumnWidth(0, 30); //ID
+    mUi->tableWidget->setColumnHidden(0, true);
+    mUi->tableWidget->setColumnWidth(1, settings.value("titleColWidth", 150).toInt()); //Title
+    mUi->tableWidget->setColumnWidth(2, settings.value("infoColWidth", 280).toInt()); //Info
+    mUi->tableWidget->setColumnWidth(3, settings.value("versionColWidth", 130).toInt()); //Ver
+    mUi->tableWidget->setColumnWidth(4, settings.value("sizeColWidth", 80).toInt());  //size
+    mUi->tableWidget->setColumnWidth(5, settings.value("statusColWidth", 70).toInt());  //status
+    mUi->tableWidget->setColumnWidth(6, 20); //code
     mUi->tableWidget->setColumnHidden(6, true);
+    //mUi->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
     //
     mUi->progressBar->setValue(0);
@@ -85,6 +87,12 @@ MainWindow::~MainWindow() {
     QSettings settings(gSettingsFileName, QSettings::IniFormat);
     settings.setValue("pos", pos());
     settings.setValue("size", size());
+    settings.setValue("titleColWidth", mUi->tableWidget->columnWidth(1)); //Title
+    settings.setValue("infoColWidth", mUi->tableWidget->columnWidth(2)); //Info
+    settings.setValue("versionColWidth", mUi->tableWidget->columnWidth(3)); //Ver
+    settings.setValue("sizeColWidth", mUi->tableWidget->columnWidth(4));  //size
+    settings.setValue("statusColWidth", mUi->tableWidget->columnWidth(5));  //status
+    //
     delete mUpdateStep;
     delete mIndexStep;
     delete mPackInfoWin;
