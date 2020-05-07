@@ -45,12 +45,11 @@ void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) const {
 	AltitudeDefs* altDefs = AltitudeDefs::instance();
 	QUrl url;
 	if (!altDefs->isCustomSimDirSelected() && inRow == 0){
-		url = altDefs->fileUrl(packPath + "/" + AltitudeDefs::infoFileName());
+		url = altDefs->fileUrl(AltitudeDefs::infoFileName());
 	}
 	else{
 		url = altDefs->cslFileUrl(packPath + "/" + AltitudeDefs::infoFileName());
 	}
-
 	QNetworkRequest request;
 	request.setUrl(url);
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackID), inPackID);
@@ -86,6 +85,7 @@ void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 		mPackInfo.push_back(packInfo);
 		QTableWidgetItem *Item = new QTableWidgetItem(packInfo.ShortInfo);
 		mMainUi->tableWidget->setItem(row, 2, Item);
+		qDebug() << QString("An info file has been downloaded: <%1>").arg(inReply->url().toString());
 	}
 	else {
 		PackInfo packInfo;
@@ -98,10 +98,15 @@ void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 		mMainUi->tableWidget->setItem(row, 2, Item);
 
 		// error details
-		QString errorUrl = inReply->request().url().toString();
-		QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
-		QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
-		// TODO: we need to write the error info into somewhere...
+		const QString errorUrl = inReply->request().url().toString();
+		const QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
+		const QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+		if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
+			qWarning() << QString("Cannot download this info file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
+		}
+		else {
+			qWarning() << QString("Cannot download this info file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
+		}
 	}
 }
 
