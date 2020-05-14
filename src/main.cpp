@@ -41,10 +41,15 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
 int main(int argc, char * argv[]) {
     QApplication a(argc, argv);
-    gLogFile.reset(new QFile("log.txt"));
-    if (!gLogFile->open(QFile::WriteOnly)) {
+    QDir pwd(QApplication::applicationDirPath());
+    pwd.cdUp();
+    pwd.cdUp();
+    pwd.cdUp();
+    QString logFileName = pwd.absolutePath() + "/log88.txt";
+    gLogFile.reset(new QFile(logFileName));
+    if (!gLogFile->open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::critical(nullptr, PROGRAM_NAME + QApplication::tr(" :: ERROR!"),
-                              QApplication::tr("Cannot open log file: <log.txt>"), QMessageBox::Ok);
+                              QString("Cannot open log file: <%1>. Reason: ").arg(logFileName) + gLogFile->errorString(), QMessageBox::Ok);
         return 1;
     }
     qInstallMessageHandler(myMessageOutput);
