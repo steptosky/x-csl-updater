@@ -63,7 +63,7 @@ void IndexStep::startIndex() {
     MWUI->indexButton->setEnabled(false);
     MWUI->updateButton->setEnabled(false);
 
-    const QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    const QSettings settings(settingsFileName(), QSettings::IniFormat);
     mAltDefs->setServerUrl(settings.value("curServer").toString());
 
     connect(MWUI->cancelButton, &QPushButton::pressed, this, &IndexStep::cancelSlot);

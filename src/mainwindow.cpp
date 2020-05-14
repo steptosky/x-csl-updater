@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget * parent)
     // setup UI
     mUi->setupUi(this);
 
-    QSettings const settings(gSettingsFileName, QSettings::IniFormat);
+    QSettings const settings(settingsFileName(), QSettings::IniFormat);
     mSimDir = settings.value("mSimDir", "").toString();
     mIsSimDirCustom = settings.value("mIsSimDirCustom", false).toBool();
 
@@ -84,7 +84,7 @@ MainWindow::MainWindow(QWidget * parent)
 }
 
 MainWindow::~MainWindow() {
-    QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    QSettings settings(settingsFileName(), QSettings::IniFormat);
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("titleColWidth", mUi->tableWidget->columnWidth(1)); //Title
@@ -213,7 +213,7 @@ bool MainWindow::setupNewSimDir(const QString & newSimDir) {
     if (isSimDirValid(newSimDir)) {
         mIsSimDirCustom = false;
         mSimDir = newSimDir;
-        QSettings settings(gSettingsFileName, QSettings::IniFormat);
+        QSettings settings(settingsFileName(), QSettings::IniFormat);
         settings.setValue("mSimDir", mSimDir);
         settings.setValue("mIsSimDirCustom", mIsSimDirCustom);
         return true;
@@ -229,7 +229,7 @@ bool MainWindow::setupNewSimDir(const QString & newSimDir) {
 bool MainWindow::setupNewCustomDir(const QString & newCustomDir) {
     mIsSimDirCustom = true;
     mSimDir = newCustomDir;
-    QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    QSettings settings(settingsFileName(), QSettings::IniFormat);
     settings.setValue("mSimDir", mSimDir);
     settings.setValue("mIsSimDirCustom", mIsSimDirCustom);
     mUi->curPathLabel->setText(mSimDir);
@@ -274,9 +274,9 @@ void MainWindow::init() {
     }
     //
     const QDir currDir;
-    const QDir tmpDir(gTempDir);
+    const QDir tmpDir(tempDir());
     if (!tmpDir.exists()) {
-        if (!currDir.mkdir(gTempDir)) {
+        if (!currDir.mkdir(tempDir())) {
             qCritical() << "Cannot create temporary folder: " << tmpDir.absolutePath();
             QMessageBox::information(this, PROGRAM_NAME,
                                      tr("Cannot create temporary folder: ") + tmpDir.absolutePath(), QMessageBox::Ok);

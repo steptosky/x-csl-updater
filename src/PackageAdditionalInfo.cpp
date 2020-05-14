@@ -32,7 +32,7 @@ void PackageAdditionalInfo::OpenInfoWin() {
 }
 
 void PackageAdditionalInfo::GetInfoToTable() {
-    const QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    const QSettings settings(settingsFileName(), QSettings::IniFormat);
 	mServer = settings.value("curServer").toString();
 	mPackInfo.clear();
 	for (int i = 0; i < mMainUi->tableWidget->rowCount(); i++) {
