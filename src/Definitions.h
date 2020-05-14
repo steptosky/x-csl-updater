@@ -32,9 +32,9 @@ inline extern QString settingsFileName(){
 
 inline extern QString translationFileName(const QString & inLangId) {
     if (inLangId == "ru") {
-        static const QString name = QApplication::applicationDirPath() + "/x-csl-updater_ru.qm";
-        if (QFileInfo::exists(name)) {
-            return name;
+        static const QString name = "x-csl-updater_ru.qm";
+        if (QFileInfo::exists(QApplication::applicationDirPath() + "/" + name)) {
+            return QApplication::applicationDirPath() + "/" + name;
         }
         else {
             return ":/" + name;

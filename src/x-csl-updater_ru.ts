@@ -407,8 +407,8 @@ Note: no additional files will be installed/updated, only the X-CSL library file
         <translation></translation>
     </message>
     <message>
-        <location filename="PackageAdditionalInfo.cpp" line="93"/>
         <location filename="PackageAdditionalInfo.cpp" line="94"/>
+        <location filename="PackageAdditionalInfo.cpp" line="95"/>
         <source>There is no information...</source>
         <translation>Нет информации...</translation>
     </message>
@@ -416,14 +416,13 @@ Note: no additional files will be installed/updated, only the X-CSL library file
 <context>
     <name>QApplication</name>
     <message>
-        <location filename="main.cpp" line="46"/>
+        <location filename="main.cpp" line="47"/>
         <source> :: ERROR!</source>
         <translation> :: ОШИБКА!</translation>
     </message>
     <message>
-        <location filename="main.cpp" line="47"/>
         <source>Cannot open log file: &lt;log.txt&gt;</source>
-        <translation>Не могу открыть лог-файл: &lt;log.txt&gt;</translation>
+        <translation type="vanished">Не могу открыть лог-файл: &lt;log.txt&gt;</translation>
     </message>
 </context>
 <context>
