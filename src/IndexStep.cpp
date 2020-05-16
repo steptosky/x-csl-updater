@@ -1,7 +1,6 @@
 #include "IndexStep.h"
 #include <QDebug>
 #include "AltitudeDefs.h"
-#include <filesystem>
 
 IndexStep::IndexStep(QWidget * _MW, Ui::MainWindow * _MWUI, PackageAdditionalInfo * _Inf)
     : BaseSteps(_MW, _MWUI), mLocale(this->locale())
