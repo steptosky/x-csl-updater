@@ -30,7 +30,7 @@ public:
     //-------------------------------------------------------------------------
     QString serverUrl() {
         if (mServerUrl.isEmpty()) {
-            const QSettings settings(gSettingsFileName, QSettings::IniFormat);
+            const QSettings settings(settingsFileName(), QSettings::IniFormat);
             setServerUrl(settings.value("curServer").toString());
         }
         return mServerUrl;
@@ -42,7 +42,7 @@ public:
 
     QString baseLocalDir() const {
         if (isCustomSimDirSelected()) {
-            return gTempDir;
+            return tempDir();
         }
         else{
             return simDir() + "/Output/preferences/X-CSL-Package";

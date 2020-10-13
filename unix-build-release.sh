@@ -1,6 +1,6 @@
 #!/bin/bash
 
-QT_PATH="/usr/lib/x86_64-linux-gnu/cmake/Qt5"
+QT_PATH="/home/den_rain/Qt/5.11.2/gcc_64"
 PROJ_DIR=build
 
 if [ ! -d "$PROJ_DIR" ]; then

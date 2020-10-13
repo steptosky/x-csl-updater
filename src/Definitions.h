@@ -1,6 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <QApplication>
 #include <QtGui>
 #include "Info.h"
 
@@ -12,20 +13,28 @@ static const QString gProgramVersion = QString(STS_XCSL_VERSION_STRING) + "+" + 
 #define ORGANIZATION STS_XCSL_ORGANIZATION_NAME
 #define PROGRAM_NAME STS_XCSL_PROJECT_SHORT_NAME
 
-static const QString gSettingsFileName = "settings.ini";
-static const QString gTempDir = "tmp";
-
 static const QString gSimPluginsDir = "Resources/plugins";
 
 // static const QString gXIvApResDir = gSimPluginsDir + "/X-IvAp Resources";
 // static const QString gXIvApCslDir = gXIvApResDir + "/CSL";
-//
+
+inline extern QString tempDir(){
+    return QApplication::applicationDirPath() + "/tmp";
+}
+
+inline extern QString logFileName(){
+    return QApplication::applicationDirPath() + "/log.txt";
+}
+
+inline extern QString settingsFileName(){
+    return QApplication::applicationDirPath() + "/settings.ini";
+}
 
 inline extern QString translationFileName(const QString & inLangId) {
     if (inLangId == "ru") {
         static const QString name = "x-csl-updater_ru.qm";
-        if (QFileInfo::exists(name)) {
-            return name;
+        if (QFileInfo::exists(QApplication::applicationDirPath() + "/" + name)) {
+            return QApplication::applicationDirPath() + "/" + name;
         }
         else {
             return ":/" + name;

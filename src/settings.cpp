@@ -36,7 +36,7 @@ void Settings::CancelSlot() {
 
 void Settings::LangChangedSlot(int newState) {
     if (newState){
-        QSettings settings(gSettingsFileName, QSettings::IniFormat);
+        QSettings settings(settingsFileName(), QSettings::IniFormat);
         if (this->m_ui->checkRus->isChecked()) {
             settings.setValue("lang", "ru");
         }
@@ -48,7 +48,7 @@ void Settings::LangChangedSlot(int newState) {
 }
 
 void Settings::setupTranslator() {
-    const QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    const QSettings settings(settingsFileName(), QSettings::IniFormat);
     QApplication::removeTranslator(mTranslator);
     delete mTranslator;
     mTranslator = new QTranslator();
@@ -57,7 +57,7 @@ void Settings::setupTranslator() {
 }
 
 void Settings::LoadSettings() {
-    QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    QSettings settings(settingsFileName(), QSettings::IniFormat);
     // http://csl-updater.loc/CSL-Package/
     this->m_ui->server1->setText(settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
     this->m_ui->server2->setText(settings.value("Server2").toString());
@@ -96,7 +96,7 @@ void Settings::LoadSettings() {
 }
 
 void Settings::SaveSettings() {
-    QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    QSettings settings(settingsFileName(), QSettings::IniFormat);
     if (this->m_ui->checkRus->isChecked()) {
         settings.setValue("lang", "ru");
     }

@@ -1,5 +1,4 @@
 #include "UpdateStep.h"
-#include <filesystem>
 
 UpdateStep::UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI)
     : BaseSteps(_MW, _MWUI) {
@@ -113,7 +112,7 @@ void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep * inInd
     connect(MWUI->cancelButton, SIGNAL(pressed()), this, SLOT(CancelSlot()));
     MWUI->cancelButton->setEnabled(true);
     //
-    QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    QSettings settings(settingsFileName(), QSettings::IniFormat);
     mEntryList.clear();
     mSelectedListForDelete.clear();
     mIndexStep = inIndexStep;
