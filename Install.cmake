@@ -38,15 +38,12 @@ elseif (APPLE)
     )  
 
 else ()
-
+    install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-lindeployqt.cmake")
     install(
         DIRECTORY 
-        ${CMAKE_SOURCE_DIR}/bin/
+        ${CMAKE_SOURCE_DIR}/bin/DistributionKit/
         DESTINATION ${PROJECT}
         USE_SOURCE_PERMISSIONS
-        FILES_MATCHING
-        PATTERN "${PROJECT}*"
-        PATTERN "*.so.*"
     )
     
 endif()

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export QT_PATH="/Volumes/El Capitan/Users/den_rain/Qt-last/5.11.2/clang_64/"
+export QT_PATH="/Users/den_rain/Qt/5.11.2/clang_64/"
 PROJ_DIR=build
 
 if [ ! -d "$PROJ_DIR" ]; then

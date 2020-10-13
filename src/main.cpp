@@ -41,10 +41,12 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext & context, const Q
 
 int main(int argc, char * argv[]) {
     QApplication a(argc, argv);
-    gLogFile.reset(new QFile("log.txt"));
-    if (!gLogFile->open(QFile::WriteOnly)) {
+    //
+    gLogFile.reset(new QFile(logFileName()));
+    if (!gLogFile->open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::critical(nullptr, PROGRAM_NAME + QApplication::tr(" :: ERROR!"),
-                              QApplication::tr("Cannot open log file: <log.txt>"), QMessageBox::Ok);
+                              QString("Cannot open log file: <%1>. "
+                                  "Reason: ").arg(logFileName()) + gLogFile->errorString(), QMessageBox::Ok);
         return 1;
     }
     qInstallMessageHandler(myMessageOutput);
@@ -52,9 +54,11 @@ int main(int argc, char * argv[]) {
     qInfo() << STS_XCSL_ORGANIZATION_NAME;
     qInfo() << STS_XCSL_PROJECT_WEBLINK;
     qInfo() << "Version: " << gProgramVersion;
+    qInfo() << "Application dir: " << QApplication::applicationDirPath();
+    qInfo() << "Working dir: " << QDir::currentPath();
     qInfo() << "-------------------------------";
 
-    QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    QSettings settings(settingsFileName(), QSettings::IniFormat);
     QString lang;
     if (settings.value("first", "no").toString() == "no") {
         const QLocale locale;

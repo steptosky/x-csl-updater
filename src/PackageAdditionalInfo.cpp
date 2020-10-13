@@ -32,7 +32,7 @@ void PackageAdditionalInfo::OpenInfoWin() {
 }
 
 void PackageAdditionalInfo::GetInfoToTable() {
-    const QSettings settings(gSettingsFileName, QSettings::IniFormat);
+    const QSettings settings(settingsFileName(), QSettings::IniFormat);
 	mServer = settings.value("curServer").toString();
 	mPackInfo.clear();
 	for (int i = 0; i < mMainUi->tableWidget->rowCount(); i++) {
@@ -45,11 +45,12 @@ void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) const {
 	AltitudeDefs* altDefs = AltitudeDefs::instance();
 	QUrl url;
 	if (!altDefs->isCustomSimDirSelected() && inRow == 0){
-		url = altDefs->fileUrl(AltitudeDefs::infoFileName());
+		url = altDefs->fileUrl(packPath + "/" + AltitudeDefs::infoFileName());
 	}
 	else{
 		url = altDefs->cslFileUrl(packPath + "/" + AltitudeDefs::infoFileName());
 	}
+
 	QNetworkRequest request;
 	request.setUrl(url);
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackID), inPackID);

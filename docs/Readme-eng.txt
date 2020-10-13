@@ -19,11 +19,11 @@ If you are going ONLY to test our library - save a copy of your current CSL fold
 Please, read the instruction for downloading and installation!
 
 Short instruction on how to start using the software:
-1. Download zip-archive (dmg-image for MacOS) according to your operational system.
-2. Unpack folder from archive into any place or mount the dmg image and copy X-CSL-Updater from the image to the Applications folder on MacOS.
+1. Download zip-archive (tar.gz for Linux, dmg-image for MacOS) according to your operational system.
+2. Unpack X-CSL-Updater folder from archive into any place or mount the dmg image and copy X-CSL-Updater app from the image to the Applications folder on MacOS.
 3. To start the program:
  * for Windows-> Start X-CSL-Updater.exe
- * for Linux-> Start X-CSL-Updater
+ * for Linux-> Start X-CSL-Updater.sh
  * for Mac-> Start X-CSL-Updater application
 4. In the opened window press the "Browse" button and specify the X-Plane executable file.
 5. Press the "Index" button to compare your local csl library with the remote csl library provided by the server to determine which csl packages should be updated.
