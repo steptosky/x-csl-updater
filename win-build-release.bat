@@ -1,8 +1,8 @@
 @echo off
 
-set QT_PATH="C:/Qt/5.11.2/msvc2015_64"
+set QT_PATH="C:/Qt/5.15.2/msvc2019_64"
 
-set SLN_VERSION="Visual Studio 14 Win64"
+set SLN_VERSION="Visual Studio 16 2019"
 
 set PROJ_DIR=build
 
