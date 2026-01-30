@@ -1,0 +1,13 @@
+name: QT_TEST
+on: workflow_dispatch
+jobs:
+  install_qt: 
+    runs-on: windows-2019
+    steps:
+      - name: Install Qt 5.15.2 (qtbase)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "5.15.2"
+          arch: win64_msvc2019_64
+          modules: "qtbase"
+          cache: true
