@@ -1,5 +1,5 @@
 name: QT_TEST
-on: [workflow_dispatch, pull_request, push]
+on: [workflow_dispatch]
 jobs:
   install_qt: 
     runs-on: windows-2019
@@ -9,5 +9,4 @@ jobs:
         with:
           version: "5.15.2"
           arch: win64_msvc2019_64
-          modules: "qtbase"
           cache: true
