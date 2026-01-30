@@ -1,5 +1,5 @@
 name: QT_TEST
-on: [workflow_dispatch]
+on: workflow_dispatch
 jobs:
   install_qt: 
     runs-on: windows-2019
