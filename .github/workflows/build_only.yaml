@@ -1,0 +1,10 @@
+name: Build only
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    uses: ./.github/workflows/_reusable_workflow.yaml
+    with:
+      do_install: false
+      upload_artifacts: false
