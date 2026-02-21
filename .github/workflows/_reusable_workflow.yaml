@@ -36,7 +36,7 @@ jobs:
           - os: macos-latest
             qt_arch: clang_64
             generator: "Unix Makefiles"
-            cmake_args: "-A x64"
+            cmake_args: ""
 
     runs-on: ${{ matrix.os }}
 
