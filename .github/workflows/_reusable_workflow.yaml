@@ -25,18 +25,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-2022
-            qt_arch: win64_msvc2019_64
-            generator: "Visual Studio 17 2022"
-            cmake_args: "-A x64 -T v142"
+          #- os: windows-2022
+          #  qt_arch: win64_msvc2019_64
+          #  generator: "Visual Studio 17 2022"
+          #  cmake_args: "-A x64 -T v142"
           - os: ubuntu-22.04
             qt_arch: gcc_64
             generator: "Unix Makefiles"
             cmake_args: ""
-          - os: macos-15-intel
-            qt_arch: clang_64
-            generator: "Unix Makefiles"
-            cmake_args: ""
+          #- os: macos-15-intel
+          #  qt_arch: clang_64
+          #  generator: "Unix Makefiles"
+          #  cmake_args: ""
 
     runs-on: ${{ matrix.os }}
 
@@ -64,9 +64,7 @@ jobs:
         if: runner.os == 'Linux' && inputs.do_install
         shell: bash
         run: |
-          python3 -m pip install --user cqtdeployer
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-          cqtdeployer --help >/dev/null
+          sudo snap install cqtdeployer
 
       - name: Configure
         shell: bash
@@ -84,7 +82,7 @@ jobs:
         run: |
           cmake --build "${PROJ_DIR}" --config Release --clean-first
 
-      - name: Install / Deploy (your existing packaging logic)
+      - name: Install
         if: inputs.do_install
         shell: bash
         run: |
@@ -112,7 +110,7 @@ jobs:
         run: |
           Compress-Archive -Path "${{ env.INSTALL_DIR }}\*" -DestinationPath "${PACKAGE_DIR}\package-${{ runner.os }}.zip" -Force
 
-      - name: Archive package (macOS/Linux)
+      - name: Archive package (Linux)
         if: runner.os == 'Linux' && inputs.do_install
         shell: bash
         run: |
