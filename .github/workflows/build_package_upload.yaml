@@ -11,7 +11,7 @@ on:
 
 jobs:
   package:
-    uses: ./.github/workflows/reusable_workflow.yaml
+    uses: ./.github/workflows/_reusable_workflow.yaml
     with:
       do_install: true
       do_dmg: true
