@@ -25,15 +25,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: windows-2019
-            qt_arch: win64_msvc2019_64
-            generator: "Visual Studio 16 2019"
+          - os: windows-2022
+            qt_arch: win64_msvc2022_64
+            generator: "Visual Studio 17 2022"
             cmake_args: "-A x64"
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             qt_arch: gcc_64
             generator: "Unix Makefiles"
             cmake_args: ""
-          - os: macos-latest
+          - os: macos-15-intel
             qt_arch: clang_64
             generator: "Unix Makefiles"
             cmake_args: ""
