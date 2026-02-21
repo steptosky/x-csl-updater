@@ -36,7 +36,7 @@ jobs:
           - os: macos-15-intel
             qt_arch: clang_64
             generator: "Unix Makefiles"
-            cmake_args: ""
+            cmake_args: "-DCMAKE_OSX_ARCHITECTURES=x86_64"
 
     runs-on: ${{ matrix.os }}
 
@@ -70,8 +70,7 @@ jobs:
             ${{ matrix.cmake_args }} \
             -DCMAKE_PREFIX_PATH="${QT_PATH}" \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}" \
-            -DCMAKE_OSX_ARCHITECTURES=x86_64
+            -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}"
 
       - name: Build
         shell: bash
@@ -125,5 +124,5 @@ jobs:
         with:
           name: package-${{ runner.os }}
           path: |
-            ${PACKAGE_DIR}/**
+            ${{ env.PACKAGE_DIR }}/**
 
