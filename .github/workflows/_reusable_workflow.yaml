@@ -29,14 +29,14 @@ jobs:
           #  qt_arch: win64_msvc2019_64
           #  generator: "Visual Studio 17 2022"
           #  cmake_args: "-A x64 -T v142"
-          - os: ubuntu-22.04
-            qt_arch: gcc_64
-            generator: "Unix Makefiles"
-            cmake_args: ""
-          #- os: macos-15-intel
-          #  qt_arch: clang_64
+          #- os: ubuntu-22.04
+          #  qt_arch: gcc_64
           #  generator: "Unix Makefiles"
           #  cmake_args: ""
+          - os: macos-15-intel
+            qt_arch: clang_64
+            generator: "Unix Makefiles"
+            cmake_args: ""
 
     runs-on: ${{ matrix.os }}
 
