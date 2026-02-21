@@ -108,15 +108,15 @@ jobs:
 
       - name: Archive package (Windows)
         if: runner.os == 'Windows' && inputs.do_install
-        shell: pwsh
+        shell: bash
         run: |
-          Compress-Archive -Path "${{ env.INSTALL_DIR }}\*" -DestinationPath "${PACKAGE_DIR}\package-${{ runner.os }}.zip" -Force
+          7z a -tzip "${PACKAGE_DIR}/package-${{ runner.os }}.zip" "${INSTALL_DIR}"/*
 
       - name: Archive package (Linux)
         if: runner.os == 'Linux' && inputs.do_install
         shell: bash
         run: |
-          (cd "${INSTALL_DIR}" && tar -czf "${PACKAGE_DIR}/package-${{ runner.os }}.tar.gz" .)
+          tar -czf "${PACKAGE_DIR}/package-${{ runner.os }}.tar.gz" -C "${INSTALL_DIR}" .
 
       - name: Upload artifacts
         if: inputs.do_install && inputs.upload_artifacts
