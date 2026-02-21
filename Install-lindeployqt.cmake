@@ -1,4 +1,5 @@
 set(WORKDIR ${CMAKE_SOURCE_DIR}/../bin)
+set(CQTDEPLOYER_QMAKE "$ENV{QT_PATH}/bin/qmake")
 string(REPLACE "\"" "" STRIPPED_QT_PATH "$ENV{QT_PATH}")
 message(STATUS "workdir: ${WORKDIR}")
 
@@ -6,6 +7,7 @@ message(STATUS "workdir: ${WORKDIR}")
 execute_process(
     COMMAND cqtdeployer
     -bin X-CSL-Updater
+    -qmake ${CQTDEPLOYER_QMAKE}
     noTranslations
     WORKING_DIRECTORY ${WORKDIR}
     RESULT_VARIABLE deployqt_result
