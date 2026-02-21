@@ -58,7 +58,9 @@ jobs:
 
       - name: Export QT_PATH for your CMake scripts
         shell: bash
-        run: echo "QT_PATH=${QT_ROOT_DIR}" >> "$GITHUB_ENV"
+        run: |
+          echo "QT_PATH=${QT_ROOT_DIR}" >> "$GITHUB_ENV"
+          echo "${QT_ROOT_DIR}/bin" >> "$GITHUB_PATH"
 
       - name: Install cqtdeployer (Linux only)
         if: runner.os == 'Linux' && inputs.do_install
