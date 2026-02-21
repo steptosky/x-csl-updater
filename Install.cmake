@@ -13,10 +13,17 @@ if (CLEANUP_INSTALL_FIRST)
 endif()
 
 # -----------------------------------------------------------------------#
-# binary parts
+# grab variables
+
+install(CODE "set(QT_PATH ${QT_PATH})")
+install(CODE "set(PROJECT ${PROJECT})")
+install(CODE "set(VERSION ${VersionMajorString}.${VersionMinorString}.${VersionPatchString})")
+install(CODE "set(vcs_revision ${vcs_revision})")
+
+# -----------------------------------------------------------------------#
+# deploying
 
 if (MSVC)
-
     install(
         DIRECTORY 
         ${CMAKE_SOURCE_DIR}/bin/release/
@@ -24,18 +31,16 @@ if (MSVC)
         FILES_MATCHING
         PATTERN "${PROJECT}.exe"
     )
-    #install(FILES ${QT_LIBS} DESTINATION ${PROJECT})
     install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-windeployqt.cmake")
 
 elseif (APPLE)
-
     install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-macdeployqt.cmake")
     install(
         DIRECTORY
         ${CMAKE_SOURCE_DIR}/bin/${PROJECT}.app
         DESTINATION ${PROJECT}
         USE_SOURCE_PERMISSIONS
-    )  
+    )
 
 else ()
     install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-lindeployqt.cmake")
@@ -48,17 +53,28 @@ else ()
     
 endif()
 
-
-
 # -----------------------------------------------------------------------#
 # additional parts
 
 install(
-	DIRECTORY 
-	${CMAKE_SOURCE_DIR}/docs/
-	DESTINATION ${PROJECT}
-	FILES_MATCHING PATTERN "*.txt"
+    DIRECTORY 
+    ${CMAKE_SOURCE_DIR}/docs/
+    DESTINATION ${PROJECT}
+    FILES_MATCHING PATTERN "*.txt"
 )
+
+# -----------------------------------------------------------------------#
+# Packaging
+if (MSVC)
+    install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-winpackage.cmake")
+
+elseif (APPLE)
+    install(CODE "message(\"[INSTALL] MAC Packaging...\")")
+    
+else ()
+    install(CODE "message(\"[INSTALL] Unix Packaging...\")")
+    
+endif()
 
 # -----------------------------------------------------------------------#
 

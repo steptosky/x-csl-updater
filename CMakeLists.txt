@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
 
+set (QT_PATH $ENV{QT_PATH})
+message(STATUS "QT_PATH: ${QT_PATH}")
+
 set (SOLUTION X-CSL-Updater)
 set (INFO_H_PATH ${CMAKE_SOURCE_DIR}/src/Info.h)
 
@@ -8,6 +11,9 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 project( ${SOLUTION} )
+
+include(${CMAKE_SOURCE_DIR}/Description.cmake)
+loadDescription()
 
 include(cmake/GenInfoFile.cmake)
 genInfoFile("${INFO_H_PATH}" "${CMAKE_SOURCE_DIR}/Description.cmake")
