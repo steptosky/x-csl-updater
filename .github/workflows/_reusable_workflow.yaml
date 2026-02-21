@@ -49,24 +49,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Qt 5.15.2 (qtbase)
+      - name: Install Qt 5.15.2
         uses: jurplel/install-qt-action@v4
         with:
           version: "5.15.2"
           arch: ${{ matrix.qt_arch }}
           cache: true
 
-      - name: Export QT_PATH for your CMake scripts
+      - name: Export QT_PATH
         shell: bash
         run: |
           echo "QT_PATH=${QT_ROOT_DIR}" >> "$GITHUB_ENV"
           echo "${QT_ROOT_DIR}/bin" >> "$GITHUB_PATH"
-
-      - name: Install cqtdeployer (Linux only)
-        if: runner.os == 'Linux' && inputs.do_install
-        shell: bash
-        run: |
-          sudo snap install cqtdeployer
 
       - name: Configure
         shell: bash
@@ -84,13 +78,20 @@ jobs:
         run: |
           cmake --build "${PROJ_DIR}" --config Release --clean-first
 
+      - name: Install cqtdeployer (Linux only)
+        if: runner.os == 'Linux' && inputs.do_install
+        shell: bash
+        run: |
+          sudo snap install cqtdeployer
+          
       - name: Install
         if: inputs.do_install
         shell: bash
         run: |
+          mkdir -p "${PACKAGE_DIR}"
           cmake --build "${PROJ_DIR}" --config Release --target install
 
-      - name: Create DMG (macOS)
+      - name: Create DMG (macOS Only)
         if: runner.os == 'macOS' && inputs.do_install && inputs.do_dmg
         shell: bash
         run: |
