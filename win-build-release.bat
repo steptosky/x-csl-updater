@@ -9,7 +9,11 @@ set PROJ_DIR=build
 if not exist %PROJ_DIR% mkdir %PROJ_DIR%
 cd %PROJ_DIR%
 rem configure
-cmake -G %SLN_VERSION% ../ -DCMAKE_PREFIX_PATH=%QT_PATH% -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../Package
+cmake -G %SLN_VERSION% ../ ^
+        -DCMAKE_PREFIX_PATH=%QT_PATH% ^
+        -DCMAKE_BUILD_TYPE=Release ^
+        -DCMAKE_INSTALL_PREFIX=../Package ^
+        -DCLEANUP_INSTALL_FIRST=ON
 
 rem build
 cmake --build . --clean-first --config Release

@@ -1,6 +1,4 @@
-
-set(WORKDIR ${CMAKE_INSTALL_PREFIX}/${PROJECT})
-message(STATUS "workdir: ${WORKDIR}")
+message(STATUS "[INSTALL] WIN Deploying...")
 
 message(STATUS "QT_PATH: ${QT_PATH}")
 set(STRIPPED_QT_PATH ${QT_PATH})
@@ -22,7 +20,7 @@ execute_process(
     --no-patchqt
     --no-quick-import
     --release
-    WORKING_DIRECTORY ${WORKDIR}
+    WORKING_DIRECTORY ${DEPLOY_DIR}
     RESULT_VARIABLE dmg_result
     OUTPUT_VARIABLE dmg_stdout
     ERROR_VARIABLE dmg_stderr
@@ -34,4 +32,6 @@ message(STATUS "windeployqt result: ${deployqt_result}")
 
 if (NOT ${windeployqt_result} EQUAL 0)
     message(FATAL_ERROR "windeployqt is failed!")
+else()
+    message(STATUS "[INSTALL] WIN Deploying done.")
 endif()

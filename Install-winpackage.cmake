@@ -1,10 +1,11 @@
 message(STATUS "[INSTALL] WIN Packaging...")
 
-set(SRC ${CMAKE_INSTALL_PREFIX}/${PROJECT})
+set(SRC ${DEPLOY_DIR})
 message(STATUS "SRC: ${SRC}")
 
-set(DST ${CMAKE_INSTALL_PREFIX})
+set(DST ${PACKAGE_DIR})
 message(STATUS "DST: ${DST}")
+file(MAKE_DIRECTORY "${DST}")
 
 set(ARCHIVE ${DST}/${PROJECT}_win_${VERSION}-${vcs_revision}.zip)
 
