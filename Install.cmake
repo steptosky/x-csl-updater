@@ -84,13 +84,11 @@ elseif (APPLE)
     )
 
 else ()
-    install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-lindeployqt.cmake")
-    install(
-        DIRECTORY 
-        ${CMAKE_SOURCE_DIR}/bin/DistributionKit/
-        DESTINATION ${DEPLOY_DIR}
-        USE_SOURCE_PERMISSIONS
+    install(TARGETS ${PROJECT}
+        CONFIGURATIONS Release
+        RUNTIME DESTINATION ${DEPLOY_DIR}
     )
+    install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-lindeployqt.cmake")
     
 endif()
 
@@ -108,13 +106,10 @@ install(
 # Packaging
 if (MSVC)
     install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-winpackage.cmake")
-
 elseif (APPLE)
     install(CODE "message(\"[INSTALL] MAC Packaging...\")")
-    
 else ()
-    install(CODE "message(\"[INSTALL] Unix Packaging...\")")
-    
+    install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-linpackage.cmake")
 endif()
 
 # -----------------------------------------------------------------------#

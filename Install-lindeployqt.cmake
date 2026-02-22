@@ -1,7 +1,10 @@
-set(WORKDIR "${CMAKE_SOURCE_DIR}/../bin")
-set(CQTDEPLOYER_QMAKE "$ENV{QT_PATH}/bin/qmake")
+message(STATUS "[INSTALL] LIN Deploying...")
+
+set(WORKDIR "${DEPLOY_DIR}")
+set(CQTDEPLOYER_QMAKE "${QT_PATH}/bin/qmake")
 
 message(STATUS "workdir: ${WORKDIR}")
+message(STATUS "QT_PATH: ${QT_PATH}")
 message(STATUS "cqtdeployer qmake: ${CQTDEPLOYER_QMAKE}")
 
 if(NOT EXISTS "${CQTDEPLOYER_QMAKE}")
@@ -11,7 +14,7 @@ endif()
 # cqtdeployer -bin Guitar
 execute_process(
     COMMAND cqtdeployer
-    -bin X-CSL-Updater
+    -bin ${PROJECT}
     -qmake ${CQTDEPLOYER_QMAKE}
     noTranslations
     WORKING_DIRECTORY ${WORKDIR}
@@ -26,4 +29,6 @@ message(STATUS "cqtdeployer result: ${deployqt_result}")
 
 if (NOT ${deployqt_result} EQUAL 0)
     message(FATAL_ERROR "cqtdeployer is failed!")
+else()
+    message(STATUS "[INSTALL] WIN Deploying done.")
 endif()
