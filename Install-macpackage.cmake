@@ -33,7 +33,7 @@ execute_process(
         --no-internet-enable
 
         --background ${DMG_BACKGROUND}
-        --window-size 605 465
+        --window-size 600 460
         --window-pos 200 120
         --icon-size 96
         --text-size 12        
