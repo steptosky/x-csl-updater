@@ -13,7 +13,8 @@ file(ARCHIVE_CREATE
     OUTPUT "${ARCHIVE}"
     PATHS "."
     WORKING_DIRECTORY "${SRC}"
-    FORMAT tgz
+    FORMAT gnutar
+    COMPRESSION GZip
     VERBOSE
 )
 
