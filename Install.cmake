@@ -42,6 +42,10 @@ install(CODE "message(\"BASE_DIR: ${BASE_DIR}\")")
 install(CODE "message(\"DEPLOY_DIR: ${DEPLOY_DIR}\")")
 install(CODE "message(\"PACKAGE_DIR: ${PACKAGE_DIR}\")")
 
+install(CODE "message(\"TARGET_FILE: $<TARGET_FILE:${PROJECT}>\")")
+install(CODE "message(\"TARGET_FILE_DIR: $<TARGET_FILE_DIR:${PROJECT}>\")")
+install(CODE "message(\"TARGET_FILE_NAME: $<TARGET_FILE_NAME:${PROJECT}>\")")
+
 # -----------------------------------------------------------------------#
 # grab variables to Install context
 
@@ -55,6 +59,10 @@ install(CODE "set(DEPLOY_DIR_REL ${DEPLOY_DIR_REL})")
 install(CODE "set(PACKAGE_DIR_REL ${PACKAGE_DIR_REL})")
 install(CODE "set(DEPLOY_DIR ${DEPLOY_DIR})")
 install(CODE "set(PACKAGE_DIR ${PACKAGE_DIR})")
+
+install(CODE "set(TARGET_FILE $<TARGET_FILE:${PROJECT}>)")
+install(CODE "set(TARGET_FILE_DIR $<TARGET_FILE_DIR:${PROJECT}>)")
+install(CODE "set(TARGET_FILE_NAME $<TARGET_FILE_NAME:${PROJECT}>)")
 
 # -----------------------------------------------------------------------#
 # cleanup
@@ -84,10 +92,10 @@ elseif (APPLE)
     )
 
 else ()
-    install(TARGETS ${PROJECT}
-        CONFIGURATIONS Release
-        RUNTIME DESTINATION ${DEPLOY_DIR}
-    )
+    # install(TARGETS ${PROJECT}
+    #     CONFIGURATIONS Release
+    #     RUNTIME DESTINATION ${DEPLOY_DIR}
+    # )
     install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-lindeployqt.cmake")
     
 endif()

@@ -1,6 +1,6 @@
 message(STATUS "[INSTALL] LIN Deploying...")
 
-set(WORKDIR "${DEPLOY_DIR}")
+set(WORKDIR "${TARGET_FILE_DIR}")
 set(CQTDEPLOYER_QMAKE "${QT_PATH}/bin/qmake")
 
 message(STATUS "workdir: ${WORKDIR}")
@@ -14,20 +14,22 @@ endif()
 # cqtdeployer -bin Guitar
 execute_process(
     COMMAND cqtdeployer
-    -bin ${PROJECT}
+    -bin ${TARGET_FILE_NAME}
     -qmake ${CQTDEPLOYER_QMAKE}
+    -targetDir ${DEPLOY_DIR}
+    -verbose 3
     noTranslations
     WORKING_DIRECTORY ${WORKDIR}
-    RESULT_VARIABLE deployqt_result
-    OUTPUT_VARIABLE deployqt_output
-    ERROR_VARIABLE  deployqt_error
+    RESULT_VARIABLE result
+    OUTPUT_VARIABLE stdout
+    ERROR_VARIABLE stderr
 )
 
-message(STATUS "cqtdeployer stdout: ${deployqt_output}")
-message(STATUS "cqtdeployer stderr: ${deployqt_error}")
-message(STATUS "cqtdeployer result: ${deployqt_result}")
+message(STATUS "cqtdeployer stdout: ${stdout}")
+message(STATUS "cqtdeployer stderr: ${stderr}")
+message(STATUS "cqtdeployer result: ${result}")
 
-if (NOT ${deployqt_result} EQUAL 0)
+if (NOT ${result} EQUAL 0)
     message(FATAL_ERROR "cqtdeployer is failed!")
 else()
     message(STATUS "[INSTALL] WIN Deploying done.")

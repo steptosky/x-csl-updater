@@ -1,13 +1,13 @@
 message(STATUS "[INSTALL] LIN Packaging...")
 
-set(SRC ${DEPLOY_DIR}/DistributionKit/)
+set(SRC ${DEPLOY_DIR}/)
 message(STATUS "SRC: ${SRC}")
 
 set(DST ${PACKAGE_DIR})
 message(STATUS "DST: ${DST}")
 file(MAKE_DIRECTORY "${DST}")
 
-set(ARCHIVE ${DST}/${PROJECT}_lin_${VERSION}-${vcs_revision}.zip)
+set(ARCHIVE ${DST}/${PROJECT}_lin_${VERSION}-${vcs_revision}.tar.gz)
 
 file(ARCHIVE_CREATE
     OUTPUT "${ARCHIVE}"

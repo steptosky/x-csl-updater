@@ -10,7 +10,7 @@ message(STATUS "windeployqt path: ${DEPLOYER_BIN}")
 
 execute_process(
     COMMAND ${DEPLOYER_BIN}
-    ${PROJECT}.exe
+    ${TARGET_FILE_NAME}
     --no-translations
     --no-system-d3d-compiler
     --no-compiler-runtime
@@ -21,16 +21,16 @@ execute_process(
     --no-quick-import
     --release
     WORKING_DIRECTORY ${DEPLOY_DIR}
-    RESULT_VARIABLE dmg_result
-    OUTPUT_VARIABLE dmg_stdout
-    ERROR_VARIABLE dmg_stderr
+    RESULT_VARIABLE result
+    OUTPUT_VARIABLE stdout
+    ERROR_VARIABLE stderr
 )
 
-message(STATUS "windeployqt stdout: ${deployqt_output}")
-message(STATUS "windeployqt stderr: ${deployqt_error}")
-message(STATUS "windeployqt result: ${deployqt_result}")
+message(STATUS "windeployqt stdout: ${stdout}")
+message(STATUS "windeployqt stderr: ${stderr}")
+message(STATUS "windeployqt result: ${result}")
 
-if (NOT ${windeployqt_result} EQUAL 0)
+if (NOT ${result} EQUAL 0)
     message(FATAL_ERROR "windeployqt is failed!")
 else()
     message(STATUS "[INSTALL] WIN Deploying done.")
