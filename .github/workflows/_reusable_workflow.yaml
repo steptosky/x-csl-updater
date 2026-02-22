@@ -80,6 +80,12 @@ jobs:
         shell: bash
         run: |
           sudo snap install cqtdeployer
+
+      - name: Install create-dmg (macOS only)
+        if: runner.os == 'macOS' && inputs.do_install
+        shell: bash
+        run: |
+          brew install create-dmg
           
       - name: Install
         if: inputs.do_install
