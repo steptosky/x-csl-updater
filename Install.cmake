@@ -24,6 +24,7 @@ install(CODE [=[
 set(VERSION ${VersionMajorString}.${VersionMinorString}.${VersionPatchString})
 set(vcs_revision ${vcs_revision})
 
+set(SOURCE_DIR ${CMAKE_SOURCE_DIR})
 set(BASE_DIR ${CMAKE_INSTALL_PREFIX})
 set(DEPLOY_DIR_REL Deployed)
 set(PACKAGE_DIR_REL Packaged)
@@ -48,6 +49,7 @@ install(CODE "message(\"VERSION: ${VERSION}\")")
 install(CODE "message(\"vcs_revision: ${vcs_revision}\")")
 
 #install(CODE "message(\"QT_PATH: ${QT_PATH}\")")
+install(CODE "message(\"SOURCE_DIR: ${SOURCE_DIR}\")")
 install(CODE "message(\"BASE_DIR: ${BASE_DIR}\")")
 install(CODE "message(\"DEPLOY_DIR: ${DEPLOY_DIR}\")")
 install(CODE "message(\"PACKAGE_DIR: ${PACKAGE_DIR}\")")
@@ -60,6 +62,7 @@ install(CODE "set(PROJECT ${PROJECT})")
 install(CODE "set(VERSION ${VERSION})")
 install(CODE "set(vcs_revision ${vcs_revision})")
 
+install(CODE "set(SOURCE_DIR ${SOURCE_DIR})")
 install(CODE "set(BASE_DIR ${BASE_DIR})")
 install(CODE "set(DEPLOY_DIR_REL ${DEPLOY_DIR_REL})")
 install(CODE "set(PACKAGE_DIR_REL ${PACKAGE_DIR_REL})")
