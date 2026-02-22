@@ -5,7 +5,6 @@ message(STATUS "SRC: ${SRC}")
 
 set(DST ${PACKAGE_DIR})
 message(STATUS "DST: ${DST}")
-file(MAKE_DIRECTORY "${DST}")
 
 set(ARCHIVE ${DST}/${PROJECT}_lin_${VERSION}-${vcs_revision}.tar.gz)
 

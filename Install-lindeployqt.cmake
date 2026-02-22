@@ -17,7 +17,6 @@ execute_process(
     -bin ${TARGET_FILE_NAME}
     -qmake ${CQTDEPLOYER_QMAKE}
     -targetDir ${DEPLOY_DIR}
-    -verbose 3
     noTranslations
     WORKING_DIRECTORY ${WORKDIR}
     RESULT_VARIABLE result

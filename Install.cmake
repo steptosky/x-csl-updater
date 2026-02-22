@@ -66,11 +66,17 @@ install(CODE "set(TARGET_FILE_NAME $<TARGET_FILE_NAME:${PROJECT}>)")
 
 # -----------------------------------------------------------------------#
 # cleanup
+
 if (CLEANUP_INSTALL_FIRST)
-    install(CODE "FILE(REMOVE_RECURSE ${DEPLOY_DIR})")
-    install(CODE "FILE(REMOVE_RECURSE ${PACKAGE_DIR})")
+    install(CODE "file(REMOVE_RECURSE ${DEPLOY_DIR})")
+    install(CODE "file(REMOVE_RECURSE ${PACKAGE_DIR})")
 endif()
 
+# -----------------------------------------------------------------------#
+# create dirs
+
+install(CODE "file(MAKE_DIRECTORY ${DEPLOY_DIR})")
+install(CODE "file(MAKE_DIRECTORY ${PACKAGE_DIR})")
 
 # -----------------------------------------------------------------------#
 # deploying
