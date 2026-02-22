@@ -1,18 +1,38 @@
-#set(WORKDIR ${CMAKE_SOURCE_DIR}/../bin)
-#string(REPLACE "\"" "" STRIPPED_QT_PATH "$ENV{QT_PATH}")
-#message(STATUS "deployQT path: ${STRIPPED_QT_PATH}/bin/macdeployqt")
-#message(STATUS "workdir: ${WORKDIR}")
-#
-#execute_process(
-#    COMMAND ${STRIPPED_QT_PATH}/bin/macdeployqt
-#    X-CSL-Updater.app
-#    WORKING_DIRECTORY ${WORKDIR}
-#    RESULT_VARIABLE deployqt_result
-#    OUTPUT_VARIABLE deployqt_output
-#)
-#
-#message(STATUS "deployQT results: [${deployqt_result}]: ${deployqt_output}")
-#
-#if (NOT ${deployqt_result} EQUAL 0)
-#    message(FATAL_ERROR "deployQT is failed!")
-#endif()
+message(STATUS "[INSTALL] MAC Packaging...")
+
+# Only try to create DMG if create-dmg tool exists.
+find_program(CREATE_DMG_EXE create-dmg)
+if(NOT CREATE_DMG_EXE)
+    message(FATAL_ERROR "create-dmg not found in PATH.")
+endif()
+
+set(SRC ${DEPLOY_DIR}/)
+message(STATUS "SRC: ${SRC}")
+
+set(DST ${PACKAGE_DIR})
+message(STATUS "DST: ${DST}")
+
+set(DMG_OUT ${DST}/${PROJECT}_mac_${VERSION}-${vcs_revision}.dmg)
+
+execute_process(
+    COMMAND "${CREATE_DMG_EXE}"
+        --volname ${PROJECT}
+        --window-size 700 450
+        --icon-size 128
+        --app-drop-link 510 225
+        "${DMG_OUT}"
+        "${SRC}"
+    RESULT_VARIABLE result
+    OUTPUT_VARIABLE stdout
+    ERROR_VARIABLE stderr
+)
+
+message(STATUS "create-dmg  stdout: ${stdout}")
+message(STATUS "create-dmg  stderr: ${stderr}")
+message(STATUS "create-dmg  result: ${result}")
+
+if(EXISTS "${DMG_OUT}")
+    message(STATUS "DMG created: ${DMG_OUT}")
+else()
+    message(FATAL_ERROR "DMG was not created: ${DMG_OUT}")
+endif()
