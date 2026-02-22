@@ -30,6 +30,16 @@ set(PACKAGE_DIR_REL Packaged)
 set(DEPLOY_DIR ${BASE_DIR}/${DEPLOY_DIR_REL})
 set(PACKAGE_DIR ${BASE_DIR}/${PACKAGE_DIR_REL})
 
+set(TARGET_FILE $<TARGET_FILE:${PROJECT}>)
+set(TARGET_FILE_DIR $<TARGET_FILE_DIR:${PROJECT}>)
+set(TARGET_FILE_NAME $<TARGET_FILE_NAME:${PROJECT}>)
+
+if (APPLE)
+    set(TARGET_BUNDLE $<TARGET_BUNDLE_DIR:${PROJECT}>)
+    set(TARGET_BUNDLE_DIR $<PATH:GET_PARENT_PATH,$<TARGET_BUNDLE_DIR:${PROJECT}>>)
+    set(TARGET_BUNDLE_DIR_NAME $<TARGET_BUNDLE_DIR_NAME:${PROJECT}>)
+endif()
+
 # -----------------------------------------------------------------------#
 # some printing, variables are expanding on configure time!
 
@@ -41,10 +51,6 @@ install(CODE "message(\"vcs_revision: ${vcs_revision}\")")
 install(CODE "message(\"BASE_DIR: ${BASE_DIR}\")")
 install(CODE "message(\"DEPLOY_DIR: ${DEPLOY_DIR}\")")
 install(CODE "message(\"PACKAGE_DIR: ${PACKAGE_DIR}\")")
-
-install(CODE "message(\"TARGET_FILE: $<TARGET_FILE:${PROJECT}>\")")
-install(CODE "message(\"TARGET_FILE_DIR: $<TARGET_FILE_DIR:${PROJECT}>\")")
-install(CODE "message(\"TARGET_FILE_NAME: $<TARGET_FILE_NAME:${PROJECT}>\")")
 
 # -----------------------------------------------------------------------#
 # grab variables to Install context
@@ -60,14 +66,29 @@ install(CODE "set(PACKAGE_DIR_REL ${PACKAGE_DIR_REL})")
 install(CODE "set(DEPLOY_DIR ${DEPLOY_DIR})")
 install(CODE "set(PACKAGE_DIR ${PACKAGE_DIR})")
 
-install(CODE "set(TARGET_FILE $<TARGET_FILE:${PROJECT}>)")
-install(CODE "set(TARGET_FILE_DIR $<TARGET_FILE_DIR:${PROJECT}>)")
-install(CODE "set(TARGET_FILE_NAME $<TARGET_FILE_NAME:${PROJECT}>)")
+install(CODE "set(TARGET_FILE ${TARGET_FILE})")
+install(CODE "set(TARGET_FILE_DIR ${TARGET_FILE_DIR})")
+install(CODE "set(TARGET_FILE_NAME ${TARGET_FILE_NAME})")
+
+install(CODE "message(\"TARGET_FILE: ${TARGET_FILE}\")")
+install(CODE "message(\"TARGET_FILE_DIR: ${TARGET_FILE_DIR}\")")
+install(CODE "message(\"TARGET_FILE_NAME: ${TARGET_FILE_NAME}\")")
+
+if (APPLE)
+    install(CODE "set(TARGET_BUNDLE ${TARGET_BUNDLE})")
+    install(CODE "set(TARGET_BUNDLE_DIR ${TARGET_BUNDLE_DIR})")
+    install(CODE "set(TARGET_BUNDLE_DIR_NAME ${TARGET_BUNDLE_DIR_NAME})")
+
+    install(CODE "message(\"TARGET_BUNDLE: ${TARGET_BUNDLE}\")")
+    install(CODE "message(\"TARGET_BUNDLE_DIR: ${TARGET_BUNDLE_DIR}\")")
+    install(CODE "message(\"TARGET_BUNDLE_DIR_NAME: ${TARGET_BUNDLE_DIR_NAME}\")")    
+endif()
 
 # -----------------------------------------------------------------------#
 # cleanup
 
 if (CLEANUP_INSTALL_FIRST)
+    install(CODE "message(\"Cleaning up install dirs...\")")
     install(CODE "file(REMOVE_RECURSE ${DEPLOY_DIR})")
     install(CODE "file(REMOVE_RECURSE ${PACKAGE_DIR})")
 endif()
@@ -92,7 +113,7 @@ elseif (APPLE)
     install(SCRIPT "${CMAKE_SOURCE_DIR}/Install-macdeployqt.cmake")
     install(
         DIRECTORY
-        ${TARGET_FILE}
+        ${TARGET_BUNDLE}
         DESTINATION ${DEPLOY_DIR}
         USE_SOURCE_PERMISSIONS
     )

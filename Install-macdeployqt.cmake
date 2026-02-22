@@ -1,6 +1,6 @@
 message(STATUS "[INSTALL] MAC Deploying...")
 
-set(WORKDIR ${TARGET_FILE_DIR})
+set(WORKDIR ${TARGET_BUNDLE_DIR})
 string(REPLACE "\"" "" STRIPPED_QT_PATH "${QT_PATH}")
 set(DEPLOYER_BIN ${STRIPPED_QT_PATH}/bin/macdeployqt)
 
@@ -10,7 +10,7 @@ message(STATUS "workdir: ${WORKDIR}")
 
 execute_process(
     COMMAND ${DEPLOYER_BIN}
-    ${TARGET_FILE_NAME}
+    ${TARGET_BUNDLE_DIR_NAME}
     WORKING_DIRECTORY ${WORKDIR}
     RESULT_VARIABLE result
     OUTPUT_VARIABLE stdout
