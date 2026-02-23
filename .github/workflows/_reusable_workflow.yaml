@@ -93,34 +93,6 @@ jobs:
         run: |
           cmake --build "${BUILD_DIR}" --config Release --target install
 
-      #- name: Create DMG (macOS Only)
-      #  if: runner.os == 'macOS' && inputs.do_install && inputs.do_dmg
-      #  shell: bash
-      #  run: |
-      #    brew install create-dmg
-      #    mkdir -p dist
-      #    APP_DIR="${INSTALL_DIR}/${APP_NAME}"
-      #    DMG_OUT="${PACKAGE_DIR}/${APP_NAME}.dmg"
-      #    create-dmg \
-      #      --volname "${APP_NAME}" \
-      #      --window-size 700 450 \
-      #      --icon-size 128 \
-      #      --app-drop-link 510 225 \
-      #      "${DMG_OUT}" \
-      #      "${APP_DIR}"
-
-      #- name: Archive package (Windows)
-      #  if: runner.os == 'Windows' && inputs.do_install
-      #  shell: bash
-      #  run: |
-      #    7z a -tzip "${PACKAGE_DIR}/package-${{ runner.os }}.zip" "${INSTALL_DIR}"/*
-#
-      #- name: Archive package (Linux)
-      #  if: runner.os == 'Linux' && inputs.do_install
-      #  shell: bash
-      #  run: |
-      #    tar -czf "${PACKAGE_DIR}/package-${{ runner.os }}.tar.gz" -C "${INSTALL_DIR}" .
-
       - name: Upload artifacts
         if: inputs.do_install && inputs.upload_artifacts
         uses: actions/upload-artifact@v4
@@ -130,4 +102,6 @@ jobs:
             ${{ env.PACKAGE_DIR }}/**/*.zip
             ${{ env.PACKAGE_DIR }}/**/*.tar.gz
             ${{ env.PACKAGE_DIR }}/**/*.dmg
+          if-no-files-found: error
+          # retention-days: 14
 
