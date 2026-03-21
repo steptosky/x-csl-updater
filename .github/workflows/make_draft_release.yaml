@@ -62,6 +62,10 @@ jobs:
       #    ref: ${{ inputs.tag != '' && inputs.tag || github.ref }}
       #    fetch-depth: 0
 
+      - name: Ensure additional files exists
+        shell: bash
+        run: test -f Release_Body.md
+
       - name: Create draft release and upload assets
         uses: softprops/action-gh-release@v2
         with:
