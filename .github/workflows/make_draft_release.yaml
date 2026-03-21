@@ -62,7 +62,8 @@ jobs:
           tag_name: ${{ inputs.tag != '' && inputs.tag || github.ref_name }}
           draft: true
           prerelease: ${{ inputs.prerelease }}
-          generate_release_notes: true
+          #generate_release_notes: true
+          body_path: Release_Body.md
           files: |
             _artifacts/**/*.zip
             _artifacts/**/*.tar.gz
