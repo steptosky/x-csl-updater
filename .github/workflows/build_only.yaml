@@ -1,12 +1,13 @@
 name: Build only
 
-on: 
+on:
   workflow_dispatch:
-    source_ref:
-        description: "Git ref to checkout (tag like v1.2.3, branch, or commit SHA). If empty, uses caller ref."
-        type: string
-        required: false
-        default: ""
+    inputs:
+      source_ref:
+          description: "Git ref to checkout (tag like v1.2.3, branch, or commit SHA). If empty, uses caller ref."
+          type: string
+          required: false
+          default: ""
 
 permissions:
   contents: read
