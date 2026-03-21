@@ -1,14 +1,16 @@
+message(STATUS "[INSTALL] WIN Deploying...")
 
-message(STATUS "QT_PATH: $ENV{QT_PATH}")
-set(STRIPPED_QT_PATH $ENV{QT_PATH})
-set(WORKDIR ${CMAKE_INSTALL_PREFIX}/X-CSL-Updater)
+message(STATUS "QT_PATH: ${QT_PATH}")
+set(STRIPPED_QT_PATH ${QT_PATH})
 string(REPLACE "\"" "" STRIPPED_QT_PATH ${STRIPPED_QT_PATH})
-message(STATUS "windeployqt path: ${STRIPPED_QT_PATH}/bin/windeployqt")
-message(STATUS "workdir: ${WORKDIR}")
+message(STATUS "STRIPPED_QT_PATH: ${STRIPPED_QT_PATH}")
+
+set(DEPLOYER_BIN ${STRIPPED_QT_PATH}/bin/windeployqt)
+message(STATUS "windeployqt path: ${DEPLOYER_BIN}")
 
 execute_process(
-    COMMAND ${STRIPPED_QT_PATH}/bin/windeployqt
-    X-CSL-Updater.exe
+    COMMAND ${DEPLOYER_BIN}
+    ${TARGET_FILE_NAME}
     --no-translations
     --no-system-d3d-compiler
     --no-compiler-runtime
@@ -18,21 +20,18 @@ execute_process(
     --no-patchqt
     --no-quick-import
     --release
-    WORKING_DIRECTORY ${WORKDIR}
-    RESULT_VARIABLE windeployqt_result
-    OUTPUT_VARIABLE windeployqt_output
+    WORKING_DIRECTORY ${DEPLOY_DIR}
+    RESULT_VARIABLE result
+    OUTPUT_VARIABLE stdout
+    ERROR_VARIABLE stderr
 )
 
-message(STATUS "windeployqt results: [${windeployqt_result}]: ${windeployqt_output}")
+message(STATUS "windeployqt stdout: ${stdout}")
+message(STATUS "windeployqt stderr: ${stderr}")
+message(STATUS "windeployqt result: ${result}")
 
-if (NOT ${windeployqt_result} EQUAL 0)
+if (NOT ${result} EQUAL 0)
     message(FATAL_ERROR "windeployqt is failed!")
+else()
+    message(STATUS "[INSTALL] WIN Deploying done.")
 endif()
-
-#file(REMOVE_RECURSE
-#    ${WORKDIR}/Qt5Svg.dll
-#    ${WORKDIR}/bearer
-#    ${WORKDIR}/iconengines
-#    ${WORKDIR}/imageformats
-#    ${WORKDIR}/styles
-#)

@@ -35,5 +35,5 @@ Short instruction on how to start using the software:
 Use this form to contact us: https://csl.x-air.ru/contact/?lang_id=43
 
 Official X-CSL-Package project web site (https://csl.x-air.ru/?lang_id=43)
-Copyright © 2009-2020 X-AiR Team (https://x-air.ru)
-Copyright © 2009-2020 StepToSky Team (https://steptosky.com)
+Copyright © 2009-2026 X-AiR Team (https://x-air.ru)
+Copyright © 2009-2026 StepToSky Team (https://steptosky.com)

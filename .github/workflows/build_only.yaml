@@ -1,0 +1,25 @@
+name: Build only
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: "tag, branch, or commit SHA to build. (Optional)"
+        type: string
+        required: false
+        default: ""
+  push:
+    branches-ignore:
+      - "*nobuild*"
+      - "**/*nobuild*"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: ./.github/workflows/_reusable_workflow.yaml
+    with:
+      source_ref: ${{ inputs.source_ref }}
+      do_install: false
+      upload_artifacts: false

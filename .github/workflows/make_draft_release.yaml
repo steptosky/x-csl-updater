@@ -1,0 +1,83 @@
+name: Make Draft Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "git tag to release. (Optional)"
+        type: string
+        required: false
+        default: ""
+      prerelease:
+        description: "Mark as prerelease"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  check_release_tag:
+    runs-on: ubuntu-22.04
+    name: Ensure UI ref is a tag when no tag input is provided
+    steps:
+      - name: Fail if not a tag
+        if: ${{ inputs.tag == '' && github.ref_type != 'tag' }}
+        shell: bash
+        run: |
+          echo "ERROR: Select a tag in the UI dropdown or type tag input."
+          exit 1
+  build_package:
+    name: Build and upload artifacts
+    needs: check_release_tag
+    uses: ./.github/workflows/_reusable_workflow.yaml
+    with:
+      source_ref: ${{ inputs.tag != '' && inputs.tag || github.ref }}
+      do_install: true
+      upload_artifacts: true
+
+  create_release:
+    name: Create GitHub Release (draft)
+    needs: build_package
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write  # required to create/update releases
+
+    steps:
+      - name: Checkout release ref (for additional files)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag != '' && inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      #- name: Ensure additional files exists
+      #  shell: bash
+      #  run: test -f Release_Body.md
+
+      - name: Download all workflow artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: _artifacts
+
+      - name: Show downloaded files (debug)
+        shell: bash
+        run: |
+          echo "Downloaded artifacts:"
+          find _artifacts -type f | sort
+
+      - name: Create draft release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          fail_on_unmatched_files: true
+          tag_name: ${{ inputs.tag != '' && inputs.tag || github.ref_name }}
+          draft: true
+          prerelease: ${{ inputs.prerelease }}
+          generate_release_notes: false
+          #body_path: Release_Body.md
+          files: |
+            _artifacts/**/*.zip
+            _artifacts/**/*.tar.gz
+            _artifacts/**/*.dmg
+            docs/Readme-eng.txt
+            docs/changeLog.txt

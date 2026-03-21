@@ -42,3 +42,5 @@ TestServer/www/package--/
 TestServer/www/package
 TestServer/www/
 ReadyPackages/
+Project_vs2016x64/*
+Project_vs2019x64/*

@@ -1,0 +1,119 @@
+name: _Qt Build Reusable (Qt 5.15.2)
+
+on:
+  workflow_call:
+    inputs:
+      source_ref:
+        description: "tag, branch, or commit SHA to build. (Optional)"
+        type: string
+        required: false
+        default: ""
+      do_install:
+        description: "Run cmake --target install"
+        type: boolean
+        required: false
+        default: false
+      upload_artifacts:
+        description: "Upload artifacts"
+        type: boolean
+        required: false
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-2022
+            qt_arch: win64_msvc2019_64
+            generator: "Visual Studio 17 2022"
+            cmake_args: "-A x64 -T v142"
+          - os: ubuntu-22.04
+            qt_arch: gcc_64
+            generator: "Unix Makefiles"
+            cmake_args: ""
+          - os: macos-15-intel
+            qt_arch: clang_64
+            generator: "Unix Makefiles"
+            cmake_args: "-DCMAKE_OSX_ARCHITECTURES=x86_64"
+
+    runs-on: ${{ matrix.os }}
+
+    env:
+      BUILD_DIR: ${{ github.workspace }}/build
+      INSTALL_DIR: ${{ github.workspace }}/OUTPUT
+      DEPLOY_DIR: ${{ github.workspace }}/OUTPUT/Deployed
+      PACKAGE_DIR: ${{ github.workspace }}/OUTPUT/Packaged
+      APP_NAME: X-CSL-Updater
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref != '' && inputs.source_ref || github.ref }}
+          fetch-depth: 0
+
+      - name: Install Qt 5.15.2
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "5.15.2"
+          arch: ${{ matrix.qt_arch }}
+          cache: true
+
+      - name: Export QT_PATH
+        shell: bash
+        run: |
+          qt_path_unix="${QT_ROOT_DIR//\\//}"
+          echo "QT_PATH=${qt_path_unix}" >> "$GITHUB_ENV"
+          echo "${qt_path_unix}/bin" >> "$GITHUB_PATH"
+
+      - name: Configure
+        shell: bash
+        run: |
+          cmake -S . -B "${BUILD_DIR}" \
+            -G "${{ matrix.generator }}" \
+            ${{ matrix.cmake_args }} \
+            -DCMAKE_PREFIX_PATH="${QT_PATH}" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}"
+
+      - name: Build
+        shell: bash
+        run: |
+          cmake --build "${BUILD_DIR}" --config Release --clean-first
+
+      - name: Install cqtdeployer (Linux only)
+        if: runner.os == 'Linux' && inputs.do_install
+        shell: bash
+        run: |
+          sudo snap install cqtdeployer
+
+      - name: Install create-dmg (macOS only)
+        if: runner.os == 'macOS' && inputs.do_install
+        shell: bash
+        run: |
+          brew install create-dmg
+          
+      - name: Install
+        if: inputs.do_install
+        shell: bash
+        run: |
+          cmake --build "${BUILD_DIR}" --config Release --target install
+
+      - name: Upload artifacts
+        if: inputs.do_install && inputs.upload_artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-${{ runner.os }}
+          path: |
+            ${{ env.PACKAGE_DIR }}/**/*.zip
+            ${{ env.PACKAGE_DIR }}/**/*.tar.gz
+            ${{ env.PACKAGE_DIR }}/**/*.dmg
+          if-no-files-found: error
+          # retention-days: 14
+

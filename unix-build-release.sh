@@ -8,7 +8,11 @@ if [ ! -d "$PROJ_DIR" ]; then
 fi
 cd $PROJ_DIR
 # configure
-cmake -G "Unix Makefiles" ../ -DCMAKE_PREFIX_PATH=$QT_PATH -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../Package
+cmake -G "Unix Makefiles" ../ \
+        -DCMAKE_PREFIX_PATH=$QT_PATH \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=../Package \
+        -DCLEANUP_INSTALL_FIRST=ON
 
 # build
 cmake --build . --clean-first --config Release

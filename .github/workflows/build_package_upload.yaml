@@ -1,0 +1,26 @@
+name: Build+Package[+Upload]
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: "tag, branch, or commit SHA to build. (Optional)"
+        type: string
+        required: false
+        default: ""
+      upload_artifacts:
+        description: "Upload artifacts"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    uses: ./.github/workflows/_reusable_workflow.yaml
+    with:
+      source_ref: ${{ inputs.source_ref }}
+      do_install: true
+      upload_artifacts: ${{ inputs.upload_artifacts }}

@@ -4,7 +4,6 @@
 Проект разрабатывается, поддерживается и обслуживается командами X-Air and StepToSky Teams.
 Библиотеку можно установить и постоянно обновлять с помощью нашего X-CSL-Updater.
 
-
 - Библиотека X-CSL-Package разработана для использования в сети IVAO совместно с IVAO программным обеспечением (клиентами): X-IvAp и ALTITUDE.
 
 - Данная версия X-CSL-Updater совместима Только с клиентом ALTITUDE. Для работы с X-IvAp скачайте более старую версию X-CSL-Updater (1.2.0 или более старую).
@@ -32,5 +31,5 @@
 Используйте эту контактную форму для связи с нами: https://csl.x-air.ru/contact
 
 Official X-CSL-Package project web site (https://csl.x-air.ru)
-Copyright © 2009-2020 X-AiR Team (https://x-air.ru)
-Copyright © 2009-2020 StepToSky Team (https://steptosky.com)
+Copyright © 2009-2026 X-AiR Team (https://x-air.ru)
+Copyright © 2009-2026 StepToSky Team (https://steptosky.com)

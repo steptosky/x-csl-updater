@@ -1,18 +1,28 @@
-set(WORKDIR ${CMAKE_SOURCE_DIR}/../bin)
-string(REPLACE "\"" "" STRIPPED_QT_PATH "$ENV{QT_PATH}")
-message(STATUS "deployQT path: ${STRIPPED_QT_PATH}/bin/macdeployqt")
+message(STATUS "[INSTALL] MAC Deploying...")
+
+set(WORKDIR ${TARGET_BUNDLE_DIR})
+string(REPLACE "\"" "" STRIPPED_QT_PATH "${QT_PATH}")
+set(DEPLOYER_BIN ${STRIPPED_QT_PATH}/bin/macdeployqt)
+
+message(STATUS "QT_PATH: ${QT_PATH}")
+message(STATUS "MacDeployQT path: ${DEPLOYER_BIN}")
 message(STATUS "workdir: ${WORKDIR}")
 
 execute_process(
-    COMMAND ${STRIPPED_QT_PATH}/bin/macdeployqt
-    X-CSL-Updater.app
+    COMMAND ${DEPLOYER_BIN}
+    ${TARGET_BUNDLE_DIR_NAME}
     WORKING_DIRECTORY ${WORKDIR}
-    RESULT_VARIABLE deployqt_result
-    OUTPUT_VARIABLE deployqt_output
+    RESULT_VARIABLE result
+    OUTPUT_VARIABLE stdout
+    ERROR_VARIABLE stderr
 )
 
-message(STATUS "deployQT results: [${deployqt_result}]: ${deployqt_output}")
+message(STATUS "macdeployqt stdout: ${stdout}")
+message(STATUS "macdeployqt stderr: ${stderr}")
+message(STATUS "macdeployqt result: ${result}")
 
-if (NOT ${deployqt_result} EQUAL 0)
-    message(FATAL_ERROR "deployQT is failed!")
+if (NOT ${result} EQUAL 0)
+    message(FATAL_ERROR "macdeployqt is failed!")
+else()
+    message(STATUS "[INSTALL] MAC Deploying done.")
 endif()
