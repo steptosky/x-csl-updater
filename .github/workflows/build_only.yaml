@@ -1,10 +1,20 @@
 name: Build only
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    source_ref:
+        description: "Git ref to checkout (tag like v1.2.3, branch, or commit SHA). If empty, uses caller ref."
+        type: string
+        required: false
+        default: ""
+
+permissions:
+  contents: read
 
 jobs:
   build:
     uses: ./.github/workflows/_reusable_workflow.yaml
     with:
+      source_ref: ${{ inputs.source_ref }}
       do_install: false
       upload_artifacts: false

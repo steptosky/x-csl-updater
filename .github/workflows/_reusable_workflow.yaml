@@ -3,6 +3,11 @@ name: _Qt Build Reusable (Qt 5.15.2)
 on:
   workflow_call:
     inputs:
+      source_ref:
+        description: "Git ref to checkout (tag like v1.2.3, branch, or commit SHA). If empty, uses caller ref."
+        type: string
+        required: false
+        default: ""
       do_install:
         description: "Run cmake --target install"
         type: boolean
@@ -13,6 +18,9 @@ on:
         type: boolean
         required: false
         default: true
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -44,7 +52,11 @@ jobs:
       APP_NAME: X-CSL-Updater
 
     steps:
+      - name: Checkout
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref != '' && inputs.source_ref || github.ref }}
+          fetch-depth: 0
 
       - name: Install Qt 5.15.2
         uses: jurplel/install-qt-action@v4
