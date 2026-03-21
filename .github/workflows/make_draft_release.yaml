@@ -1,0 +1,57 @@
+name: Make Draft Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Git tag like v1.2.3"
+        required: true
+        type: string
+      prerelease:
+        description: "Mark as prerelease"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  build_package:
+    name: Build and upload artifacts
+    uses: ./.github/workflows/_reusable_workflow.yaml
+    with:
+      source_ref: ${{ inputs.tag }}
+      do_install: true
+      upload_artifacts: true
+
+  create_release:
+      name: Create GitHub Release (draft)
+      needs: build_package
+      runs-on: ubuntu-22.04
+      permissions:
+        contents: write  # required to create/update releases
+
+      steps:
+        - name: Download all workflow artifacts
+          uses: actions/download-artifact@v4
+          with:
+            path: _artifacts
+
+        - name: Show downloaded files (debug)
+          shell: bash
+          run: |
+            echo "Downloaded artifacts:"
+            find _artifacts -type f | sort
+
+        - name: Create draft release and upload assets
+          uses: softprops/action-gh-release@v2
+          with:
+            tag_name: ${{ inputs.tag }}
+            draft: true
+            prerelease: ${{ inputs.prerelease }}
+            generate_release_notes: true
+            files: |
+              _artifacts/**/*.zip
+              _artifacts/**/*.tar.gz
+              _artifacts/**/*.dmg

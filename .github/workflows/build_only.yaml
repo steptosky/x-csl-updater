@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       source_ref:
-        description: "Git ref to checkout (tag like v1.2.3, branch, or commit SHA). If empty, uses caller ref."
+        description: "tag like v1.2.3, branch, or commit SHA. If empty, uses caller ref."
         type: string
         required: false
         default: ""
