@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       source_ref:
-        description: "tag like v1.2.3, branch, or commit SHA. If empty, uses caller ref."
+        description: "tag, branch, or commit SHA to build. (Optional)"
         type: string
         required: false
         default: ""
