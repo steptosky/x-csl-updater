@@ -8,6 +8,10 @@ on:
         type: string
         required: false
         default: ""
+  push:
+    branches-ignore:
+      - "*nobuild*"
+      - "**/*nobuild*"
 
 permissions:
   contents: read
