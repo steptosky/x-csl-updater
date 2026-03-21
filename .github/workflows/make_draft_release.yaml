@@ -33,7 +33,7 @@ jobs:
     needs: check_release_tag
     uses: ./.github/workflows/_reusable_workflow.yaml
     with:
-      source_ref: ${{ inputs.tag != '' && inputs.tag || github.ref_name }}
+      source_ref: ${{ inputs.tag != '' && inputs.tag || github.ref }}
       do_install: true
       upload_artifacts: true
 
@@ -56,9 +56,16 @@ jobs:
           echo "Downloaded artifacts:"
           find _artifacts -type f | sort
 
+      #- name: Checkout release ref (for additional files)
+      #  uses: actions/checkout@v4
+      #  with:
+      #    ref: ${{ inputs.tag != '' && inputs.tag || github.ref }}
+      #    fetch-depth: 0
+
       - name: Create draft release and upload assets
         uses: softprops/action-gh-release@v2
         with:
+          fail_on_unmatched_files: true
           tag_name: ${{ inputs.tag != '' && inputs.tag || github.ref_name }}
           draft: true
           prerelease: ${{ inputs.prerelease }}
