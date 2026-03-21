@@ -11,8 +11,7 @@ inline Q_LOGGING_CATEGORY(fromGUI, "GUI")
 static const QString gProgramVersion = QString(STS_XCSL_VERSION_STRING) + "+" + STS_XCSL_REVISION;
 
 #define ORGANIZATION STS_XCSL_ORGANIZATION_NAME
-// #define PROGRAM_NAME STS_XCSL_PROJECT_SHORT_NAME
-#define PROGRAM_NAME "BLABLA"
+#define PROGRAM_NAME STS_XCSL_PROJECT_SHORT_NAME
 
 static const QString gSimPluginsDir = "Resources/plugins";
 
