@@ -56,11 +56,11 @@ jobs:
           echo "Downloaded artifacts:"
           find _artifacts -type f | sort
 
-      #- name: Checkout release ref (for additional files)
-      #  uses: actions/checkout@v4
-      #  with:
-      #    ref: ${{ inputs.tag != '' && inputs.tag || github.ref }}
-      #    fetch-depth: 0
+      - name: Checkout release ref (for additional files)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag != '' && inputs.tag || github.ref }}
+          fetch-depth: 0
 
       - name: Ensure additional files exists
         shell: bash
