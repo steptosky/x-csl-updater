@@ -25,6 +25,8 @@ function(genInfoFile destinationFile descriptionFile)
     
     set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}AUTHOR \"${Author}\"\n")
     set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}COPYRIGHT \"${CopyRight}\"\n")
+    set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}COPYRIGHT_STS \"${CopyRightSTS}\"\n")
+    set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}COPYRIGHT_XAR \"${CopyRightXAR}\"\n")
     set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}COPYLEFT \"${CopyLeft}\"\n\n")
     
     set(CONTENT  "${CONTENT}#define ${InfoFilePrefix}LICENSE_TYPE \"${LicenseType}\"\n\n")  

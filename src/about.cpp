@@ -7,6 +7,9 @@ About::About(QWidget * parent)
 
     m_ui->setupUi(this);
     setVersionInfo();
+
+    m_ui->copyrights->setText(STS_XCSL_COPYRIGHT_XAR);
+    m_ui->copyrights_2->setText(STS_XCSL_COPYRIGHT_STS);
 }
 
 About::~About() {
