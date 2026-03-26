@@ -21,7 +21,7 @@ protected:
 private:
     Ui::About * m_ui;
 
-    void setVersionInfo();
+    void setVersionInfo() const;
 };
 
 #endif // ABOUT_H

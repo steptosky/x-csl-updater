@@ -16,7 +16,7 @@ About::~About() {
     delete m_ui;
 }
 
-void About::setVersionInfo() {
+void About::setVersionInfo() const {
     m_ui->versionLabel->setText(QString(PROGRAM_NAME) + " Ver.:");
     m_ui->version->setText(gProgramVersion);
 }

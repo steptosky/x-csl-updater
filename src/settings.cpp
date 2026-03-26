@@ -2,6 +2,9 @@
 #include "ui_settings.h"
 #include "Definitions.h"
 
+// http://csl-updater.loc/CSL-Package/
+static const QString sDefaultServer = "http://x-csl.ru/package/";
+
 Settings::Settings(QWidget * parent)
     :
     QDialog(parent),
@@ -58,8 +61,7 @@ void Settings::setupTranslator() {
 
 void Settings::LoadSettings() {
     QSettings settings(settingsFileName(), QSettings::IniFormat);
-    // http://csl-updater.loc/CSL-Package/
-    this->m_ui->server1->setText(settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
+    this->m_ui->server1->setText(settings.value("DefaultServer", sDefaultServer).toString());
     this->m_ui->server2->setText(settings.value("Server2").toString());
     this->m_ui->server3->setText(settings.value("Server3").toString());
     this->m_ui->server4->setText(settings.value("Server4").toString());
@@ -67,23 +69,23 @@ void Settings::LoadSettings() {
     switch (serverActive) {
         case 1:
             this->m_ui->checkBox_1->setChecked(true);
-            settings.setValue("curServer", settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
+            settings.setValue("curServer", settings.value("DefaultServer", sDefaultServer).toString());
             break;
         case 2:
             this->m_ui->checkBox_2->setChecked(true);
-            settings.setValue("curServer", settings.value("Server2", tr("http://csl.x-air.ru/package/")).toString());
+            settings.setValue("curServer", settings.value("Server2", sDefaultServer).toString());
             break;
         case 3:
             this->m_ui->checkBox_3->setChecked(true);
-            settings.setValue("curServer", settings.value("Server3", tr("http://csl.x-air.ru/package/")).toString());
+            settings.setValue("curServer", settings.value("Server3", sDefaultServer).toString());
             break;
         case 4:
             this->m_ui->checkBox_4->setChecked(true);
-            settings.setValue("curServer", settings.value("Server4", tr("http://csl.x-air.ru/package/")).toString());
+            settings.setValue("curServer", settings.value("Server4", sDefaultServer).toString());
             break;
         default:
             this->m_ui->checkBox_1->setChecked(true);
-            settings.setValue("curServer", settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
+            settings.setValue("curServer", settings.value("DefaultServer", sDefaultServer).toString());
             break;
     }
     //
@@ -119,7 +121,7 @@ void Settings::SaveSettings() {
     settings.setValue("Server4", _server);
     if (this->m_ui->checkBox_1->isChecked()) {
         settings.setValue("serverActive", 1);
-        settings.setValue("curServer", settings.value("DefaultServer", tr("http://csl.x-air.ru/package/")).toString());
+        settings.setValue("curServer", settings.value("DefaultServer", sDefaultServer).toString());
     }
     else if (this->m_ui->checkBox_2->isChecked()) {
         settings.setValue("serverActive", 2);
