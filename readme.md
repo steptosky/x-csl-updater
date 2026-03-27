@@ -1,3 +1,4 @@
+[![Build only](https://github.com/steptosky/x-csl-updater/actions/workflows/build_only.yaml/badge.svg)](https://github.com/steptosky/x-csl-updater/actions/workflows/build_only.yaml)
 ## X-CSL-Package
 
 This repo contains the X-CSL-Updater application, which is a part of the X-CSL-Package project.
