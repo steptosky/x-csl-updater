@@ -169,8 +169,6 @@ void IndexStep::addPackageToTable(const QStringList & list) const {
     MWUI->tableWidget->setItem(rowCount, 4, sizeItem);
     addPackageStatusToTable(rowCount, static_cast<ePackageState>(list[6].toInt()));
 
-    MWUI->tableWidget->scrollToBottom();
-
     qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(rowCount);
 }
 
@@ -229,11 +227,6 @@ bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileNam
             const ePackageState status = checkCslPack(file.pos(), packagesCount, indexFileName, isCslIndex);
             sortedLines << line + "%" + QString::number(status) + "%" + QString::number(packagesCount);
             packagesCount++;
-            {
-                const auto tmp = line + "%" + QString::number(status) + "%" + QString::number(packagesCount);
-                QStringList listTmp = tmp.split("%", QString::SkipEmptyParts);
-                addPackageToTable(listTmp);
-            }
         }
     }
     file.close();
