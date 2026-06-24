@@ -199,6 +199,7 @@ void IndexStep::addPackageToTable(const QStringList & list) const {
     sizeItem->setData(Qt::TextAlignmentRole, Qt::AlignRight);
     MWUI->tableWidget->setItem(rowCount, 4, sizeItem);
     addPackageStatusToTable(rowCount, static_cast<ePackageState>(list[6].toInt()));
+    MWUI->tableWidget->scrollToBottom();
 
     qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(rowCount);
 }
