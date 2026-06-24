@@ -42,6 +42,7 @@ private:
     //-------------------------------------------------------------------------
     void addPackageToTable(const QStringList & list) const;
     void addPackageStatusToTable(int count, ePackageState status) const;
+    bool countPackagesInIndexFile(int & packagesTotal, const QString & indexFileName) const;
     bool parseIndexFile(int & packagesCount, const QString & indexFileName, bool isCslIndex);
     bool parseIndexForDelFile(const QString & indexFileName, bool isCslIndex);
     void parseIndexFiles();
@@ -56,6 +57,7 @@ private:
     int mFilesToDownload = 0;
     QHash<QNetworkReply *, qint64> mDownloadBytesReceived;
     QHash<QNetworkReply *, qint64> mDownloadBytesTotal;
+    bool mCancelRequested = false;
 
     size_t mSizeOfServer;
     size_t mSizeOfNeedUpdate;

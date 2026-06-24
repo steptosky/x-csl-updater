@@ -80,6 +80,7 @@ void IndexStep::updateDownloadProgressBar() const {
 void IndexStep::startIndex() {
     setMessage(tr("Indexing, please wait..."));
     resetIndex();
+    mCancelRequested = false;
 
     MWUI->indexButton->setEnabled(false);
     MWUI->updateButton->setEnabled(false);
@@ -225,6 +226,41 @@ void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
     qDebug() << QString("The status of the package at %1th row has ben set to: <%2>").arg(count).arg(packageState2Text(status));
 }
 
+bool IndexStep::countPackagesInIndexFile(int & packagesTotal, const QString & indexFileName) const {
+    qDebug() << "Counting packages in an index file: <" << indexFileName << ">";
+    QFile file(indexFileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "Cannot open the index file, reason: " << file.errorString();
+        return false;
+    }
+    if (file.size() < 1) {
+        qWarning() << "Cannot parse the index file, reason: The index file has zero size!";
+        return false;
+    }
+    int isFirstLine = true;
+    while (!file.atEnd()) {
+        QString line = QString(file.readLine()).trimmed();
+        QString type = line.left(1);
+        if (isFirstLine) {
+            if (type != "0") {
+                qWarning() << "Cannot parse the index file, reason: The index file has wrong format!";
+                file.close();
+                return false;
+            }
+            isFirstLine = false;
+        }
+        if (type == "#" || type == "0" || type.isEmpty())
+            continue;
+        QStringList list = line.split("%", QString::SkipEmptyParts);
+        if (list.size() >= 6 && list[0] == "11") {
+            packagesTotal++;
+        }
+    }
+    file.close();
+    qDebug() << "Packages have been counted in the index file.";
+    return true;
+}
+
 bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileName, bool isCslIndex) {
     qDebug() << "Parsing an index file: <" << indexFileName << ">";
     QFile file(indexFileName);
@@ -255,8 +291,18 @@ bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileNam
         QStringList list = line.split("%", QString::SkipEmptyParts);
         if (list.size() >= 6 && list[0] == "11") {
             const ePackageState status = checkCslPack(file.pos(), packagesCount, indexFileName, isCslIndex);
+            if (mCancelRequested) {
+                file.close();
+                return false;
+            }
             sortedLines << line + "%" + QString::number(status) + "%" + QString::number(packagesCount);
             packagesCount++;
+            stepProgBar();
+            QApplication::processEvents();
+            if (mCancelRequested) {
+                file.close();
+                return false;
+            }
         }
     }
     file.close();
@@ -322,20 +368,34 @@ void IndexStep::parseIndexFiles() {
     int packagesCount = 0;
     MWUI->tableWidget->clearContents();
     MWUI->tableWidget->setRowCount(0);
-    // altitude pack
+
+    int packagesTotal = 0;
     QString indexFilePath = mAltDefs->indexFileLocalPath();
+    if (!mAltDefs->isCustomSimDirSelected() && !countPackagesInIndexFile(packagesTotal, indexFilePath)) {
+        endIndex(false);
+        return;
+    }
+    indexFilePath = mAltDefs->cslIndexFileLocalPath();
+    if (!countPackagesInIndexFile(packagesTotal, indexFilePath)) {
+        endIndex(false);
+        return;
+    }
+
+    setMessage(tr("Checking local packages..."));
+    initProgBar(0, qMax(1, packagesTotal), 0, 1);
+
+    // altitude pack
+    indexFilePath = mAltDefs->indexFileLocalPath();
     if (!mAltDefs->isCustomSimDirSelected() && !parseIndexFile(packagesCount, indexFilePath, false)) {
         endIndex(false);
         return;
     }
-    stepProgBar();
     // csl pack
     indexFilePath = mAltDefs->cslIndexFileLocalPath();
     if (!parseIndexFile(packagesCount, indexFilePath, true)) {
         endIndex(false);
         return;
     }
-    stepProgBar();
     //MWUI->tableWidget->sortItems(0);
     endIndex();
 }
@@ -483,6 +543,7 @@ void IndexStep::updateDownloadProgress(qint64 bytesReceived, qint64 bytesTotal) 
 }
 
 void IndexStep::cancelSlot() {
+    mCancelRequested = true;
     setMessage(tr("Indexing process has been canceled by user!"));
     endIndex(false);
 }
