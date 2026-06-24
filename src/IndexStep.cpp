@@ -42,13 +42,35 @@ bool IndexStep::createTargetFile(const QString & fileName, const QByteArray & by
     return true;
 }
 
-void IndexStep::scheduleDownloadingFile(const QString & url, const QString & localPath) const {
+void IndexStep::scheduleDownloadingFile(const QString & url, const QString & localPath) {
     qDebug() << "Will download a file from: <" << url << ">";
     QNetworkRequest request;
     request.setUrl(url);
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(localPath));
     QNetworkReply * reply = mNetMng->get(request);
     connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
+    connect(reply, &QNetworkReply::downloadProgress, this, &IndexStep::updateDownloadProgress);
+}
+
+void IndexStep::resetDownloadProgress() {
+    mDownloadBytesReceived.clear();
+    mDownloadBytesTotal.clear();
+    initProgBar(0, 1, 0, 1);
+}
+
+void IndexStep::updateDownloadProgressBar() const {
+    qint64 totalBytesReceived = 0;
+    qint64 totalBytes = 0;
+    for (auto it = mDownloadBytesReceived.constBegin(); it != mDownloadBytesReceived.constEnd(); ++it) {
+        totalBytesReceived += it.value();
+        totalBytes += qMax(mDownloadBytesTotal.value(it.key(), 0), it.value());
+    }
+
+    if (totalBytes <= 0) {
+        totalBytes = 1;
+    }
+    MWUI->progressBar->setMaximum(static_cast<int>(totalBytes));
+    MWUI->progressBar->setValue(static_cast<int>(totalBytesReceived));
 }
 
 /**************************************************************************************************/
@@ -70,6 +92,8 @@ void IndexStep::startIndex() {
 
     // stage 1
     emit abortAllReplaysSig();
+    resetDownloadProgress();
+    setMessage(tr("Downloading configuration file..."));
     scheduleDownloadingFile(mAltDefs->configFileUrl(), mAltDefs->configFileLocalPath());
     connect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot, Qt::UniqueConnection);
 }
@@ -101,6 +125,8 @@ void IndexStep::stage2() {
     disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage2Slot);
     emit abortAllReplaysSig();
     // stage 2
+    resetDownloadProgress();
+    setMessage(tr("Downloading index files..."));
     mFilesToDownload = 4;
     scheduleDownloadingFile(mAltDefs->indexFileUrl(), mAltDefs->indexFileLocalPath());
     scheduleDownloadingFile(mAltDefs->indexForDelFileUrl(), mAltDefs->indexForDelFileLocalPath());
@@ -115,6 +141,10 @@ void IndexStep::stage3() {
     disconnect(mNetMng, &QNetworkAccessManager::finished, this, &IndexStep::stage3Slot);
     emit abortAllReplaysSig();
     // stage 3
+    mDownloadBytesReceived.clear();
+    mDownloadBytesTotal.clear();
+    initProgBar(0, 4, 0, 1);
+    setMessage(tr("Reading index files..."));
     parseIndexFiles();
 }
 
@@ -437,23 +467,43 @@ eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
 //////////////////////////////////////////* Slots */////////////////////////////////////////////
 /**************************************************************************************************/
 
+void IndexStep::updateDownloadProgress(qint64 bytesReceived, qint64 bytesTotal) {
+    auto * reply = qobject_cast<QNetworkReply *>(sender());
+    if (reply == nullptr) {
+        return;
+    }
+    mDownloadBytesReceived[reply] = bytesReceived;
+    if (bytesTotal > 0) {
+        mDownloadBytesTotal[reply] = bytesTotal;
+    }
+    else {
+        mDownloadBytesTotal[reply] = qMax(mDownloadBytesTotal.value(reply, 0), bytesReceived);
+    }
+    updateDownloadProgressBar();
+}
+
 void IndexStep::cancelSlot() {
     setMessage(tr("Indexing process has been canceled by user!"));
     endIndex(false);
 }
 
 void IndexStep::stage2Slot(QNetworkReply * inReply) {
-    inReply->deleteLater();
     if (inReply->error() == QNetworkReply::OperationCanceledError) {
+        inReply->deleteLater();
         return;
     }
     if (inReply->error() == QNetworkReply::NoError) {
         const QString targetFileName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QString>();
-        if (!createTargetFile(targetFileName, inReply->readAll())) {
+        const QByteArray downloadedData = inReply->readAll();
+        mDownloadBytesReceived[inReply] = downloadedData.size();
+        mDownloadBytesTotal[inReply] = qMax(mDownloadBytesTotal.value(inReply, 0), static_cast<qint64>(downloadedData.size()));
+        updateDownloadProgressBar();
+        if (!createTargetFile(targetFileName, downloadedData)) {
+            inReply->deleteLater();
             endIndex(false);
             return;
         }
-        stepProgBar();
+        inReply->deleteLater();
         stage2();
     }
     else {
@@ -467,22 +517,28 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
         else {
             qWarning() << QString("Cannot download the file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
         }
+        inReply->deleteLater();
         endIndex(false);
     }
 }
 
 void IndexStep::stage3Slot(QNetworkReply * inReply) {
-    inReply->deleteLater();
     if (inReply->error() == QNetworkReply::OperationCanceledError) {
+        inReply->deleteLater();
         return;
     }
     if (inReply->error() == QNetworkReply::NoError) {
         const QString targetFileName = inReply->request().attribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1)).value<QString>();
-        if (!createTargetFile(targetFileName, inReply->readAll())) {
+        const QByteArray downloadedData = inReply->readAll();
+        mDownloadBytesReceived[inReply] = downloadedData.size();
+        mDownloadBytesTotal[inReply] = qMax(mDownloadBytesTotal.value(inReply, 0), static_cast<qint64>(downloadedData.size()));
+        updateDownloadProgressBar();
+        if (!createTargetFile(targetFileName, downloadedData)) {
+            inReply->deleteLater();
             endIndex(false);
             return;
         }
-        stepProgBar();
+        inReply->deleteLater();
         --mFilesToDownload;
     }
     else {
@@ -496,10 +552,10 @@ void IndexStep::stage3Slot(QNetworkReply * inReply) {
         else {
             qWarning() << QString("Cannot download the file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
         }
+        inReply->deleteLater();
         endIndex(false);
     }
     if (mFilesToDownload <= 0) {
-        stepProgBar();
         stage3();
     }
 }
