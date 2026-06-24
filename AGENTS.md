@@ -74,6 +74,7 @@ cmake --build cmake-build-release --config Release --target INSTALL
 
 ## Notes
 
+- Do not change source files unless the user explicitly asks for implementation changes. First discuss the change, then wait for a clear command like "ok, do it", and only then edit source files.
 - Qt path used by local configs: `C:/Qt/5.15.2/msvc2019_64`.
 - Runtime files are written near the executable: `settings.ini`, `log.txt`, `tmp/`.
 - There are no automated test targets in this repo; do not search for GTest/QTest.
