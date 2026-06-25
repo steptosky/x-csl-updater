@@ -208,7 +208,7 @@ void IndexStep::addPackageToTable(const QStringList & list, int row) const {
     MWUI->tableWidget->setItem(row, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
     const QString sizeStr = mLocale.formattedDataSize(list[2].toDouble());
     auto * sizeItem = new QTableWidgetItem(sizeStr);
-    sizeItem->setData(Qt::TextAlignmentRole, Qt::AlignRight);
+    sizeItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
     MWUI->tableWidget->setItem(row, 4, sizeItem);
     addPackageStatusToTable(row, static_cast<ePackageState>(list[6].toInt()));
 
@@ -219,6 +219,7 @@ void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
     auto * statusTextItem = new QTableWidgetItem();
     auto * statusItem = new QTableWidgetItem(QString::number(status));
     statusTextItem->setText(tr(packageState2Text(status)));
+    statusTextItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     MWUI->tableWidget->setItem(count, 5, statusTextItem);
     MWUI->tableWidget->setItem(count, 6, statusItem);
     switch (status) {
