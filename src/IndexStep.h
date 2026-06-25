@@ -40,8 +40,9 @@ private:
     void stage3();
     void endIndex(int Next = true);
     //-------------------------------------------------------------------------
-    void addPackageToTable(const QStringList & list) const;
+    void addPackageToTable(const QStringList & list, int row = -1) const;
     void addPackageStatusToTable(int count, ePackageState status) const;
+    int findPackageInsertRow(int firstRow, const QString & packageName) const;
     bool countPackagesInIndexFile(int & packagesTotal, const QString & indexFileName) const;
     bool parseIndexFile(int & packagesCount, const QString & indexFileName, bool isCslIndex);
     bool parseIndexForDelFile(const QString & indexFileName, bool isCslIndex);
@@ -58,6 +59,7 @@ private:
     QHash<QNetworkReply *, qint64> mDownloadBytesReceived;
     QHash<QNetworkReply *, qint64> mDownloadBytesTotal;
     bool mCancelRequested = false;
+    bool mIndexFinished = false;
 
     size_t mSizeOfServer;
     size_t mSizeOfNeedUpdate;

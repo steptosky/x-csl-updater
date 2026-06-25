@@ -80,6 +80,7 @@ void IndexStep::updateDownloadProgressBar() const {
 void IndexStep::startIndex() {
     setMessage(tr("Indexing, please wait..."));
     resetIndex();
+    mIndexFinished = false;
     mCancelRequested = false;
 
     MWUI->indexButton->setEnabled(false);
@@ -150,6 +151,10 @@ void IndexStep::stage3() {
 }
 
 void IndexStep::endIndex(int Next) {
+    if (mIndexFinished) {
+        return;
+    }
+    mIndexFinished = true;
     qInfo() << "Indexing final stage has been entered.";
     if (Next) {
         setMessage(tr("Indexing local files is successfully done."));
@@ -186,22 +191,26 @@ void IndexStep::endIndex(int Next) {
 //////////////////////////////////////////* Functions */////////////////////////////////////////////
 /**************************************************************************************************/
 
-void IndexStep::addPackageToTable(const QStringList & list) const {
+void IndexStep::addPackageToTable(const QStringList & list, int row) const {
     Q_ASSERT(list.size() > 7);
     const int rowCount = MWUI->tableWidget->rowCount();
-    MWUI->tableWidget->setRowCount(rowCount + 1);
-    MWUI->tableWidget->setItem(rowCount, 0, new QTableWidgetItem(list[7]));
-    MWUI->tableWidget->setItem(rowCount, 1, new QTableWidgetItem(list[1]));
-    MWUI->tableWidget->setItem(rowCount, 2, new QTableWidgetItem(tr("Please wait...")));
-    MWUI->tableWidget->setItem(rowCount, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
+    if (row < 0 || row > rowCount) {
+        row = rowCount;
+    }
+    MWUI->tableWidget->insertRow(row);
+    MWUI->tableWidget->setItem(row, 0, new QTableWidgetItem(list[7]));
+    auto * titleItem = new QTableWidgetItem(list[1]);
+    MWUI->tableWidget->setItem(row, 1, titleItem);
+    MWUI->tableWidget->setItem(row, 2, new QTableWidgetItem(tr("Please wait...")));
+    MWUI->tableWidget->setItem(row, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
     const QString sizeStr = mLocale.formattedDataSize(list[2].toDouble());
     auto * sizeItem = new QTableWidgetItem(sizeStr);
     sizeItem->setData(Qt::TextAlignmentRole, Qt::AlignRight);
-    MWUI->tableWidget->setItem(rowCount, 4, sizeItem);
-    addPackageStatusToTable(rowCount, static_cast<ePackageState>(list[6].toInt()));
-    MWUI->tableWidget->scrollToBottom();
+    MWUI->tableWidget->setItem(row, 4, sizeItem);
+    addPackageStatusToTable(row, static_cast<ePackageState>(list[6].toInt()));
+    MWUI->tableWidget->scrollToItem(titleItem);
 
-    qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(rowCount);
+    qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(row);
 }
 
 void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
@@ -225,6 +234,16 @@ void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
             break;
     }
     qDebug() << QString("The status of the package at %1th row has ben set to: <%2>").arg(count).arg(packageState2Text(status));
+}
+
+int IndexStep::findPackageInsertRow(int firstRow, const QString & packageName) const {
+    for (int row = firstRow; row < MWUI->tableWidget->rowCount(); ++row) {
+        const auto * item = MWUI->tableWidget->item(row, 1);
+        if (item != nullptr && QString::localeAwareCompare(packageName, item->text()) < 0) {
+            return row;
+        }
+    }
+    return MWUI->tableWidget->rowCount();
 }
 
 bool IndexStep::countPackagesInIndexFile(int & packagesTotal, const QString & indexFileName) const {
@@ -273,7 +292,7 @@ bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileNam
         qWarning() << "Cannot parse the index file, reason: The index file has zero size!";
         return false;
     }
-    QStringList sortedLines;
+    const int firstRow = MWUI->tableWidget->rowCount();
     int isFirstLine = true;
     while (!file.atEnd()) {
         QString line = QString(file.readLine()).trimmed();
@@ -296,7 +315,12 @@ bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileNam
                 file.close();
                 return false;
             }
-            sortedLines << line + "%" + QString::number(status) + "%" + QString::number(packagesCount);
+            const int packageId = packagesCount;
+            const QString packageLine = line + "%" + QString::number(status) + "%" + QString::number(packageId);
+            QStringList packageList = packageLine.split("%", QString::SkipEmptyParts);
+            const int sortStartRow = !isCslIndex && packageId == 0 ? firstRow : firstRow + (!isCslIndex && firstRow == 0 ? 1 : 0);
+            const int insertRow = !isCslIndex && packageId == 0 ? firstRow : findPackageInsertRow(sortStartRow, packageList[1]);
+            addPackageToTable(packageList, insertRow);
             packagesCount++;
             stepProgBar();
             QApplication::processEvents();
@@ -307,12 +331,6 @@ bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileNam
         }
     }
     file.close();
-    //
-    sortedLines.sort();
-    for (const QString & line : sortedLines) {
-        QStringList list = line.split("%", QString::SkipEmptyParts);
-        addPackageToTable(list);
-    }
     qDebug() << "The index file has been parsed.";
     return true;
 }
