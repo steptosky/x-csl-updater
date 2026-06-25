@@ -9,7 +9,21 @@
         <translation>X-CSL-Updater :: О программе</translation>
     </message>
     <message>
-        <location filename="about.ui" line="58"/>
+        <location filename="about.ui" line="152"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The X-CSL-Package project is a centralized CSL model library for displaying &lt;a href=&quot;https://ivao.aero&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;IVAO&lt;/span&gt;&lt;/a&gt; traffic in &lt;a href=&quot;https://x-plane.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;X-Plane&lt;/span&gt;&lt;/a&gt;.&lt;br /&gt;The project is being developed, maintained and served by X-AiR and StepToSky Teams.&lt;br /&gt;The library can be installed and continuously updated by using this X-CSL-Updater application.&lt;/p&gt;
+&lt;p align=&quot;right&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; X-CSL-Package project web site: &lt;a href=&quot;https://x-csl.ru&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://x-csl.ru&lt;/span&gt;&lt;/a&gt;&lt;br /&gt;X-AiR Team web site: &lt;a href=&quot;https://x-air.ru&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://x-air.ru&lt;/span&gt;&lt;/a&gt;&lt;br /&gt;StepToSky Team web site: &lt;a href=&quot;https://steptosky.com&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://steptosky.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="about.ui" line="192"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -18,7 +32,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="about.ui" line="90"/>
+        <location filename="about.ui" line="58"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -27,64 +41,70 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="about.ui" line="151"/>
+        <location filename="about.ui" line="90"/>
         <source>X-CSL-Updater ver.: </source>
         <translation>X-CSL-Updater ver.: </translation>
-    </message>
-    <message>
-        <location filename="about.ui" line="182"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The X-CSL-Package project is a centralized CSL model library for displaying &lt;a href=&quot;https://ivao.aero&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;IVAO&lt;/span&gt;&lt;/a&gt; traffic in &lt;a href=&quot;https://x-plane.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;X-Plane&lt;/span&gt;&lt;/a&gt;.&lt;br /&gt;The project is developed, maintained and served by the X-AiR and StepToSky Teams.&lt;br /&gt;It can be installed and continuously updated using this X-CSL-Updater.&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;right&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Official X-CSL-Package project web site (&lt;a href=&quot;https://csl.x-air.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://csl.x-air.ru&lt;/span&gt;&lt;/a&gt;)&lt;br /&gt;Copyright © 2009-2020 X-AiR Team (&lt;a href=&quot;https://x-air.ru&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://x-air.ru&lt;/span&gt;&lt;/a&gt;)&lt;br /&gt;Copyright © 2009-2020 StepToSky Team (&lt;a href=&quot;https://steptosky.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;https://steptosky.com&lt;/span&gt;&lt;/a&gt;)&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
     </message>
 </context>
 <context>
     <name>IndexStep</name>
     <message>
-        <location filename="IndexStep.cpp" line="60"/>
+        <location filename="IndexStep.cpp" line="81"/>
         <source>Indexing, please wait...</source>
         <translation>Индексация, пожалуйста ждите...</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="125"/>
+        <location filename="IndexStep.cpp" line="98"/>
+        <source>Downloading configuration file...</source>
+        <translation>Загрузка конфигурационных файлов...</translation>
+    </message>
+    <message>
+        <location filename="IndexStep.cpp" line="131"/>
+        <source>Downloading index files...</source>
+        <translation>Загрузка индексных файлов...</translation>
+    </message>
+    <message>
+        <location filename="IndexStep.cpp" line="149"/>
+        <source>Reading index files...</source>
+        <translation>Чтение индексных файлов...</translation>
+    </message>
+    <message>
+        <location filename="IndexStep.cpp" line="160"/>
         <source>Indexing local files is successfully done.</source>
         <translation>Индексация локальных файлов завершена.</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="131"/>
+        <location filename="IndexStep.cpp" line="166"/>
         <source>To make all the packages up-to-date you have to download %1 of %2</source>
         <translation>Для полного обновления вам надо загрузить %1 из %2</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="132"/>
+        <location filename="IndexStep.cpp" line="167"/>
         <source>Select the packages you want to update and click &quot;Update&quot;.</source>
         <translation>Выберите пакет(ы), которые хотите обновить  и нажмите &quot;Обновить&quot;.</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="135"/>
+        <location filename="IndexStep.cpp" line="170"/>
         <source>Congratulations! All the packages are fully up-to-date.</source>
         <translation>Поздравляем! Все пакеты обновлены.</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="143"/>
+        <location filename="IndexStep.cpp" line="182"/>
         <source>Error: Cannot get indexing successfully done! See log file for details.</source>
         <translation>Ошибка: Не могу выполнить индексацию. Смотрите лог-файл, чтобы узнать больше.</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="165"/>
+        <location filename="IndexStep.cpp" line="207"/>
         <source>Please wait...</source>
         <translation>Пожалуйста ждите...</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="442"/>
+        <location filename="IndexStep.cpp" line="404"/>
+        <source>Checking local packages...</source>
+        <translation>Проверка локальных пакетов...</translation>
+    </message>
+    <message>
+        <location filename="IndexStep.cpp" line="180"/>
         <source>Indexing process has been canceled by user!</source>
         <translation>Индексация отменена пользователем!</translation>
     </message>
@@ -528,47 +548,36 @@ Note: no additional files will be installed/updated, only the X-CSL library file
         <source>OK</source>
         <translation></translation>
     </message>
-    <message>
-        <location filename="settings.cpp" line="62"/>
-        <location filename="settings.cpp" line="70"/>
-        <location filename="settings.cpp" line="74"/>
-        <location filename="settings.cpp" line="78"/>
-        <location filename="settings.cpp" line="82"/>
-        <location filename="settings.cpp" line="86"/>
-        <location filename="settings.cpp" line="122"/>
-        <source>http://csl.x-air.ru/package/</source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>UpdateStep</name>
     <message>
-        <location filename="UpdateStep.cpp" line="18"/>
+        <location filename="UpdateStep.cpp" line="17"/>
         <source>The operation has been canceled by user!</source>
         <translation>Операция отменена пользователем!</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="107"/>
+        <location filename="UpdateStep.cpp" line="106"/>
         <source>Updating, please wait...</source>
         <translation>Обновление, пожалуйста ждите...</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="167"/>
+        <location filename="UpdateStep.cpp" line="166"/>
         <source>Error: Cannot get updating successfully done! The X-CSL library can be broken! See log file for details.</source>
         <translation>Ошибка: Не могу выполнить обновление! X-CSL библиотека может быть повреждёна! См. лог-файл.</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="168"/>
+        <location filename="UpdateStep.cpp" line="167"/>
         <source>Reindexing is required to continue. Please click &quot;Index&quot; button.</source>
         <translation>Переиндексация необходима чтобы продолжить.Нажмите кнопку «Индексировать».</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="174"/>
+        <location filename="UpdateStep.cpp" line="173"/>
         <source>Updating process is successfully done!</source>
         <translation>Обновление успешно завершено!</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="204"/>
+        <location filename="UpdateStep.cpp" line="203"/>
         <source>Updating: %1...</source>
         <translation>Обновление: %1 ...</translation>
     </message>

@@ -23,6 +23,7 @@ signals:
     //-------------------------------------------------------------------------
 private slots:
     void cancelSlot();
+    void updateDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     //-------------------------------------------------------------------------
     //public slots:
     void stage2Slot(QNetworkReply * inReply);
@@ -31,14 +32,18 @@ private slots:
     //-------------------------------------------------------------------------
 private:
     bool createTargetFile(const QString & fileName, const QByteArray & bytesToWrite) const;
-    void scheduleDownloadingFile(const QString & url, const QString & localPath) const;
+    void scheduleDownloadingFile(const QString & url, const QString & localPath);
+    void resetDownloadProgress();
+    void updateDownloadProgressBar() const;
     //-------------------------------------------------------------------------
     void stage2();
     void stage3();
     void endIndex(int Next = true);
     //-------------------------------------------------------------------------
-    void addPackageToTable(const QStringList & list) const;
+    void addPackageToTable(const QStringList & list, int row = -1) const;
     void addPackageStatusToTable(int count, ePackageState status) const;
+    int findPackageInsertRow(int firstRow, const QString & packageName) const;
+    bool countFilesInIndexFile(int & filesTotal, const QString & indexFileName) const;
     bool parseIndexFile(int & packagesCount, const QString & indexFileName, bool isCslIndex);
     bool parseIndexForDelFile(const QString & indexFileName, bool isCslIndex);
     void parseIndexFiles();
@@ -51,6 +56,10 @@ private:
     QNetworkAccessManager * mNetMng;
 
     int mFilesToDownload = 0;
+    QHash<QNetworkReply *, qint64> mDownloadBytesReceived;
+    QHash<QNetworkReply *, qint64> mDownloadBytesTotal;
+    bool mCancelRequested = false;
+    bool mIndexFinished = false;
 
     size_t mSizeOfServer;
     size_t mSizeOfNeedUpdate;
