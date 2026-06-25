@@ -1,10 +1,10 @@
 @echo off
 
-set QT_BIN_PATH="C:\Qt\5.11.2\msvc2015_64\bin"
-set PATH=%PATH%;%QT_BIN_PATH%;
+if not defined QT_BIN_PATH set "QT_BIN_PATH=C:\Qt\5.15.2\msvc2019_64\bin"
+set "PATH=%PATH%;%QT_BIN_PATH%"
 
 echo %PATH%
 
-call lrelease.exe x-csl-updater_ru.ts
+call "%QT_BIN_PATH%\lrelease.exe" x-csl-updater_ru.ts
 
 pause
