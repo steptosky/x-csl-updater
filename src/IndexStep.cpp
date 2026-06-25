@@ -176,6 +176,9 @@ void IndexStep::endIndex(int Next) {
         qInfo() << "Indexing is done.";
     }
     else {
+        if (mCancelRequested) {
+            setMessage(tr("Indexing process has been canceled by user!"));
+        }
         setMessage(tr("Error: Cannot get indexing successfully done! See log file for details."));
         MWUI->indexButton->setEnabled(true);
         qWarning() << "Indexing is failed. See details above.";
@@ -245,8 +248,8 @@ int IndexStep::findPackageInsertRow(int firstRow, const QString & packageName) c
     return MWUI->tableWidget->rowCount();
 }
 
-bool IndexStep::countPackagesInIndexFile(int & packagesTotal, const QString & indexFileName) const {
-    qDebug() << "Counting packages in an index file: <" << indexFileName << ">";
+bool IndexStep::countFilesInIndexFile(int & filesTotal, const QString & indexFileName) const {
+    qDebug() << "Counting files in an index file: <" << indexFileName << ">";
     QFile file(indexFileName);
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Cannot open the index file, reason: " << file.errorString();
@@ -271,12 +274,12 @@ bool IndexStep::countPackagesInIndexFile(int & packagesTotal, const QString & in
         if (type == "#" || type == "0" || type.isEmpty())
             continue;
         QStringList list = line.split("%", QString::SkipEmptyParts);
-        if (list.size() >= 6 && list[0] == "11") {
-            packagesTotal++;
+        if (list.size() >= 4 && list[0] == "10") {
+            filesTotal++;
         }
     }
     file.close();
-    qDebug() << "Packages have been counted in the index file.";
+    qDebug() << "Files have been counted in the index file.";
     return true;
 }
 
@@ -321,7 +324,6 @@ bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileNam
             const int insertRow = !isCslIndex && packageId == 0 ? firstRow : findPackageInsertRow(sortStartRow, packageList[1]);
             addPackageToTable(packageList, insertRow);
             packagesCount++;
-            stepProgBar();
             QApplication::processEvents();
             if (mCancelRequested) {
                 file.close();
@@ -387,20 +389,20 @@ void IndexStep::parseIndexFiles() {
     MWUI->tableWidget->clearContents();
     MWUI->tableWidget->setRowCount(0);
 
-    int packagesTotal = 0;
+    int filesTotal = 0;
     QString indexFilePath = mAltDefs->indexFileLocalPath();
-    if (!mAltDefs->isCustomSimDirSelected() && !countPackagesInIndexFile(packagesTotal, indexFilePath)) {
+    if (!mAltDefs->isCustomSimDirSelected() && !countFilesInIndexFile(filesTotal, indexFilePath)) {
         endIndex(false);
         return;
     }
     indexFilePath = mAltDefs->cslIndexFileLocalPath();
-    if (!countPackagesInIndexFile(packagesTotal, indexFilePath)) {
+    if (!countFilesInIndexFile(filesTotal, indexFilePath)) {
         endIndex(false);
         return;
     }
 
     setMessage(tr("Checking local packages..."));
-    initProgBar(0, qMax(1, packagesTotal), 0, 1);
+    initProgBar(0, qMax(1, filesTotal), 0, 1);
 
     // altitude pack
     indexFilePath = mAltDefs->indexFileLocalPath();
@@ -439,6 +441,12 @@ ePackageState IndexStep::checkCslPack(int pos, int ID, const QString & indexFile
             break;
         if (list[0] == "10") {
             int st = checkFile(list, ID, isCslIndex);
+            stepProgBar();
+            QApplication::processEvents();
+            if (mCancelRequested) {
+                file.close();
+                return CLIENT_PACKAGE_STATUS_NONE;
+            }
             if (st == CLIENT_FILE_STATUS_OK) {
                 wereOkFiles = true;
             }
@@ -562,13 +570,16 @@ void IndexStep::updateDownloadProgress(qint64 bytesReceived, qint64 bytesTotal) 
 
 void IndexStep::cancelSlot() {
     mCancelRequested = true;
-    setMessage(tr("Indexing process has been canceled by user!"));
-    endIndex(false);
+    MWUI->cancelButton->setDisabled(true);
+    emit abortAllReplaysSig();
 }
 
 void IndexStep::stage2Slot(QNetworkReply * inReply) {
     if (inReply->error() == QNetworkReply::OperationCanceledError) {
         inReply->deleteLater();
+        if (mCancelRequested) {
+            endIndex(false);
+        }
         return;
     }
     if (inReply->error() == QNetworkReply::NoError) {
@@ -604,6 +615,9 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
 void IndexStep::stage3Slot(QNetworkReply * inReply) {
     if (inReply->error() == QNetworkReply::OperationCanceledError) {
         inReply->deleteLater();
+        if (mCancelRequested) {
+            endIndex(false);
+        }
         return;
     }
     if (inReply->error() == QNetworkReply::NoError) {

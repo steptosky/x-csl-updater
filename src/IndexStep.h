@@ -43,7 +43,7 @@ private:
     void addPackageToTable(const QStringList & list, int row = -1) const;
     void addPackageStatusToTable(int count, ePackageState status) const;
     int findPackageInsertRow(int firstRow, const QString & packageName) const;
-    bool countPackagesInIndexFile(int & packagesTotal, const QString & indexFileName) const;
+    bool countFilesInIndexFile(int & filesTotal, const QString & indexFileName) const;
     bool parseIndexFile(int & packagesCount, const QString & indexFileName, bool isCslIndex);
     bool parseIndexForDelFile(const QString & indexFileName, bool isCslIndex);
     void parseIndexFiles();
