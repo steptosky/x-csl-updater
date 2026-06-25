@@ -61,7 +61,7 @@
         <attribute name="title">
          <string>Server</string>
         </attribute>
-        <widget class="QWidget" name="layoutWidget">
+        <widget class="QWidget" name="serverLayoutWidget">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -204,7 +204,7 @@
         <attribute name="title">
          <string>Lang</string>
         </attribute>
-        <widget class="QWidget" name="layoutWidget">
+        <widget class="QWidget" name="langLayoutWidget">
          <property name="geometry">
           <rect>
            <x>20</x>
