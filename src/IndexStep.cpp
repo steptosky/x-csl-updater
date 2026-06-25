@@ -170,6 +170,7 @@ void IndexStep::endIndex(int Next) {
             setMessage(tr("Congratulations! All the packages are fully up-to-date."));
         }
         mPackInfo->GetInfoToTable();
+        MWUI->tableWidget->scrollToTop();
         MWUI->updateButton->setEnabled(true);
         MWUI->indexButton->setEnabled(true);
         qInfo() << "Indexing is done.";
@@ -199,8 +200,7 @@ void IndexStep::addPackageToTable(const QStringList & list, int row) const {
     }
     MWUI->tableWidget->insertRow(row);
     MWUI->tableWidget->setItem(row, 0, new QTableWidgetItem(list[7]));
-    auto * titleItem = new QTableWidgetItem(list[1]);
-    MWUI->tableWidget->setItem(row, 1, titleItem);
+    MWUI->tableWidget->setItem(row, 1, new QTableWidgetItem(list[1]));
     MWUI->tableWidget->setItem(row, 2, new QTableWidgetItem(tr("Please wait...")));
     MWUI->tableWidget->setItem(row, 3, new QTableWidgetItem(QString("%3 (%4)").arg(list[4], list[5])));
     const QString sizeStr = mLocale.formattedDataSize(list[2].toDouble());
@@ -208,7 +208,6 @@ void IndexStep::addPackageToTable(const QStringList & list, int row) const {
     sizeItem->setData(Qt::TextAlignmentRole, Qt::AlignRight);
     MWUI->tableWidget->setItem(row, 4, sizeItem);
     addPackageStatusToTable(row, static_cast<ePackageState>(list[6].toInt()));
-    MWUI->tableWidget->scrollToItem(titleItem);
 
     qDebug() << QString("A package <%1> has been added at %2th row.").arg(list[1]).arg(row);
 }
