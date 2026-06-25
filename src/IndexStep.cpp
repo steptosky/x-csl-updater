@@ -223,16 +223,16 @@ void IndexStep::addPackageStatusToTable(int count, ePackageState status) const {
     MWUI->tableWidget->setItem(count, 6, statusItem);
     switch (status) {
         case CLIENT_PACKAGE_STATUS_OK:
-            statusTextItem->setTextColor(Qt::darkGreen);
+            statusTextItem->setForeground(QBrush(Qt::darkGreen));
             break;
         case CLIENT_PACKAGE_STATUS_CHANGE:
-            statusTextItem->setTextColor(Qt::red);
+            statusTextItem->setForeground(QBrush(Qt::red));
             break;
         case CLIENT_PACKAGE_STATUS_LOST:
-            statusTextItem->setTextColor(Qt::darkRed);
+            statusTextItem->setForeground(QBrush(Qt::darkRed));
             break;
         default:
-            statusTextItem->setTextColor(Qt::darkGray);
+            statusTextItem->setForeground(QBrush(Qt::darkGray));
             break;
     }
     qDebug() << QString("The status of the package at %1th row has ben set to: <%2>").arg(count).arg(packageState2Text(status));
@@ -273,7 +273,7 @@ bool IndexStep::countFilesInIndexFile(int & filesTotal, const QString & indexFil
         }
         if (type == "#" || type == "0" || type.isEmpty())
             continue;
-        QStringList list = line.split("%", QString::SkipEmptyParts);
+        QStringList list = line.split("%", Qt::SkipEmptyParts);
         if (list.size() >= 4 && list[0] == "10") {
             filesTotal++;
         }
@@ -310,7 +310,7 @@ bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileNam
         }
         if (type == "#" || type == "0" || type.isEmpty())
             continue;
-        QStringList list = line.split("%", QString::SkipEmptyParts);
+        QStringList list = line.split("%", Qt::SkipEmptyParts);
         if (list.size() >= 6 && list[0] == "11") {
             const ePackageState status = checkCslPack(file.pos(), packagesCount, indexFileName, isCslIndex);
             if (mCancelRequested) {
@@ -319,7 +319,7 @@ bool IndexStep::parseIndexFile(int & packagesCount, const QString & indexFileNam
             }
             const int packageId = packagesCount;
             const QString packageLine = line + "%" + QString::number(status) + "%" + QString::number(packageId);
-            QStringList packageList = packageLine.split("%", QString::SkipEmptyParts);
+            QStringList packageList = packageLine.split("%", Qt::SkipEmptyParts);
             const int sortStartRow = !isCslIndex && packageId == 0 ? firstRow : firstRow + (!isCslIndex && firstRow == 0 ? 1 : 0);
             const int insertRow = !isCslIndex && packageId == 0 ? firstRow : findPackageInsertRow(sortStartRow, packageList[1]);
             addPackageToTable(packageList, insertRow);
@@ -348,7 +348,7 @@ bool IndexStep::parseIndexForDelFile(const QString & indexFileName, bool isCslIn
         QString type = line.left(1);
         if (type == "#" || type == "0" || type.isEmpty())
             continue;
-        QStringList list = line.split("%", QString::SkipEmptyParts);
+        QStringList list = line.split("%", Qt::SkipEmptyParts);
         if (list.size() >= 2) {
             PackageEntry fileInfo;
             fileInfo.ID = list[0].toInt();
@@ -436,7 +436,7 @@ ePackageState IndexStep::checkCslPack(int pos, int ID, const QString & indexFile
         QString type = line.left(1);
         if (type == "#" || type == "0" || type.isEmpty())
             continue;
-        QStringList list = line.split("%", QString::SkipEmptyParts);
+        QStringList list = line.split("%", Qt::SkipEmptyParts);
         if (list[0] == "11")
             break;
         if (list[0] == "10") {

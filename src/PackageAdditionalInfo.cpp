@@ -78,7 +78,7 @@ void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 		PackInfo packInfo;
 		packInfo.ID = packId;
 		packInfo.Info = inReply->readAll();
-		QStringList list = packInfo.Info.split("\n", QString::SkipEmptyParts);
+		QStringList list = packInfo.Info.split("\n", Qt::SkipEmptyParts);
 		// QString s_str(list[0]);
 		// int size = s_str.length();
 		// packInfo.ShortInfo = s_str.left(size - 1);
@@ -95,7 +95,7 @@ void PackageAdditionalInfo::httpRequestFinished(QNetworkReply *inReply) {
 		packInfo.ShortInfo = tr("There is no information...");
 		mPackInfo.push_back(packInfo);
 		QTableWidgetItem *Item = new QTableWidgetItem(packInfo.ShortInfo);
-		Item->setTextColor(Qt::lightGray);
+		Item->setForeground(QBrush(Qt::lightGray));
 		mMainUi->tableWidget->setItem(row, 2, Item);
 
 		// error details
