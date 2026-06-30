@@ -25,6 +25,9 @@ private:
     bool removeDir(const QString & dirName);
     bool removePath(PackageEntry inPackageEntry);
     bool createDownloadingFile(PackageEntry inPackageEntry);
+    bool installDownloadedFile();
+    void clearDownloadingFileState();
+    void removeDownloadingFile();
     void CopyRemoteFile(PackageEntry inPackageEntry);
     void EndUpdate();
 
@@ -34,6 +37,7 @@ private:
     QNetworkAccessManager * mNetMng = nullptr;
     QFile * mDownloadingFile = nullptr;
     QString mDownloadingFileName;
+    QString mDownloadingTargetFileName;
 
     int mDownloadedBytes = 0;
     int mTotalBytes = 0;
