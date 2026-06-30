@@ -487,6 +487,13 @@ eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
         fileEntry.type = ADDITIONAL_FILE;
     }
     const QString filePath = mAltDefs->fullLocalPath(fileEntry.type, List[1]);
+    if (filePath.isEmpty()) {
+        setMessage(tr("Error: Unsafe or invalid path in package index for uri <%1>, package id <%2>.").arg(List.value(1)).arg(ID));
+        fileEntry.state = CLIENT_FILE_STATUS_CHANGE;
+        mEntryList.push_back(fileEntry);
+        qDebug() << "The file state has been set to: " << localFileState2Text(CLIENT_FILE_STATUS_CHANGE);
+        return CLIENT_FILE_STATUS_CHANGE;
+    }
     qDebug() << "Checking local file: <" << filePath << ">";
     const QFileInfo fileInfo(filePath);
     mSizeOfServer += List[2].toInt();
@@ -603,10 +610,10 @@ void IndexStep::stage2Slot(QNetworkReply * inReply) {
         const QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
         const QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
         if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
-            qWarning() << QString("Cannot download the file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
+            qWarning() << QString("Cannot download the file <%1> due to: %2").arg(errorUrl, inReply->errorString());
         }
         else {
-            qWarning() << QString("Cannot download the file <%1> due to: %2 - %3").arg(errorUrl).arg(httpStatus).arg(httpStatusMessage);
+            qWarning() << QString("Cannot download the file <%1> due to: %2 - %3").arg(errorUrl, httpStatus, httpStatusMessage);
         }
         inReply->deleteLater();
         endIndex(false);

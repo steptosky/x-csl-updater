@@ -114,7 +114,7 @@ public:
             return simDir();
         }
         else{
-            return simDir() + "/" + mCslLocalDir;
+            return safeLocalPath(simDir(), mCslLocalDir, QString("localDir=%1").arg(mCslLocalDir));
         }
     }
 
@@ -123,7 +123,11 @@ public:
     }
 
     QString cslFileLocalPath(const QString & fileUri) const {
-        return cslBaseLocalDir() + "/" + fileUri;
+        const QString base = cslBaseLocalDir();
+        if (base.isEmpty()) {
+            return QString();
+        }
+        return safeLocalPath(base, fileUri, fileUri);
     }
 
     //-------------------------------------------------------------------------
@@ -132,31 +136,50 @@ public:
     }
 
     QString fileLocalPath(const QString & fileUri) const {
-        QStringList list = fileUri.split('/');
+        const QString nativeFileUri = QDir::fromNativeSeparators(fileUri);
+        const QString normalizedFileUri = QDir::cleanPath(nativeFileUri);
+        if (normalizedFileUri.startsWith("/") || QFileInfo(normalizedFileUri).isAbsolute()) {
+            qWarning() << "Rejected unsafe file uri: " << fileUri;
+            return QString();
+        }
+        QStringList list = nativeFileUri.split('/');
+        if (list.size() < 2 || list[0].isEmpty() || list[1].isEmpty() || list[0] == "..") {
+            qWarning() << "Cannot map malformed file uri: " << fileUri;
+            return QString();
+        }
         // mapping
         if (mFoldersMap.contains(list[1])) {
-            QString res = simDir() + "/" + mFoldersMap[list[1]];
+            QString relativePath = mFoldersMap[list[1]];
             for (int i = 2; i < list.size(); ++i) {
-                res += "/" + list.at(i);
+                relativePath += "/" + list.at(i);
             }
-            return res;
+            return safeLocalPath(simDir(), relativePath, fileUri);
         }
         // we have no mapping for the specified file
         if (fileUri.contains(infoFileName())){
             // for info file
-            QString res = altitudeBaseLocalDir();
+            QString relativePath;
             for (int i = 1; i < list.size(); ++i) {
-                res += "/" + list.at(i);
+                if (!relativePath.isEmpty()) {
+                    relativePath += "/";
+                }
+                relativePath += list.at(i);
             }
-            return res;
+            return safeLocalPath(altitudeBaseLocalDir(), relativePath, fileUri);
         }
         // for other unmapped files
-        QString res = altitudeBaseLocalDir() + "/unmapped";
+        QString relativePath;
         for (int i = 1; i < list.size(); ++i) {
-            res += "/" + list.at(i);
+            if (!relativePath.isEmpty()) {
+                relativePath += "/";
+            }
+            relativePath += list.at(i);
         }
-        qDebug() << "Cannot map the file uri: " << fileUri;
-        qDebug() << "Will map it to unmapped directory: " << res;
+        const QString res = safeLocalPath(altitudeBaseLocalDir(), "unmapped/" + relativePath, fileUri);
+        if (!res.isEmpty()) {
+            qDebug() << "Cannot map the file uri: " << fileUri;
+            qDebug() << "Will map it to unmapped directory: " << res;
+        }
         return res;
     }
 
@@ -217,6 +240,34 @@ public:
 
     //-------------------------------------------------------------------------
 private:
+    QString safeLocalPath(const QString & baseDir, const QString & relativePath, const QString & sourceUri) const {
+        const QString normalizedRelative = QDir::cleanPath(QDir::fromNativeSeparators(relativePath));
+        if (baseDir.isEmpty() || normalizedRelative.isEmpty() || normalizedRelative == "."
+            || normalizedRelative.startsWith("/") || QFileInfo(normalizedRelative).isAbsolute()) {
+            qWarning() << "Rejected unsafe file uri: " << sourceUri
+                       << "; relative path: " << relativePath
+                       << "; base dir: " << baseDir;
+            return QString();
+        }
+
+        const QString base = QDir::cleanPath(QFileInfo(baseDir).absoluteFilePath());
+        const QString target = QDir::cleanPath(QDir(base).absoluteFilePath(normalizedRelative));
+#ifdef Q_OS_WIN
+        const Qt::CaseSensitivity caseSensitivity = Qt::CaseInsensitive;
+#else
+        const Qt::CaseSensitivity caseSensitivity = Qt::CaseSensitive;
+#endif
+        const QString basePrefix = base.endsWith("/") ? base : base + "/";
+        if (target != base && !target.startsWith(basePrefix, caseSensitivity)) {
+            qWarning() << "Rejected file uri outside base dir: " << sourceUri
+                       << "; target: " << target
+                       << "; base dir: " << base;
+            return QString();
+        }
+
+        return target;
+    }
+
     bool mIsReady = false;
     //-------------------------------------------------------------------------
     QString mServerUrl;

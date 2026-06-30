@@ -50,7 +50,12 @@ bool UpdateStep::removeDir(const QString & dirName) {
 }
 
 bool UpdateStep::removePath(PackageEntry inPackageEntry) {
-    const QString path = mAltDefs->fullLocalPath(inPackageEntry.type, inPackageEntry.data[1]);
+    const QString fileUri = inPackageEntry.data.value(1);
+    const QString path = mAltDefs->fullLocalPath(inPackageEntry.type, fileUri);
+    if (path.isEmpty()) {
+        setMessage(tr("Error: Unsafe or invalid path in delete index for uri <%1>, package id <%2>. Skipped.").arg(fileUri).arg(inPackageEntry.ID));
+        return false;
+    }
     QFileInfo fileInfo(path);
     QDir dir(path);
     if (fileInfo.isFile()) {
@@ -68,7 +73,12 @@ bool UpdateStep::removePath(PackageEntry inPackageEntry) {
 }
 
 bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
-    const QString fileName = mAltDefs->fullLocalPath(inPackageEntry.type, inPackageEntry.data[1]);
+    const QString fileUri = inPackageEntry.data.value(1);
+    const QString fileName = mAltDefs->fullLocalPath(inPackageEntry.type, fileUri);
+    if (fileName.isEmpty()) {
+        setMessage(tr("Error: Unsafe or invalid path in package index for uri <%1>, package id <%2>. Skipped.").arg(fileUri).arg(inPackageEntry.ID));
+        return false;
+    }
     if (QFile::exists(fileName)) {
         const bool res = QFile::copy(fileName, fileName + ".backup");
         if (res){
@@ -179,7 +189,6 @@ void UpdateStep::EndUpdate() {
 }
 
 void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
-    const QUrl url(mAltDefs->fullUrl(inPackageEntry.type, inPackageEntry.data[1]));
     if (!createDownloadingFile(inPackageEntry)) {
         // cannot create file
         ++mFailedFileCounter;
@@ -192,6 +201,7 @@ void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
         }
         return;
     }
+    const QUrl url(mAltDefs->fullUrl(inPackageEntry.type, inPackageEntry.data.value(1)));
     // start downloading
     mDownloadedBytes = 0;
     mTotalBytes = 0;
