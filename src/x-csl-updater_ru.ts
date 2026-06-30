@@ -108,6 +108,11 @@ p, li { white-space: pre-wrap; }
         <source>Indexing process has been canceled by user!</source>
         <translation>Индексация отменена пользователем!</translation>
     </message>
+    <message>
+        <location filename="IndexStep.cpp" line="491"/>
+        <source>Error: Unsafe or invalid path in package index for URI &lt;%1&gt;, package ID &lt;%2&gt;.</source>
+        <translation>Ошибка: небезопасный или некорректный путь в индексе пакета для URI &lt;%1&gt;, ID пакета &lt;%2&gt;.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -551,6 +556,16 @@ Note: no additional files will be installed/updated, only the X-CSL library file
 </context>
 <context>
     <name>UpdateStep</name>
+    <message>
+        <location filename="UpdateStep.cpp" line="56"/>
+        <source>Error: Unsafe or invalid path in delete index for URI &lt;%1&gt;, entry ID &lt;%2&gt;. Skipped.</source>
+        <translation>Ошибка: небезопасный или некорректный путь в индексе удаления для URI &lt;%1&gt;, ID записи &lt;%2&gt;. Пропущено.</translation>
+    </message>
+    <message>
+        <location filename="UpdateStep.cpp" line="79"/>
+        <source>Error: Unsafe or invalid path in package index for URI &lt;%1&gt;, package ID &lt;%2&gt;. Skipped.</source>
+        <translation>Ошибка: небезопасный или некорректный путь в индексе пакета для URI &lt;%1&gt;, ID пакета &lt;%2&gt;. Пропущено.</translation>
+    </message>
     <message>
         <location filename="UpdateStep.cpp" line="17"/>
         <source>The operation has been canceled by user!</source>

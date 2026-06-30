@@ -53,7 +53,7 @@ bool UpdateStep::removePath(PackageEntry inPackageEntry) {
     const QString fileUri = inPackageEntry.data.value(1);
     const QString path = mAltDefs->fullLocalPath(inPackageEntry.type, fileUri);
     if (path.isEmpty()) {
-        setMessage(tr("Error: Unsafe or invalid path in delete index for uri <%1>, package id <%2>. Skipped.").arg(fileUri).arg(inPackageEntry.ID));
+        setMessage(tr("Error: Unsafe or invalid path in delete index for URI <%1>, entry ID <%2>. Skipped.").arg(fileUri).arg(inPackageEntry.ID));
         return false;
     }
     QFileInfo fileInfo(path);
@@ -76,7 +76,7 @@ bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
     const QString fileUri = inPackageEntry.data.value(1);
     const QString fileName = mAltDefs->fullLocalPath(inPackageEntry.type, fileUri);
     if (fileName.isEmpty()) {
-        setMessage(tr("Error: Unsafe or invalid path in package index for uri <%1>, package id <%2>. Skipped.").arg(fileUri).arg(inPackageEntry.ID));
+        setMessage(tr("Error: Unsafe or invalid path in package index for URI <%1>, package ID <%2>. Skipped.").arg(fileUri).arg(inPackageEntry.ID));
         return false;
     }
     if (QFile::exists(fileName)) {

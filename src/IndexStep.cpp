@@ -488,7 +488,7 @@ eFileState IndexStep::checkFile(QStringList List, int ID, bool isCslIndex) {
     }
     const QString filePath = mAltDefs->fullLocalPath(fileEntry.type, List[1]);
     if (filePath.isEmpty()) {
-        setMessage(tr("Error: Unsafe or invalid path in package index for uri <%1>, package id <%2>.").arg(List.value(1)).arg(ID));
+        setMessage(tr("Error: Unsafe or invalid path in package index for URI <%1>, package ID <%2>.").arg(List.value(1)).arg(ID));
         fileEntry.state = CLIENT_FILE_STATUS_CHANGE;
         mEntryList.push_back(fileEntry);
         qDebug() << "The file state has been set to: " << localFileState2Text(CLIENT_FILE_STATUS_CHANGE);
