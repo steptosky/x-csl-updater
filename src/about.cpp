@@ -12,6 +12,9 @@ About::About(QWidget * parent)
 
     m_ui->copyrights->setText(STS_XCSL_COPYRIGHT_XAR);
     m_ui->copyrights_2->setText(STS_XCSL_COPYRIGHT_STS);
+
+    m_ui->license->setText("");
+    m_ui->license_2->setText(STS_XCSL_LICENSE_TYPE);
 }
 
 About::~About() {
