@@ -28,8 +28,8 @@
 
 
 
-Используйте эту контактную форму для связи с нами: https://csl.x-air.ru/contact
+Используйте эту контактную форму для связи с нами: https://x-csl.ru/contact
 
-Official X-CSL-Package project web site (https://csl.x-air.ru)
+Official X-CSL-Package project web site (https://x-csl.ru)
 Copyright © 2009-2026 X-AiR Team (https://x-air.ru)
 Copyright © 2009-2026 StepToSky Team (https://steptosky.com)
