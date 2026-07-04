@@ -1,0 +1,14 @@
+X-CSL-Updater uses Qt Community Edition libraries.
+
+This project is built against the open-source edition of Qt and is distributed
+using the LGPL licensing option for Qt.
+
+The packaged application may include Qt runtime libraries and related runtime
+components.
+
+The GNU LGPL v3 and GNU GPL v3 license texts are included in this directory:
+- Qt-LGPL-3.0.txt
+- Qt-GPL-3.0.txt
+
+Recipients may replace or relink the Qt libraries used by this application, as
+allowed by the LGPL.

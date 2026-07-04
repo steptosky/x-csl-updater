@@ -143,6 +143,12 @@ install(
     DESTINATION ${DEPLOY_DIR}
 )
 
+install(
+    DIRECTORY
+    ${CMAKE_SOURCE_DIR}/Licenses/
+    DESTINATION ${DEPLOY_DIR}/Licenses
+)
+
 # -----------------------------------------------------------------------#
 # Packaging
 if (MSVC)

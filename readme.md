@@ -19,6 +19,19 @@ If you distribute modified versions of MPL-covered files from this project, the 
 
 Project names, logos, and branding are not licensed under the MPL. See [TRADEMARKS.md](TRADEMARKS.md). Modified or unofficial builds must not imply that they are official X-CSL-Updater releases.
 
+## Qt Runtime Licensing
+
+This project uses Qt Community Edition.
+
+Related licenses information: [Licenses](Licenses).
+
+Official Qt source archive:
+- https://download.qt.io/archive/qt/
+
+Official Qt licensing references:
+- https://www.qt.io/development/open-source-lgpl-obligations
+- https://doc.qt.io/archives/qt-5.15/licenses-used-in-qt.html
+
 ### A bit technical details as a reminder:
 
     index files format:
@@ -33,5 +46,3 @@ Project names, logos, and branding are not licensed under the MPL. See [TRADEMAR
     id - not used
     file or dir name - used to deletion
     the rest - not used
-
-
