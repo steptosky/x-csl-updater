@@ -21,8 +21,14 @@ MainWindow::MainWindow(QWidget * parent)
     mIsSimDirCustom = settings.value("mIsSimDirCustom", false).toBool();
 
     // load settings
-    move(settings.value("pos", QPoint(200, 200)).toPoint());
-    resize(settings.value("size", QSize(850, 615)).toSize());
+    const QByteArray geometry = settings.value("geometry").toByteArray();
+    if (!geometry.isEmpty()) {
+        restoreGeometry(geometry);
+    }
+    else {
+        move(settings.value("pos", QPoint(200, 200)).toPoint());
+        resize(settings.value("size", QSize(850, 615)).toSize());
+    }
 
     // List context menu
     mListClearAct = new QAction(tr("Clear"), this);
@@ -95,8 +101,6 @@ MainWindow::MainWindow(QWidget * parent)
 
 MainWindow::~MainWindow() {
     QSettings settings(settingsFileName(), QSettings::IniFormat);
-    settings.setValue("pos", pos());
-    settings.setValue("size", size());
     settings.setValue("titleColWidth", mUi->tableWidget->columnWidth(1)); //Title
     settings.setValue("infoColWidth", mUi->tableWidget->columnWidth(2)); //Info
     settings.setValue("versionColWidth", mUi->tableWidget->columnWidth(3)); //Ver
@@ -127,6 +131,12 @@ void MainWindow::changeEvent(QEvent* e) {
     default:
         break;
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent * e) {
+    QSettings settings(settingsFileName(), QSettings::IniFormat);
+    settings.setValue("geometry", saveGeometry());
+    QMainWindow::closeEvent(e);
 }
 
 bool MainWindow::parseCliArgs() {

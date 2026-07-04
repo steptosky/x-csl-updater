@@ -23,7 +23,8 @@ public:
 
     MainWindow(QWidget * parent = nullptr);
     ~MainWindow();
-void changeEvent(QEvent * e);
+    void changeEvent(QEvent * e) override;
+    void closeEvent(QCloseEvent * e) override;
 
 //-------------------------------------------------------------------------
 public slots:
