@@ -5,7 +5,3 @@ https://doc.qt.io/archives/qt-5.15/licenses-used-in-qt.html
 
 Packaged builds of this project may also include additional Qt runtime
 components depending on platform and deployment method.
-
-When updating the Qt version used by this project, review the upstream Qt
-license notices again and refresh this directory if the applicable notices or
-license texts change.

@@ -23,14 +23,7 @@ Project names, logos, and branding are not licensed under the MPL. See [TRADEMAR
 
 This project uses Qt Community Edition.
 
-Related licenses information: [Licenses](Licenses).
-
-Official Qt source archive:
-- https://download.qt.io/archive/qt/
-
-Official Qt licensing references:
-- https://www.qt.io/development/open-source-lgpl-obligations
-- https://doc.qt.io/archives/qt-5.15/licenses-used-in-qt.html
+Related license information: [Licenses](Licenses).
 
 ### A bit technical details as a reminder:
 
