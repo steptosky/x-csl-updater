@@ -81,3 +81,5 @@ jobs:
             _artifacts/**/*.dmg
             docs/Readme-eng.txt
             docs/changeLog.txt
+            LICENSE
+            TRADEMARKS.md
