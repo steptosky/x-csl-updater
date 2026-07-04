@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 

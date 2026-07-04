@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include "base_steps.h"
 
 BaseSteps::BaseSteps(QWidget * _MW, Ui::MainWindow * _MWUI)

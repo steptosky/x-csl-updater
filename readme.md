@@ -11,6 +11,14 @@ The X-CSL-Package project is a centralized CSL model library for displaying IVAO
 The project is developed, maintained and served by the X-AiR and StepToSky Teams.
 It can be installed and continuously updated using this X-CSL-Updater software.
 
+## License
+
+The source code in this repository is licensed under the Mozilla Public License 2.0. See [LICENSE](LICENSE).
+
+If you distribute modified versions of MPL-covered files from this project, the corresponding source code of those files must remain available under MPL-2.0.
+
+Project names, logos, and branding are not licensed under the MPL. See [TRADEMARKS.md](TRADEMARKS.md). Modified or unofficial builds must not imply that they are official X-CSL-Updater releases.
+
 ### A bit technical details as a reminder:
 
     index files format:
@@ -25,6 +33,5 @@ It can be installed and continuously updated using this X-CSL-Updater software.
     id - not used
     file or dir name - used to deletion
     the rest - not used
-
 
 

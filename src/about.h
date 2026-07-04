@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef ABOUT_H
 #define ABOUT_H
 

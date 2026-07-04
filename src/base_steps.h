@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef BASE_STEPS_H
 #define BASE_STEPS_H
 

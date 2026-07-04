@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef UPDATE_H
 #define UPDATE_H
 

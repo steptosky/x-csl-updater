@@ -1,4 +1,6 @@
-﻿#include "settings.h"
+// SPDX-License-Identifier: MPL-2.0
+
+#include "settings.h"
 #include "ui_settings.h"
 #include "Definitions.h"
 

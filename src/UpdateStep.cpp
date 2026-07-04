@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include "UpdateStep.h"
 
 UpdateStep::UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI)
