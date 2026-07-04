@@ -79,7 +79,6 @@ jobs:
             _artifacts/**/*.zip
             _artifacts/**/*.tar.gz
             _artifacts/**/*.dmg
-            docs/Readme-eng.txt
             docs/changeLog.txt
             LICENSE
             TRADEMARKS.md
