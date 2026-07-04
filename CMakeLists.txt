@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.25)
 
-set (QT_PATH $ENV{QT_PATH})
+if (NOT DEFINED QT_PATH OR QT_PATH STREQUAL "")
+    set (QT_PATH $ENV{QT_PATH})
+endif()
+
+if (QT_PATH)
+    list(PREPEND CMAKE_PREFIX_PATH "${QT_PATH}")
+endif()
+
 message(STATUS "QT_PATH: ${QT_PATH}")
 
 set (SOLUTION X-CSL-Updater)

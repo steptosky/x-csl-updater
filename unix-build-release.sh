@@ -1,6 +1,7 @@
 #!/bin/bash
 
-QT_PATH="/home/den_rain/Qt/5.11.2/gcc_64"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/setup-qt-env.sh" || exit 1
+echo "QT_PATH=$QT_PATH"
 PROJ_DIR=build
 
 if [ ! -d "$PROJ_DIR" ]; then
@@ -9,7 +10,8 @@ fi
 cd $PROJ_DIR
 # configure
 cmake -G "Unix Makefiles" ../ \
-        -DCMAKE_PREFIX_PATH=$QT_PATH \
+        -DQT_PATH="$QT_PATH" \
+        -DCMAKE_PREFIX_PATH="$QT_PATH" \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=../Package \
         -DCLEANUP_INSTALL_FIRST=ON

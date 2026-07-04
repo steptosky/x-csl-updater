@@ -1,6 +1,10 @@
 @echo off
 
-set QT_PATH="C:/Qt/5.15.2/msvc2019_64"
+set "SCRIPT_DIR=%~dp0"
+set "SCRIPT_DIR=%SCRIPT_DIR:\=/%"
+
+call "%SCRIPT_DIR%setup-qt-env.bat" || goto :eof
+echo QT_PATH=%QT_PATH%
 
 set SLN_VERSION="Visual Studio 16 2019"
 
@@ -10,7 +14,8 @@ if not exist %PROJ_DIR% mkdir %PROJ_DIR%
 cd %PROJ_DIR%
 rem configure
 cmake -G %SLN_VERSION% ../ ^
-        -DCMAKE_PREFIX_PATH=%QT_PATH% ^
+        "-DQT_PATH=%QT_PATH%" ^
+        "-DCMAKE_PREFIX_PATH=%QT_PATH%" ^
         -DCMAKE_BUILD_TYPE=Release ^
         -DCMAKE_INSTALL_PREFIX=../Package ^
         -DCLEANUP_INSTALL_FIRST=ON
