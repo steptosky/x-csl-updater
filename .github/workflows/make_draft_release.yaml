@@ -80,5 +80,3 @@ jobs:
             _artifacts/**/*.tar.gz
             _artifacts/**/*.dmg
             docs/changeLog.txt
-            LICENSE
-            TRADEMARKS.md
