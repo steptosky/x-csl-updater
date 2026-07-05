@@ -9,21 +9,7 @@
         <translation>X-CSL-Updater :: О программе</translation>
     </message>
     <message>
-        <location filename="about.ui" line="152"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The X-CSL-Package project is a centralized CSL model library for displaying &lt;a href=&quot;https://ivao.aero&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;IVAO&lt;/span&gt;&lt;/a&gt; traffic in &lt;a href=&quot;https://x-plane.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;X-Plane&lt;/span&gt;&lt;/a&gt;.&lt;br /&gt;The project is being developed, maintained and served by X-AiR and StepToSky Teams.&lt;br /&gt;The library can be installed and continuously updated by using this X-CSL-Updater application.&lt;/p&gt;
-&lt;p align=&quot;right&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; X-CSL-Package project web site: &lt;a href=&quot;https://x-csl.ru&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://x-csl.ru&lt;/span&gt;&lt;/a&gt;&lt;br /&gt;X-AiR Team web site: &lt;a href=&quot;https://x-air.ru&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://x-air.ru&lt;/span&gt;&lt;/a&gt;&lt;br /&gt;StepToSky Team web site: &lt;a href=&quot;https://steptosky.com&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;https://steptosky.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="about.ui" line="192"/>
+        <location filename="about.ui" line="163"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -32,7 +18,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="about.ui" line="58"/>
+        <location filename="about.ui" line="77"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -41,75 +27,85 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="about.ui" line="90"/>
+        <location filename="about.ui" line="58"/>
         <source>X-CSL-Updater ver.: </source>
-        <translation>X-CSL-Updater ver.: </translation>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="about.ui" line="127"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;;&quot;&gt;The X-CSL-Package project is a centralized CSL model library for displaying &lt;/span&gt;&lt;a href=&quot;https://ivao.aero&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;IVAO&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;;&quot;&gt; traffic in &lt;/span&gt;&lt;a href=&quot;https://x-plane.com&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;X-Plane&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;;&quot;&gt;.&lt;br /&gt;The project is being developed, maintained and served by X-AiR and StepToSky Teams.&lt;br /&gt;The library can be installed and continuously updated by using this X-CSL-Updater application.&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;right&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;;&quot;&gt;X-CSL-Package project web site: &lt;/span&gt;&lt;a href=&quot;https://x-csl.ru&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;https://x-csl.ru&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;;&quot;&gt;&lt;br /&gt;X-AiR Team web site: &lt;/span&gt;&lt;a href=&quot;https://x-air.ru&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;https://x-air.ru&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;;&quot;&gt;&lt;br /&gt;StepToSky Team web site: &lt;/span&gt;&lt;a href=&quot;https://steptosky.com&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;https://steptosky.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;;&quot;&gt;&lt;br /&gt;X-CSL-Updater application source code &lt;/span&gt;&lt;a href=&quot;https://github.com/steptosky/x-csl-updater&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;is here.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>IndexStep</name>
     <message>
-        <location filename="IndexStep.cpp" line="81"/>
+        <location filename="IndexStep.cpp" line="84"/>
         <source>Indexing, please wait...</source>
         <translation>Индексация, пожалуйста ждите...</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="98"/>
+        <location filename="IndexStep.cpp" line="101"/>
         <source>Downloading configuration file...</source>
         <translation>Загрузка конфигурационных файлов...</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="131"/>
+        <location filename="IndexStep.cpp" line="134"/>
         <source>Downloading index files...</source>
         <translation>Загрузка индексных файлов...</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="149"/>
+        <location filename="IndexStep.cpp" line="152"/>
         <source>Reading index files...</source>
         <translation>Чтение индексных файлов...</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="160"/>
+        <location filename="IndexStep.cpp" line="163"/>
         <source>Indexing local files is successfully done.</source>
         <translation>Индексация локальных файлов завершена.</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="166"/>
+        <location filename="IndexStep.cpp" line="169"/>
         <source>To make all the packages up-to-date you have to download %1 of %2</source>
         <translation>Для полного обновления вам надо загрузить %1 из %2</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="167"/>
+        <location filename="IndexStep.cpp" line="170"/>
         <source>Select the packages you want to update and click &quot;Update&quot;.</source>
         <translation>Выберите пакет(ы), которые хотите обновить  и нажмите &quot;Обновить&quot;.</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="170"/>
+        <location filename="IndexStep.cpp" line="173"/>
         <source>Congratulations! All the packages are fully up-to-date.</source>
         <translation>Поздравляем! Все пакеты обновлены.</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="182"/>
+        <location filename="IndexStep.cpp" line="185"/>
         <source>Error: Cannot get indexing successfully done! See log file for details.</source>
         <translation>Ошибка: Не могу выполнить индексацию. Смотрите лог-файл, чтобы узнать больше.</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="207"/>
+        <location filename="IndexStep.cpp" line="210"/>
         <source>Please wait...</source>
         <translation>Пожалуйста ждите...</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="404"/>
+        <location filename="IndexStep.cpp" line="408"/>
         <source>Checking local packages...</source>
         <translation>Проверка локальных пакетов...</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="180"/>
+        <location filename="IndexStep.cpp" line="183"/>
         <source>Indexing process has been canceled by user!</source>
         <translation>Индексация отменена пользователем!</translation>
     </message>
     <message>
-        <location filename="IndexStep.cpp" line="491"/>
+        <location filename="IndexStep.cpp" line="494"/>
         <source>Error: Unsafe or invalid path in package index for URI &lt;%1&gt;, package ID &lt;%2&gt;.</source>
         <translation>Ошибка: небезопасный или некорректный путь в индексе пакета для URI &lt;%1&gt;, ID пакета &lt;%2&gt;.</translation>
     </message>
@@ -119,7 +115,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="mainwindow.ui" line="44"/>
         <source>X-CSL-Updater</source>
-        <translation>X-CSL-Updater</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="90"/>
@@ -165,7 +161,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="mainwindow.ui" line="383"/>
         <source>#ID</source>
-        <translation>#ID</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="mainwindow.ui" line="388"/>
@@ -174,7 +170,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="mainwindow.ui" line="393"/>
-        <location filename="mainwindow.cpp" line="38"/>
+        <location filename="mainwindow.cpp" line="46"/>
         <source>Info</source>
         <translation>Инфо</translation>
     </message>
@@ -205,8 +201,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="mainwindow.ui" line="438"/>
-        <location filename="mainwindow.cpp" line="30"/>
-        <location filename="mainwindow.cpp" line="35"/>
+        <location filename="mainwindow.cpp" line="38"/>
+        <location filename="mainwindow.cpp" line="43"/>
         <source>Select All</source>
         <translation>Выделить всё</translation>
     </message>
@@ -317,23 +313,23 @@ p, li { white-space: pre-wrap; }
         <translation>Установить путь для CSL (!)</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="28"/>
+        <location filename="mainwindow.cpp" line="36"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="31"/>
-        <location filename="mainwindow.cpp" line="36"/>
+        <location filename="mainwindow.cpp" line="39"/>
+        <location filename="mainwindow.cpp" line="44"/>
         <source>Ctrl+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="55"/>
+        <location filename="mainwindow.cpp" line="73"/>
         <source>, Ver.:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="222"/>
+        <location filename="mainwindow.cpp" line="244"/>
         <source> :: ERROR!</source>
         <translation> :: ОШИБКА!</translation>
     </message>
@@ -342,14 +338,14 @@ p, li { white-space: pre-wrap; }
         <translation type="vanished"> :: Параметры запуска из сомандной строки:</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="196"/>
-        <location filename="mainwindow.cpp" line="201"/>
-        <location filename="mainwindow.cpp" line="206"/>
+        <location filename="mainwindow.cpp" line="218"/>
+        <location filename="mainwindow.cpp" line="223"/>
+        <location filename="mainwindow.cpp" line="228"/>
         <source> :: Specify the X-Plane executable file location ...</source>
         <translation> :: Укажите расположение исполняемого файла X-Plane ...</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="223"/>
+        <location filename="mainwindow.cpp" line="245"/>
         <source>The specified X-Plane executable file path is not valid!
 Or the X-Plane installation located at the specified path is not valid or broken.
 You can try to reinstall or repair your X-Plane installation.</source>
@@ -358,29 +354,29 @@ You can try to reinstall or repair your X-Plane installation.</source>
 Вы можете попробовать переустановить X-Plane.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="110"/>
-        <location filename="mainwindow.cpp" line="256"/>
+        <location filename="mainwindow.cpp" line="126"/>
+        <location filename="mainwindow.cpp" line="278"/>
         <source>Custom dir: </source>
         <translation>Путь для CSL (!): </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="113"/>
-        <location filename="mainwindow.cpp" line="259"/>
+        <location filename="mainwindow.cpp" line="129"/>
+        <location filename="mainwindow.cpp" line="281"/>
         <source>X-Plane dir: </source>
         <translation>Путь к X-Plane: </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="263"/>
+        <location filename="mainwindow.cpp" line="285"/>
         <source>Now click &quot;Index&quot; to determine files which need to be updated.</source>
         <translation>Нажмите &quot;Индексировать&quot; для определения пакетов, требующих установки/обновления .</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="282"/>
+        <location filename="mainwindow.cpp" line="304"/>
         <source>Cannot create temporary folder: </source>
         <translation>Не могу создать временную папку: </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="292"/>
+        <location filename="mainwindow.cpp" line="314"/>
         <source>Please specify the X-Plane executable file location!
 
 Navigate to the folder where your X-Plane is installed and select the X-Plane executable file.</source>
@@ -389,7 +385,7 @@ Navigate to the folder where your X-Plane is installed and select the X-Plane ex
 Перейдите в папку, где установлен X-Plane, и выберите исполняемый файл X-Plane.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="334"/>
+        <location filename="mainwindow.cpp" line="356"/>
         <source>Warning! This function is designed for advanced users.
 Please use it only if you are absolutely sure what you are doing otherwise the program can become unusable!
 Note: no additional files will be installed/updated, only the X-CSL library files will be installed/updated.</source>
@@ -399,7 +395,7 @@ Note: no additional files will be installed/updated, only the X-CSL library file
 Важно! Никакие дополнительные файлы не будут установлены/обновлены,только пакеты CSL-моделей.</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="339"/>
+        <location filename="mainwindow.cpp" line="361"/>
         <source> :: Specify a folder where the library will be installed</source>
         <translation> :: Укажите папку, в которую будут установлены пакеты CSL моделей</translation>
     </message>
@@ -432,8 +428,8 @@ Note: no additional files will be installed/updated, only the X-CSL library file
         <translation></translation>
     </message>
     <message>
-        <location filename="PackageAdditionalInfo.cpp" line="94"/>
-        <location filename="PackageAdditionalInfo.cpp" line="95"/>
+        <location filename="PackageAdditionalInfo.cpp" line="97"/>
+        <location filename="PackageAdditionalInfo.cpp" line="98"/>
         <source>There is no information...</source>
         <translation>Нет информации...</translation>
     </message>
@@ -441,7 +437,7 @@ Note: no additional files will be installed/updated, only the X-CSL library file
 <context>
     <name>QApplication</name>
     <message>
-        <location filename="main.cpp" line="47"/>
+        <location filename="main.cpp" line="49"/>
         <source> :: ERROR!</source>
         <translation> :: ОШИБКА!</translation>
     </message>
@@ -557,42 +553,42 @@ Note: no additional files will be installed/updated, only the X-CSL library file
 <context>
     <name>UpdateStep</name>
     <message>
-        <location filename="UpdateStep.cpp" line="56"/>
+        <location filename="UpdateStep.cpp" line="58"/>
         <source>Error: Unsafe or invalid path in delete index for URI &lt;%1&gt;, entry ID &lt;%2&gt;. Skipped.</source>
         <translation>Ошибка: небезопасный или некорректный путь в индексе удаления для URI &lt;%1&gt;, ID записи &lt;%2&gt;. Пропущено.</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="79"/>
+        <location filename="UpdateStep.cpp" line="81"/>
         <source>Error: Unsafe or invalid path in package index for URI &lt;%1&gt;, package ID &lt;%2&gt;. Skipped.</source>
         <translation>Ошибка: небезопасный или некорректный путь в индексе пакета для URI &lt;%1&gt;, ID пакета &lt;%2&gt;. Пропущено.</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="17"/>
+        <location filename="UpdateStep.cpp" line="19"/>
         <source>The operation has been canceled by user!</source>
         <translation>Операция отменена пользователем!</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="106"/>
+        <location filename="UpdateStep.cpp" line="188"/>
         <source>Updating, please wait...</source>
         <translation>Обновление, пожалуйста ждите...</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="166"/>
+        <location filename="UpdateStep.cpp" line="248"/>
         <source>Error: Cannot get updating successfully done! The X-CSL library can be broken! See log file for details.</source>
         <translation>Ошибка: Не могу выполнить обновление! X-CSL библиотека может быть повреждёна! См. лог-файл.</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="167"/>
+        <location filename="UpdateStep.cpp" line="249"/>
         <source>Reindexing is required to continue. Please click &quot;Index&quot; button.</source>
         <translation>Переиндексация необходима чтобы продолжить.Нажмите кнопку «Индексировать».</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="173"/>
+        <location filename="UpdateStep.cpp" line="255"/>
         <source>Updating process is successfully done!</source>
         <translation>Обновление успешно завершено!</translation>
     </message>
     <message>
-        <location filename="UpdateStep.cpp" line="203"/>
+        <location filename="UpdateStep.cpp" line="286"/>
         <source>Updating: %1...</source>
         <translation>Обновление: %1 ...</translation>
     </message>
