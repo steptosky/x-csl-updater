@@ -1,0 +1,8 @@
+Qt source code can be obtained from the official Qt download archive:
+https://download.qt.io/archive/qt/
+
+Currently, the project uses Qt 5.15.2:
+https://download.qt.io/archive/qt/5.15/5.15.2/single/qt-everywhere-src-5.15.2.zip
+
+This project does not include any local modifications to Qt itself in the
+repository.

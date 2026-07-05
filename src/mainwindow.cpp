@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include "mainwindow.h"
 #include <QAction>
 #include <QtWidgets>
@@ -21,8 +23,14 @@ MainWindow::MainWindow(QWidget * parent)
     mIsSimDirCustom = settings.value("mIsSimDirCustom", false).toBool();
 
     // load settings
-    move(settings.value("pos", QPoint(200, 200)).toPoint());
-    resize(settings.value("size", QSize(850, 615)).toSize());
+    const QByteArray geometry = settings.value("geometry").toByteArray();
+    if (!geometry.isEmpty()) {
+        restoreGeometry(geometry);
+    }
+    else {
+        move(settings.value("pos", QPoint(200, 200)).toPoint());
+        resize(settings.value("size", QSize(850, 615)).toSize());
+    }
 
     // List context menu
     mListClearAct = new QAction(tr("Clear"), this);
@@ -41,14 +49,24 @@ MainWindow::MainWindow(QWidget * parent)
     // table colons widths
     mUi->tableWidget->setColumnWidth(0, 30); //ID
     mUi->tableWidget->setColumnHidden(0, true);
-    mUi->tableWidget->setColumnWidth(1, settings.value("titleColWidth", 150).toInt()); //Title
-    mUi->tableWidget->setColumnWidth(2, settings.value("infoColWidth", 280).toInt()); //Info
-    mUi->tableWidget->setColumnWidth(3, settings.value("versionColWidth", 130).toInt()); //Ver
-    mUi->tableWidget->setColumnWidth(4, settings.value("sizeColWidth", 80).toInt());  //size
-    mUi->tableWidget->setColumnWidth(5, settings.value("statusColWidth", 70).toInt());  //status
     mUi->tableWidget->setColumnWidth(6, 20); //code
     mUi->tableWidget->setColumnHidden(6, true);
-    //mUi->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    // mUi->tableWidget->setColumnWidth(1, settings.value("titleColWidth", 150).toInt()); //Title
+    // // mUi->tableWidget->setColumnWidth(2, settings.value("infoColWidth", 280).toInt()); //Info
+    // mUi->tableWidget->setColumnWidth(3, settings.value("versionColWidth", 130).toInt()); //Ver
+    // mUi->tableWidget->setColumnWidth(4, settings.value("sizeColWidth", 80).toInt());  //size
+    // mUi->tableWidget->setColumnWidth(5, settings.value("statusColWidth", 120).toInt());  //status
+    mUi->tableWidget->setColumnWidth(1, 150); //Title
+    mUi->tableWidget->setColumnWidth(3, 130); //Ver
+    mUi->tableWidget->setColumnWidth(4, 80);  //size
+    mUi->tableWidget->setColumnWidth(5, 120); //status
+    auto * tableHeader = mUi->tableWidget->horizontalHeader();
+    tableHeader->setStretchLastSection(false);
+    tableHeader->setSectionResizeMode(1, QHeaderView::Fixed);    // Title
+    tableHeader->setSectionResizeMode(2, QHeaderView::Stretch);  // Info
+    tableHeader->setSectionResizeMode(3, QHeaderView::Fixed);    // Version
+    tableHeader->setSectionResizeMode(4, QHeaderView::Fixed);    // Size
+    tableHeader->setSectionResizeMode(5, QHeaderView::Fixed);    // Status
 
     //
     mUi->progressBar->setValue(0);
@@ -85,8 +103,6 @@ MainWindow::MainWindow(QWidget * parent)
 
 MainWindow::~MainWindow() {
     QSettings settings(settingsFileName(), QSettings::IniFormat);
-    settings.setValue("pos", pos());
-    settings.setValue("size", size());
     settings.setValue("titleColWidth", mUi->tableWidget->columnWidth(1)); //Title
     settings.setValue("infoColWidth", mUi->tableWidget->columnWidth(2)); //Info
     settings.setValue("versionColWidth", mUi->tableWidget->columnWidth(3)); //Ver
@@ -117,6 +133,12 @@ void MainWindow::changeEvent(QEvent* e) {
     default:
         break;
     }
+}
+
+void MainWindow::closeEvent(QCloseEvent * e) {
+    QSettings settings(settingsFileName(), QSettings::IniFormat);
+    settings.setValue("geometry", saveGeometry());
+    QMainWindow::closeEvent(e);
 }
 
 bool MainWindow::parseCliArgs() {

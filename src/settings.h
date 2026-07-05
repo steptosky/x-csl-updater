@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef SETTINGS_H
 #define SETTINGS_H
 

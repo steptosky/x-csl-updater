@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #include "UpdateStep.h"
 
 UpdateStep::UpdateStep(QWidget * _MW, Ui::MainWindow * _MWUI)
@@ -50,7 +52,12 @@ bool UpdateStep::removeDir(const QString & dirName) {
 }
 
 bool UpdateStep::removePath(PackageEntry inPackageEntry) {
-    const QString path = mAltDefs->fullLocalPath(inPackageEntry.type, inPackageEntry.data[1]);
+    const QString fileUri = inPackageEntry.data.value(1);
+    const QString path = mAltDefs->fullLocalPath(inPackageEntry.type, fileUri);
+    if (path.isEmpty()) {
+        setMessage(tr("Error: Unsafe or invalid path in delete index for URI <%1>, entry ID <%2>. Skipped.").arg(fileUri).arg(inPackageEntry.ID));
+        return false;
+    }
     QFileInfo fileInfo(path);
     QDir dir(path);
     if (fileInfo.isFile()) {
@@ -68,38 +75,113 @@ bool UpdateStep::removePath(PackageEntry inPackageEntry) {
 }
 
 bool UpdateStep::createDownloadingFile(PackageEntry inPackageEntry) {
-    const QString fileName = mAltDefs->fullLocalPath(inPackageEntry.type, inPackageEntry.data[1]);
-    if (QFile::exists(fileName)) {
-        const bool res = QFile::copy(fileName, fileName + ".backup");
-        if (res){
-            qDebug() << "A backup file has been created: <" << fileName + ".backup" << ">";
-        }
+    const QString fileUri = inPackageEntry.data.value(1);
+    const QString fileName = mAltDefs->fullLocalPath(inPackageEntry.type, fileUri);
+    if (fileName.isEmpty()) {
+        setMessage(tr("Error: Unsafe or invalid path in package index for URI <%1>, package ID <%2>. Skipped.").arg(fileUri).arg(inPackageEntry.ID));
+        return false;
     }
-    if (QFile::exists(fileName)) {
-        QFile::remove(fileName);
+
+    const QFileInfo fileInfo(fileName);
+    const QString dirPath = fileInfo.dir().path();
+    QDir dir;
+    if (!dir.mkpath(dirPath)) {
+        qWarning() << QString("Cannot create the path: <%1>").arg(dirPath);
+        return false;
     }
-    delete mDownloadingFile;
-    mDownloadingFile = new QFile(fileName);
+
+    const QString downloadingFileName = fileName + ".download";
+    if (QFile::exists(downloadingFileName) && !QFile::remove(downloadingFileName)) {
+        qWarning() << QString("Cannot remove stale downloading file: <%1>").arg(downloadingFileName);
+        return false;
+    }
+
+    clearDownloadingFileState();
+    mDownloadingFile = new QFile(downloadingFileName);
     mDownloadingFile->open(QIODevice::WriteOnly);
     if (!mDownloadingFile->isOpen()) {
-        // lets suppose that path to file is not exist
-        int index = fileName.lastIndexOf("/");
-        const QString dir_path = fileName.left(index);
-        QDir dir("");
-        dir.mkpath(dir_path);
-        delete mDownloadingFile;
-        mDownloadingFile = nullptr;
-        mDownloadingFile = new QFile(fileName);
-        mDownloadingFile->open(QIODevice::WriteOnly);
-    }
-    if (!mDownloadingFile->isOpen()) {
-        qWarning() << QString("Cannot write to file : <%1>; Reason: %2").arg(fileName).arg(mDownloadingFile->errorString());
-        delete mDownloadingFile;
-        mDownloadingFile = nullptr;
+        qWarning() << QString("Cannot write to file : <%1>; Reason: %2").arg(downloadingFileName).arg(mDownloadingFile->errorString());
+        clearDownloadingFileState();
         return false;
     }
     mDownloadingFileName = fileName;
+    mDownloadingTargetFileName = fileName;
     return true;
+}
+
+bool UpdateStep::installDownloadedFile() {
+    if (mDownloadingFile == nullptr || mDownloadingTargetFileName.isEmpty()) {
+        qWarning() << "Cannot install downloaded file, reason: downloading file state is not valid.";
+        return false;
+    }
+
+    if (mDownloadingFile->isOpen()) {
+        mDownloadingFile->close();
+    }
+
+    const QString downloadingFileName = mDownloadingFile->fileName();
+    const QString backupFileName = mDownloadingTargetFileName + ".backup";
+
+    if (!QFile::exists(downloadingFileName)) {
+        qWarning() << QString("Cannot install downloaded file, temporary file is not found: <%1>").arg(downloadingFileName);
+        return false;
+    }
+
+    if (QFile::exists(backupFileName) && !QFile::remove(backupFileName)) {
+        qWarning() << QString("Cannot remove old backup file: <%1>").arg(backupFileName);
+        return false;
+    }
+
+    const bool hasOriginalFile = QFile::exists(mDownloadingTargetFileName);
+    if (hasOriginalFile && !QFile::rename(mDownloadingTargetFileName, backupFileName)) {
+        qWarning() << QString("Cannot create backup file: <%1>").arg(backupFileName);
+        return false;
+    }
+    if (hasOriginalFile) {
+        qDebug() << "A backup file has been created: <" << backupFileName << ">";
+    }
+
+    if (!QFile::rename(downloadingFileName, mDownloadingTargetFileName)) {
+        qWarning() << QString("Cannot move downloaded file <%1> to target path <%2>").arg(downloadingFileName).arg(mDownloadingTargetFileName);
+        if (hasOriginalFile && !QFile::rename(backupFileName, mDownloadingTargetFileName)) {
+            qWarning() << QString("Cannot restore file from backup: <%1>").arg(backupFileName);
+        }
+        return false;
+    }
+
+    qDebug() << "The downloaded file has been put here: " << mDownloadingTargetFileName;
+
+    if (hasOriginalFile && QFile::exists(backupFileName)) {
+        const bool res = QFile::remove(backupFileName);
+        if (res) {
+            qDebug() << "The backup file has been removed: <" << backupFileName << ">";
+        }
+        else {
+            qWarning() << QString("Cannot remove backup file: <%1>").arg(backupFileName);
+        }
+    }
+
+    return true;
+}
+
+void UpdateStep::clearDownloadingFileState() {
+    if (mDownloadingFile != nullptr) {
+        if (mDownloadingFile->isOpen()) {
+            mDownloadingFile->close();
+        }
+        delete mDownloadingFile;
+        mDownloadingFile = nullptr;
+    }
+    mDownloadingFileName.clear();
+    mDownloadingTargetFileName.clear();
+}
+
+void UpdateStep::removeDownloadingFile() {
+    const QString downloadingFileName = mDownloadingFile != nullptr ? mDownloadingFile->fileName() : QString();
+    clearDownloadingFileState();
+    if (!downloadingFileName.isEmpty() && QFile::exists(downloadingFileName) && !QFile::remove(downloadingFileName)) {
+        qWarning() << QString("Cannot remove downloading file: <%1>").arg(downloadingFileName);
+    }
 }
 
 void UpdateStep::StartUpdate(QVector<PackageEntry> inFileList, IndexStep * inIndexStep) {
@@ -179,7 +261,6 @@ void UpdateStep::EndUpdate() {
 }
 
 void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
-    const QUrl url(mAltDefs->fullUrl(inPackageEntry.type, inPackageEntry.data[1]));
     if (!createDownloadingFile(inPackageEntry)) {
         // cannot create file
         ++mFailedFileCounter;
@@ -192,11 +273,13 @@ void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
         }
         return;
     }
+    const QUrl url(mAltDefs->fullUrl(inPackageEntry.type, inPackageEntry.data.value(1)));
     // start downloading
     mDownloadedBytes = 0;
     mTotalBytes = 0;
     QNetworkRequest request;
     request.setUrl(url);
+    request.setHeader(QNetworkRequest::UserAgentHeader, networkUserAgent());
     QNetworkReply * reply = mNetMng->get(request);
     connect(this, &UpdateStep::cancelDownloading, reply, &QNetworkReply::abort);
     connect(reply, &QNetworkReply::downloadProgress, this, &UpdateStep::updateDataReadProgress);
@@ -207,15 +290,26 @@ void UpdateStep::httpRequestFinished(QNetworkReply * inReply) {
     inReply->deleteLater();
     if (inReply->error() != QNetworkReply::OperationCanceledError) {
         if (inReply->error() == QNetworkReply::NoError) {
-            mDownloadingFile->write(inReply->readAll());
-            mDownloadingFile->close();
-            qDebug() << "The downloaded file has been put here: " << mDownloadingFile->fileName();
-            // remove backup file
-            const QString fileName = mDownloadingFile->fileName() + ".backup";
-            if (QFile::exists(fileName)) {
-                const bool res = QFile::remove(fileName);
-                if (res) {
-                    qDebug() << "The backup file has been removed: <" << fileName << ">";
+            const QByteArray downloadedData = inReply->readAll();
+            if (mDownloadingFile == nullptr) {
+                ++mFailedFileCounter;
+                qWarning() << "Cannot save downloaded file, reason: downloading file state is not valid.";
+            }
+            else {
+                const qint64 bytesWritten = mDownloadingFile->write(downloadedData);
+                if (bytesWritten != downloadedData.size()) {
+                    ++mFailedFileCounter;
+                    qWarning() << QString("Cannot write downloaded file <%1>; Reason: %2").arg(mDownloadingFile->fileName()).arg(mDownloadingFile->errorString());
+                    removeDownloadingFile();
+                }
+                else if (!mDownloadingFile->flush()) {
+                    ++mFailedFileCounter;
+                    qWarning() << QString("Cannot flush downloaded file <%1>; Reason: %2").arg(mDownloadingFile->fileName()).arg(mDownloadingFile->errorString());
+                    removeDownloadingFile();
+                }
+                else if (!installDownloadedFile()) {
+                    ++mFailedFileCounter;
+                    removeDownloadingFile();
                 }
             }
         }
@@ -225,8 +319,7 @@ void UpdateStep::httpRequestFinished(QNetworkReply * inReply) {
             const QString httpStatus = QString::number(inReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt());
             const QString httpStatusMessage = inReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
             ++mFailedFileCounter;
-            mDownloadingFile->close();
-            mDownloadingFile->remove();
+            removeDownloadingFile();
             if (httpStatus.toInt() == 0 || httpStatusMessage.isEmpty()) {
                 QString msg = QString("Cannot download a file <%1> due to: %2").arg(errorUrl).arg(inReply->errorString());
                 setMessage(tr(msg.toStdString().c_str()));
@@ -237,15 +330,9 @@ void UpdateStep::httpRequestFinished(QNetworkReply * inReply) {
                 setMessage(tr(msg.toStdString().c_str()));
                 qWarning() << msg;
             }
-            // revert file from a backup
-            const bool res = QFile::copy(mDownloadingFile->fileName() + ".backup", mDownloadingFile->fileName());
-            if (res){
-                qDebug() << "The file has been restored from the backup file : <" << mDownloadingFile->fileName() + ".backup" << ">";
-            }
         }
         // start for next file
-        delete mDownloadingFile;
-        mDownloadingFile = nullptr;
+        clearDownloadingFileState();
         ++mFileCounter;
         if (mFileCounter < mEntryList.size()) {
             CopyRemoteFile(mEntryList[mFileCounter]);
@@ -256,10 +343,7 @@ void UpdateStep::httpRequestFinished(QNetworkReply * inReply) {
     }
     else {
         // we canceled
-        mDownloadingFile->remove();
-        mDownloadingFile->close();
-        delete mDownloadingFile;
-        mDownloadingFile = nullptr;
+        removeDownloadingFile();
     }
 }
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef ABOUT_H
 #define ABOUT_H
 
@@ -21,7 +23,7 @@ protected:
 private:
     Ui::About * m_ui;
 
-    void setVersionInfo();
+    void setVersionInfo() const;
 };
 
 #endif // ABOUT_H

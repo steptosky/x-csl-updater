@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -23,7 +25,8 @@ public:
 
     MainWindow(QWidget * parent = nullptr);
     ~MainWindow();
-void changeEvent(QEvent * e);
+    void changeEvent(QEvent * e) override;
+    void closeEvent(QCloseEvent * e) override;
 
 //-------------------------------------------------------------------------
 public slots:

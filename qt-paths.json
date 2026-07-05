@@ -1,0 +1,5 @@
+{
+  "windows": "C:/Qt/5.15.2/msvc2019_64",
+  "linux": "/home/den_rain/Qt/5.11.2/gcc_64",
+  "macos": "/Users/den_rain/Qt/5.11.2/clang_64"
+}

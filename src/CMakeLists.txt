@@ -73,6 +73,17 @@ find_package(Qt5Network)
 # Tell CMake to create the ${PROJECT} executable
 add_executable(${TARGET_NAME} WIN32 MACOSX_BUNDLE ${CM_FILES} "xcsl.icns")
 
+if(MSVC)
+    string(REPLACE "\"" "" STRIPPED_QT_PATH "${QT_PATH}")
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${TARGET_NAME}>"
+        VS_DEBUGGER_ENVIRONMENT
+            "PATH=${STRIPPED_QT_PATH}/bin;%PATH%\nQT_PLUGIN_PATH=${STRIPPED_QT_PATH}/plugins"
+        #VS_DEBUGGER_ENVIRONMENT
+        #    "QT_DIR=${STRIPPED_QT_PATH}"
+    )
+endif()
+
 # -----------------------------------------------------------------------#
 # Global Libraries linkage 
 

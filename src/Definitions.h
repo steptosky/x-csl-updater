@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+
 #ifndef TYPES_H
 #define TYPES_H
 
@@ -28,6 +30,10 @@ inline extern QString logFileName(){
 
 inline extern QString settingsFileName(){
     return QApplication::applicationDirPath() + "/settings.ini";
+}
+
+inline extern QString networkUserAgent() {
+    return QString("%1/%2").arg(PROGRAM_NAME, STS_XCSL_VERSION_STRING);
 }
 
 inline extern QString translationFileName(const QString & inLangId) {

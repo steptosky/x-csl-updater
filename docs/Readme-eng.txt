@@ -8,11 +8,11 @@ It can be installed and continuously updated using this X-CSL-Updater software.
 
 - This X-CSL-Updater is compatible Only with the Altitude IVAO client. If you still use X-IvAp download an older version of X-CSL-Updater (1.2.0 or older)
 
-- The X-CSL-Package is not compatible with any other CSL libraries or separate CSL models, 
-so please remove ALL files from your CSL library folder before using our library. 
+- The X-CSL-Package is not compatible with any other CSL libraries or separate CSL models,
+so please remove ALL files from your CSL library folder before using our library.
 If you are going ONLY to test our library - save a copy of your current CSL folder somewhere aside.
 
-- The X-CSL-Package is not compatible with other virtual aviation network clients, but even in this case you are able to try to use our library. 
+- The X-CSL-Package is not compatible with other virtual aviation network clients, but even in this case you are able to try to use our library.
 Use Menu -> Set Custom Path setting for set a custom location of CSL models.
 If you are going ONLY to test our library - save a copy of your current CSL folder somewhere aside.
 
@@ -32,8 +32,8 @@ Short instruction on how to start using the software:
 
 
 
-Use this form to contact us: https://csl.x-air.ru/contact/?lang_id=43
+Use this form to contact us: https://x-csl.ru/contact/?lang_id=43
 
-Official X-CSL-Package project web site (https://csl.x-air.ru/?lang_id=43)
+Official X-CSL-Package project web site (https://x-csl.ru/?lang_id=43)
 Copyright © 2009-2026 X-AiR Team (https://x-air.ru)
 Copyright © 2009-2026 StepToSky Team (https://steptosky.com)

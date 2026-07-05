@@ -1,0 +1,7 @@
+Qt contains third-party components with their own license notices.
+
+Upstream Qt documents these notices here:
+https://doc.qt.io/archives/qt-5.15/licenses-used-in-qt.html
+
+Packaged builds of this project may also include additional Qt runtime
+components depending on platform and deployment method.

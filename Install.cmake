@@ -136,6 +136,19 @@ install(
     FILES_MATCHING PATTERN "*.txt"
 )
 
+install(
+    FILES
+    ${CMAKE_SOURCE_DIR}/LICENSE
+    ${CMAKE_SOURCE_DIR}/TRADEMARKS.md
+    DESTINATION ${DEPLOY_DIR}
+)
+
+install(
+    DIRECTORY
+    ${CMAKE_SOURCE_DIR}/Licenses/
+    DESTINATION ${DEPLOY_DIR}/Licenses
+)
+
 # -----------------------------------------------------------------------#
 # Packaging
 if (MSVC)
