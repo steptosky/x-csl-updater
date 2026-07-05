@@ -279,6 +279,7 @@ void UpdateStep::CopyRemoteFile(PackageEntry inPackageEntry) {
     mTotalBytes = 0;
     QNetworkRequest request;
     request.setUrl(url);
+    request.setHeader(QNetworkRequest::UserAgentHeader, networkUserAgent());
     QNetworkReply * reply = mNetMng->get(request);
     connect(this, &UpdateStep::cancelDownloading, reply, &QNetworkReply::abort);
     connect(reply, &QNetworkReply::downloadProgress, this, &UpdateStep::updateDataReadProgress);

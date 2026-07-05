@@ -32,6 +32,10 @@ inline extern QString settingsFileName(){
     return QApplication::applicationDirPath() + "/settings.ini";
 }
 
+inline extern QString networkUserAgent() {
+    return QString("%1/%2").arg(PROGRAM_NAME, STS_XCSL_VERSION_STRING);
+}
+
 inline extern QString translationFileName(const QString & inLangId) {
     if (inLangId == "ru") {
         static const QString name = "x-csl-updater_ru.qm";

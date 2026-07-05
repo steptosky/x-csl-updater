@@ -55,6 +55,7 @@ void PackageAdditionalInfo::getPackageInfo(int inPackID, int inRow) const {
 
 	QNetworkRequest request;
 	request.setUrl(url);
+	request.setHeader(QNetworkRequest::UserAgentHeader, networkUserAgent());
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackID), inPackID);
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackName), packPath);
 	request.setAttribute(static_cast<QNetworkRequest::Attribute>(PackRow), inRow);

@@ -48,6 +48,7 @@ void IndexStep::scheduleDownloadingFile(const QString & url, const QString & loc
     qDebug() << "Will download a file from: <" << url << ">";
     QNetworkRequest request;
     request.setUrl(url);
+    request.setHeader(QNetworkRequest::UserAgentHeader, networkUserAgent());
     request.setAttribute(static_cast<QNetworkRequest::Attribute>(QNetworkRequest::UserMax - 1), QVariant::fromValue(localPath));
     QNetworkReply * reply = mNetMng->get(request);
     connect(this, &IndexStep::abortAllReplaysSig, reply, &QNetworkReply::abort);
