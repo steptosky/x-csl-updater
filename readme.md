@@ -11,6 +11,14 @@ The X-CSL-Package project is a centralized CSL model library for displaying IVAO
 The project is developed, maintained and served by the X-AiR and StepToSky Teams.
 It can be installed and continuously updated using this X-CSL-Updater software.
 
+### Documentation
+
+This root README provides a project overview, technical details, and licensing information for developers.
+End-user installation and usage instructions are in the `docs/` folder:
+
+- [English](docs/Readme-eng.txt)
+- [Русский](docs/Readme-ru.txt)
+
 ### A bit of technical details as a reminder:
 
     index files format:
