@@ -33,7 +33,16 @@ inline extern QString settingsFileName(){
 }
 
 inline extern QString networkUserAgent() {
-    return QString("%1/%2").arg(PROGRAM_NAME, STS_XCSL_VERSION_STRING);
+#if defined(Q_OS_WIN)
+    const QString os = QStringLiteral("windows");
+#elif defined(Q_OS_LINUX)
+    const QString os = QStringLiteral("linux");
+#elif defined(Q_OS_MACOS)
+    const QString os = QStringLiteral("macos");
+#else
+    const QString os = QStringLiteral("unknown");
+#endif
+    return QString("%1/%2/%3").arg(PROGRAM_NAME, STS_XCSL_VERSION_STRING, os);
 }
 
 inline extern QString translationFileName(const QString & inLangId) {
