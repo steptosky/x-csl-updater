@@ -18,7 +18,6 @@ End-user installation and usage instructions are in the `docs/` folder:
 
 - [English](docs/Readme-eng.txt)
 - [Русский](docs/Readme-ru.txt)
-- [Command-line usage (English)](docs/Readme-cli.md)
 
 ### A bit of technical details as a reminder:
 
