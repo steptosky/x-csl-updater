@@ -1,39 +1,54 @@
-Thank you for choosing the X-CSL Package!
+Thank you for choosing X-CSL-Package!
 
-The X-CSL-Package project is a centralized CSL model library for displaying IVAO traffic in X-Plane.
-The project is developed, maintained and served by the X-AiR and StepToSky Teams.
-It can be installed and continuously updated using this X-CSL-Updater software.
+X-CSL-Package is a library of CSL aircraft models used to display IVAO traffic in X-Plane.
+The project is developed and maintained by the X-AiR and StepToSky Teams.
+Use this X-CSL-Updater to install the library and keep it up to date.
 
-- The X-CSL-Package is developed for and compatible with IVAO clients: X-IvAp and Altitude.
+- Using the X-CSL-Package alongside other CSL libraries or individual CSL models is not officially supported.
+You may try this at your own risk, but the X-AiR and StepToSky Teams are not responsible for any resulting problems.
+For a supported setup, use a CSL library folder containing only the X-CSL-Package.
+Back up your existing CSL library before replacing it or testing a mixed setup.
 
-- This X-CSL-Updater is compatible Only with the Altitude IVAO client. If you still use X-IvAp download an older version of X-CSL-Updater (1.2.0 or older)
+- Using the X-CSL-Package with other virtual aviation network clients is not officially supported.
+You may try it at your own risk, but the X-AiR and StepToSky Teams are not responsible for any resulting problems.
+To specify a custom CSL library location, choose Menu -> Set Custom Path.
+Back up your existing CSL library before testing this setup.
 
-- The X-CSL-Package is not compatible with any other CSL libraries or separate CSL models,
-so please remove ALL files from your CSL library folder before using our library.
-If you are going ONLY to test our library - save a copy of your current CSL folder somewhere aside.
+Installation and startup
 
-- The X-CSL-Package is not compatible with other virtual aviation network clients, but even in this case you are able to try to use our library.
-Use Menu -> Set Custom Path setting for set a custom location of CSL models.
-If you are going ONLY to test our library - save a copy of your current CSL folder somewhere aside.
+Windows:
+1. Download the Windows .zip archive.
+2. Extract the archive to a folder of your choice.
+3. Open the extracted folder and run X-CSL-Updater.exe.
 
-Please, read the instruction for downloading and installation!
+Linux:
+1. Download the Linux .tar.gz archive.
+2. Extract the archive to a folder of your choice.
+3. Open a terminal in the extracted folder containing X-CSL-Updater.sh and run:
+   ./X-CSL-Updater.sh
 
-Short instruction on how to start using the software:
-1. Download zip-archive (tar.gz for Linux, dmg-image for MacOS) according to your operational system.
-2. Unpack X-CSL-Updater folder from archive into any place or mount the dmg image and copy X-CSL-Updater app from the image to the Applications folder on MacOS.
-3. To start the program:
- * for Windows-> Start X-CSL-Updater.exe
- * for Linux-> Start X-CSL-Updater.sh
- * for Mac-> Start X-CSL-Updater application
-4. In the opened window press the "Browse" button and specify the X-Plane executable file.
-5. Press the "Index" button to compare your local csl library with the remote csl library provided by the server to determine which csl packages should be updated.
-6. When indexation process is completed, you will be able to see which packages are out-of-date in the package list.
-7. To update outdated packages, select such packages (for select two or more lines - keep Ctrl-key pressed or press the "Select All" button to select all the packages) and press the "Update" button.
+macOS:
+1. Download the macOS .dmg disk image.
+2. Open the disk image and drag X-CSL-Updater.app to the Applications folder.
+3. Launch X-CSL-Updater from the Applications folder.
 
+Installing or updating CSL packages (all systems)
+
+1. Click "Browse" and open your X-Plane installation folder. Select:
+   - Windows: the X-Plane executable (.exe).
+   - Linux: the X-Plane executable.
+   - macOS: the X-Plane application (.app).
+   If you need a custom CSL library location, choose Menu -> Set Custom Path instead.
+2. Click "Index" to compare your local CSL files with the package index on the server.
+3. Wait for indexing to finish. The package list will show which packages need to be installed or updated.
+4. Select the packages you want to install or update. To select multiple packages,
+   hold Ctrl on Windows or Linux, or Command on macOS, while clicking them.
+   You can also click "Select All" to select every package.
+5. Click "Update" and wait for the operation to finish.
 
 
 Use this form to contact us: https://x-csl.ru/contact/?lang_id=43
 
-Official X-CSL-Package project web site (https://x-csl.ru/?lang_id=43)
+Official X-CSL-Package project website (https://x-csl.ru/?lang_id=43)
 Copyright © 2009-2026 X-AiR Team (https://x-air.ru)
 Copyright © 2009-2026 StepToSky Team (https://steptosky.com)
