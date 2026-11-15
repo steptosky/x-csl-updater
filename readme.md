@@ -13,7 +13,9 @@ It can be installed and continuously updated using this X-CSL-Updater software.
 
 ### Documentation
 
-This root README provides a project overview, technical details, and licensing information for developers.
+This root README provides a project overview, technical details, and licensing information for developers.  
+See [Building X-CSL-Updater](BUILDING.md) for build and packaging instructions.
+
 End-user installation and usage instructions are in the `docs/` folder:
 
 - [English](docs/Readme-eng.txt)
