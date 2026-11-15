@@ -35,52 +35,17 @@ Treat these as generated/local output, not source:
 - `cmake-build-release/` - CLion Release build dir.
 - `bin/`, `Package/` - executable/package outputs.
 
-Current CLion profiles are `Debug` and `Release`. Both use:
+## Building and Debugging
 
-```text
--DCMAKE_PREFIX_PATH="C:/Qt/5.15.2/msvc2019_64"
--DCMAKE_INSTALL_PREFIX=../Package
--DCLEANUP_INSTALL_FIRST=ON
-```
-
-The current CLion CMake caches use `Visual Studio 16 2019`, so use `--config ...` when building them. If stale files like `build.ninja` remain in a build dir, trust `CMakeCache.txt` over filename leftovers.
-
-## Commands
-
-Generate the usual Visual Studio 2019 project:
-
-```powershell
-.\project_vs2019x64.bat
-```
-
-Build the CLion Debug profile:
-
-```powershell
-cmake --build cmake-build-debug --config Debug --target X-CSL-Updater
-```
-
-Build the CLion Release profile:
-
-```powershell
-cmake --build cmake-build-release --config Release --target X-CSL-Updater
-```
-
-Build and package Windows Release with the existing script:
-
-```powershell
-.\win-build-release.bat
-```
-
-Install/package is Release-only:
-
-```powershell
-cmake --build cmake-build-release --config Release --target INSTALL
-```
+- Prefer the CLion MCP server for building, running, and debugging the application.
+- Inspect the available MCP tools and existing CLion configurations first. Reuse the project's configured profiles and toolchains instead of assuming local paths or generators.
+- For runtime investigation, use CLion MCP breakpoints or logpoints, stepping, call stacks, and variable inspection. Follow the `clion-debugger` skill when applicable.
+- Preserve the user's run configurations and breakpoints; remove temporary agent-created breakpoints when finished.
+- If the required operation is unavailable through CLion MCP, use [BUILDING.md](BUILDING.md) for command-line build and packaging instructions. Installation and packaging are Release-only.
 
 ## Notes
 
 - Do not change source files unless the user explicitly asks for implementation changes. First discuss the change, then wait for a clear command like "ok, do it", and only then edit source files.
-- Qt path used by local configs: `C:/Qt/5.15.2/msvc2019_64`.
 - Runtime files are written near the executable: `settings.ini`, `log.txt`, `tmp/`.
 - There are no automated test targets in this repo; do not search for GTest/QTest.
 - Do not clean or rewrite build directories unless explicitly asked.
