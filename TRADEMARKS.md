@@ -4,10 +4,10 @@ The source code in this repository is licensed separately under the Mozilla Publ
 
 This policy applies to the names `X-CSL-Updater`, `X-CSL-Package`, related logos, and other project branding used by the maintainers of this repository.
 
-You may:
+You must:
 
 - state that your work is based on or derived from `X-CSL-Updater`
-- link to the official project and the source repository
+- link to the official project and/or the source repository
 - describe compatibility with the project in a factual way
 
 You may not:
